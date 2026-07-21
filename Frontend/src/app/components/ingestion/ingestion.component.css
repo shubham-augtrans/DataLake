@@ -1,0 +1,303 @@
+:host {
+  display: block;
+  min-height: 100%;
+  background: var(--app-surface, var(--surface-ground, #f8f9ff));
+  color: var(--app-text, var(--text-color, #0b1c30));
+}
+
+.ingestion-page {
+  padding: 1.5rem;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* ===========================
+   Header
+=========================== */
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-color-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.breadcrumb .current {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.separator {
+  color: var(--surface-border);
+}
+
+h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.page-header p {
+  margin: .4rem 0 0;
+  color: var(--text-color-secondary);
+}
+
+/* ===========================
+   Grid
+=========================== */
+
+.sources-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+/* ===========================
+   Card
+=========================== */
+
+:host ::ng-deep .source-card {
+  height: 100%;
+  border-radius: 14px;
+  border: 1px solid var(--surface-border);
+  overflow: hidden;
+  transition: all .25s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .04);
+}
+
+:host ::ng-deep .source-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .08);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.25rem 1.25rem 0;
+}
+
+.source-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.source-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: var(--primary-color);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.source-meta h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.source-meta p {
+  margin: .35rem 0 0;
+  color: var(--text-color-secondary);
+  font-size: .85rem;
+  word-break: break-word;
+}
+
+.card-menu-btn {
+  width: 2rem;
+  height: 2rem;
+}
+
+/* ===========================
+   Body
+=========================== */
+
+.card-body {
+  padding: 1.25rem;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: .65rem 0;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row span:first-child {
+  color: var(--text-color-secondary);
+  font-size: .9rem;
+  font-weight: 500;
+}
+
+.info-row span:last-child {
+  font-size: .9rem;
+  text-align: right;
+  word-break: break-word;
+  font-weight: 500;
+}
+
+/* ===========================
+   Footer
+=========================== */
+
+:host ::ng-deep .card-actions {
+  display: flex;
+  gap: .75rem;
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+:host ::ng-deep .action-btn {
+  flex: 1;
+}
+
+:host ::ng-deep .action-primary.p-button,
+:host ::ng-deep .action-secondary.p-button {
+  width: 100%;
+}
+
+/* ===========================
+   Header Button
+=========================== */
+
+:host ::ng-deep .page-header .p-button {
+  min-width: 160px;
+}
+
+/* ===========================
+   Empty State
+=========================== */
+
+.empty-state {
+  grid-column: 1 / -1;
+  padding: 5rem 2rem;
+  text-align: center;
+  background: #fff;
+  border: 2px dashed var(--surface-border);
+  border-radius: 12px;
+}
+
+.empty-state i {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+  margin: .75rem 0;
+}
+
+.empty-state p {
+  color: var(--text-color-secondary);
+  margin-bottom: 1.5rem;
+}
+
+/* ===========================
+   Dialog
+=========================== */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.2rem;
+}
+
+.field label {
+  font-weight: 600;
+  margin-bottom: .45rem;
+}
+
+.w-full {
+  width: 100%;
+}
+
+:host ::ng-deep .p-dropdown,
+:host ::ng-deep .p-inputnumber,
+:host ::ng-deep .p-inputtext {
+  width: 100%;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content {
+  padding-top: 1rem;
+}
+
+:host ::ng-deep .p-dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: .75rem;
+}
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media (max-width: 1400px) {
+  .sources-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .sources-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  :host ::ng-deep .page-header .p-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+
+  .sources-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ingestion-page {
+    padding: 1rem;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  .card-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  :host ::ng-deep .card-actions {
+    flex-direction: column;
+  }
+
+  :host ::ng-deep .action-btn {
+    width: 100%;
+  }
+
+}

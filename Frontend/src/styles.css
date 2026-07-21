@@ -1,0 +1,140 @@
+@import "primeng/resources/themes/lara-light-blue/theme.css";/* You can add global styles to this file, and also import other style files */
+@import "primeicons/primeicons.css";
+
+html {
+  font-size: 12px;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+html, body, app-root {
+  font-family: "Poppins", sans-serif;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("../src/assets/fonts/Poppins/Poppins-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("../src/assets/fonts/Poppins/Poppins-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("../src/assets/fonts/Poppins/Poppins-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("../src/assets/fonts/Poppins/Poppins-SemiBold.ttf")
+    format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("../src/assets/fonts/Poppins/Poppins-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("../src/assets/fonts/Poppins/Poppins-ExtraLight.ttf")
+    format("truetype");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Bauhaus Regular";
+  font-style: normal;
+  font-weight: normal;
+  src: url("../src/assets/fonts/Bahuss/Bahuss-V45LV.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Bauhaus Regular1";
+  font-style: normal;
+  font-weight: normal;
+  src: url("../src/assets/fonts/Bahuss/BauhausRegular.woff") format("woff");
+}
+
+@font-face {
+  font-family: 'ADLaM Display';
+  font-style: normal;
+  font-weight: normal;
+  src: url("../src/assets/fonts/ADLaM_Display/ADLaMDisplay-Regular.ttf") format("truetype");
+}
+.poppins-medium {
+  font-family: "Poppins", serif;
+  font-weight: 500;
+  font-style: normal;
+}
+.poppins-regular {
+  font-family: "Poppins", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.poppins-light {
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+.poppins-extralight {
+  font-family: "Poppins", sans-serif;
+  font-weight: 200;
+  font-style: normal;
+}
+.poppins-semibold {
+  font-family: "Poppins", serif;
+  font-weight: 600;
+  font-style: normal;
+}
+.bahuss-title {
+  font-family: "Bauhaus Regular", sans-serif !important;
+  font-size: 2.8rem !important;
+  font-weight: 600 !important;
+  color: #FFBC09 !important;
+  letter-spacing: 5.5px;
+  padding-bottom:0px;
+  margin-bottom:0px;
+  line-height:0.5;
+}
+
+.adlamDisplay::before {
+  content: "";
+  position: absolute;
+  top:0; /* position at the top of the span */
+  left: 0;
+  bottom:26px;
+  width: 100%; /* full width of the text */
+  height:4.5px; /* thickness of the line */
+  background-color: #FFBC09; /* color of the line */
+}
+
+.adlamDisplay{
+  font-family: "ADLaM Display", sans-serif;
+  letter-spacing: 1.8px;
+  font-style: normal;
+  position: relative;
+  padding-top:2px;
+  }

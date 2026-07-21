@@ -1,0 +1,25 @@
+# Python
+.venv/
+**/__pycache__/
+*.py[cod]
+
+# Node
+**/node_modules/
+
+# Angular
+**/.angular/
+
+# Environment
+**/.env
+
+# SQLite
+*.sqlite3
+
+Apache-Spark/ivy-cache/
+*.jar
+
+Apache-Spark/ivy-cache/
+*.jar
+
+ivy-cache/
+Apache-Spark/ivy-cache/

@@ -1,0 +1,100 @@
+<div class="dashboard">
+  <div class="topbar">
+    <div>
+      <h1>Executive Overview</h1>
+      <p>System health and AI infrastructure summary for today.</p>
+    </div>
+
+    <div class="actions">
+      <button pButton type="button" label="Connect Source" icon="pi pi-link" class="p-button-outlined"></button>
+      <button pButton type="button" label="Build Agent" icon="pi pi-sparkles" class="p-button-outlined"></button>
+      <button pButton type="button" label="View Logs" icon="pi pi-terminal"></button>
+    </div>
+  </div>
+
+  <div class="cards">
+    <p-card *ngFor="let card of cards" class="summary-card">
+      <ng-template pTemplate="title">
+        <div class="card-head">
+          <span>{{ card.title }}</span>
+          <i class="pi" [ngClass]="card.icon"></i>
+        </div>
+      </ng-template>
+
+      <div class="card-value">{{ card.value }}</div>
+      <div class="card-note">{{ card.note }}</div>
+    </p-card>
+  </div>
+
+  <div class="main-grid">
+    <p-card class="chart-card">
+      <ng-template pTemplate="title">
+        <div class="section-head">
+          <span>Ingestion Volume</span>
+          <p-dropdown
+            [options]="rangeOptions"
+           
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select Range"
+          ></p-dropdown>
+        </div>
+      </ng-template>
+
+      <div class="mock-chart">
+        <div class="bar h30"></div>
+        <div class="bar h45"></div>
+        <div class="bar h60"></div>
+        <div class="bar h40"></div>
+        <div class="bar h75"></div>
+        <div class="bar h90"></div>
+        <div class="bar h85"></div>
+      </div>
+
+      <div class="days">
+        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+      </div>
+    </p-card>
+
+    <p-card class="usage-card">
+      <ng-template pTemplate="title">
+        <span>AI Model Usage</span>
+      </ng-template>
+
+      <div class="usage-item" *ngFor="let model of modelUsage">
+        <div class="usage-row">
+          <span>{{ model.name }}</span>
+          <span>{{ model.value }}%</span>
+        </div>
+        <p-progressBar [value]="model.value"></p-progressBar>
+      </div>
+    </p-card>
+  </div>
+
+  <p-card class="activity-card">
+    <ng-template pTemplate="title">
+      <div class="section-head">
+        <span>System Activity Log</span>
+        <button pButton type="button" label="View All" class="p-button-text"></button>
+      </div>
+    </ng-template>
+
+    <div class="activity-list">
+      <div class="activity-item" *ngFor="let item of activity">
+        <i class="pi" [ngClass]="{
+          'pi-times-circle': item.type === 'error',
+          'pi-check-circle': item.type === 'success',
+          'pi-info-circle': item.type === 'info'
+        }"></i>
+
+        <div class="activity-content">
+          <div class="activity-row">
+            <strong>{{ item.title }}</strong>
+            <span>{{ item.time }}</span>
+          </div>
+          <p>{{ item.description }}</p>
+        </div>
+      </div>
+    </div>
+  </p-card>
+</div>

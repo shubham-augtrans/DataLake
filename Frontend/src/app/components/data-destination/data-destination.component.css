@@ -1,0 +1,368 @@
+:host {
+  display: block;
+  min-height: 100%;
+  background: var(--app-surface, var(--surface-ground, #f8f9ff));
+  color: var(--app-text, var(--text-color, #0b1c30));
+}
+
+.data-sources-page {
+  padding: 1.5rem;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* ===========================
+   Header
+=========================== */
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.page-header p {
+  margin: 0.4rem 0 0;
+  color: var(--text-color-secondary);
+}
+
+/* ===========================
+   Grid
+=========================== */
+
+.sources-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+/* ===========================
+   Card
+=========================== */
+
+:host ::ng-deep .source-card {
+  height: 100%;
+  border-radius: 14px;
+  border: 1px solid var(--surface-border);
+  overflow: hidden;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  background: var(--surface-card, #ffffff);
+}
+
+:host ::ng-deep .source-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.25rem 1.25rem 0;
+}
+
+.source-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.source-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: var(--primary-color);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.source-meta h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.source-meta p {
+  margin: 0.35rem 0 0;
+  color: var(--text-color-secondary);
+  font-size: 0.85rem;
+  word-break: break-word;
+}
+
+/* ===========================
+   Body
+=========================== */
+
+.card-body {
+  padding: 1.25rem;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row span:first-child {
+  color: var(--text-color-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  flex: 0 0 40%;
+}
+
+.info-row span:last-child {
+  font-size: 0.9rem;
+  text-align: right;
+  word-break: break-word;
+  flex: 1;
+}
+
+/* ===========================
+   Footer Buttons
+=========================== */
+
+:host ::ng-deep .card-actions {
+  display: flex;
+  gap: 0.6rem;
+  padding: 1rem 1.25rem 1.25rem;
+  align-items: stretch;
+}
+
+:host ::ng-deep .card-actions .p-button {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  padding: 0 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+:host ::ng-deep .card-actions .p-button .p-button-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:host ::ng-deep .card-actions .p-button .p-button-icon {
+  font-size: 0.85rem;
+}
+
+:host ::ng-deep .action-tertiary.p-button {
+  flex: 0 0 44px;
+  background: var(--surface-100, #eef2ff);
+  border-color: var(--surface-border);
+  color: var(--primary-color);
+}
+
+:host ::ng-deep .action-tertiary.p-button:hover {
+  background: var(--surface-200, #e0e7ff);
+}
+
+:host ::ng-deep .page-header .p-button {
+  min-width: 160px;
+}
+
+/* ===========================
+   Empty State
+=========================== */
+
+.empty-state {
+  grid-column: 1 / -1;
+  padding: 5rem 2rem;
+  text-align: center;
+  background: #fff;
+  border: 2px dashed var(--surface-border);
+  border-radius: 12px;
+}
+
+.empty-state i {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+  margin: 0.75rem 0;
+}
+
+.empty-state p {
+  color: var(--text-color-secondary);
+  margin-bottom: 1.5rem;
+}
+
+/* ===========================
+   Dialog
+=========================== */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.field label {
+  font-weight: 600;
+  margin-bottom: 0.45rem;
+}
+
+.w-full {
+  width: 100%;
+}
+
+:host ::ng-deep .p-dialog {
+  border-radius: 16px;
+  overflow: hidden;
+  max-height: 90vh;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-header {
+  padding: 1rem 1.25rem;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content {
+  padding: 1rem 1.25rem;
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem 1.25rem;
+  position: sticky;
+  bottom: 0;
+  background: var(--surface-card, #fff);
+  z-index: 2;
+}
+
+:host ::ng-deep .p-dialog .p-inputtext,
+:host ::ng-deep .p-dialog .p-dropdown {
+  width: 100%;
+}
+
+:host ::ng-deep .p-dialog .p-dropdown {
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .p-dialog .p-dropdown-label {
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .p-dropdown-panel {
+  z-index: 9999 !important;
+}
+
+:host ::ng-deep .p-dialog-mask {
+  backdrop-filter: blur(2px);
+}
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media (max-width: 1400px) {
+  .sources-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .sources-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  :host ::ng-deep .page-header .p-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .sources-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .data-sources-page {
+    padding: 1rem;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  .card-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .info-row {
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .info-row span:first-child,
+  .info-row span:last-child {
+    flex: unset;
+    text-align: left;
+  }
+
+  :host ::ng-deep .card-actions {
+    flex-direction: column;
+  }
+
+  :host ::ng-deep .card-actions .p-button {
+    width: 100%;
+    height: 42px;
+  }
+
+  :host ::ng-deep .action-tertiary.p-button {
+    flex: 1;
+  }
+
+  :host ::ng-deep .p-dialog {
+    width: calc(100vw - 2rem) !important;
+    max-width: 100%;
+    margin: 0 1rem;
+  }
+}
+
+.dialog-footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}

@@ -1,0 +1,456 @@
+<div class="data-sources-page">
+  <div class="page-header">
+    <div>
+      <h1>Data Sources</h1>
+      <p>Manage connections to external data systems and platforms.</p>
+    </div>
+
+    <p-button
+      label="New Source"
+      icon="pi pi-plus"
+      (onClick)="openNewSourceDialog()">
+    </p-button>
+  </div>
+
+  <div class="sources-grid">
+    <p-card
+      *ngFor="let source of dataSources"
+      styleClass="source-card">
+
+      <ng-template pTemplate="header">
+        <div class="card-header">
+          <div class="source-meta">
+            <div class="source-avatar">
+              {{ getShortName(source.name) }}
+            </div>
+
+            <div>
+              <h3>{{ source.name }}</h3>
+              <p>{{ getConfigValue(source, 'endpoint') || '-' }}</p>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
+      <div class="card-body">
+        <div class="info-row">
+          <span>Name</span>
+          <span>{{ source.name }}</span>
+        </div>
+
+        <div class="info-row">
+          <span>Endpoint</span>
+          <span>{{ getConfigValue(source, 'endpoint') || '-' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span>Username</span>
+          <span>{{ getConfigValue(source, 'username') || '-' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span>Source Type</span>
+          <span>{{ source.source_type || '-' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span>Bucket</span>
+          <span>{{ getConfigValue(source, 'bucket') || '-' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span>Folder</span>
+          <span>{{ getConfigValue(source, 'folder') || '-' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span>Region</span>
+          <span>{{ getConfigValue(source, 'region') || '-' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span>Password</span>
+          <span>••••••••</span>
+        </div>
+
+        <div class="info-row">
+          <span>Created</span>
+          <span>{{ source.created_at | date:'medium' }}</span>
+        </div>
+      </div>
+
+      <ng-template pTemplate="footer">
+        <div class="card-actions">
+          <p-button
+            label="Check"
+            icon="pi pi-link"
+            severity="help"
+            styleClass="action-btn"
+            (onClick)="checkConnection(source)">
+          </p-button>
+
+          <p-button
+            label="Configure"
+            icon="pi pi-cog"
+            styleClass="action-btn action-primary"
+            (onClick)="configure(source)">
+          </p-button>
+
+          <p-button
+            label="Edit"
+            icon="pi pi-pencil"
+            severity="secondary"
+            styleClass="action-btn"
+            (onClick)="editSource(source)">
+          </p-button>
+
+          <p-button
+            label="Delete"
+            icon="pi pi-trash"
+            severity="danger"
+            styleClass="action-btn action-secondary"
+            (onClick)="confirmDelete(source)">
+          </p-button>
+        </div>
+      </ng-template>
+    </p-card>
+
+    <div
+      *ngIf="!loadingSources && dataSources.length === 0"
+      class="empty-state">
+      <i
+        class="pi pi-database"
+        style="font-size: 3rem;">
+      </i>
+
+      <h3>No Data Sources Found</h3>
+      <p>Create your first data source.</p>
+
+      <p-button
+        label="Add Data Source"
+        icon="pi pi-plus"
+        (onClick)="openNewSourceDialog()">
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  [header]="isEdit ? 'Edit Data Source' : 'Add Data Source'"
+  [(visible)]="displayDialog"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '560px' }"
+  (onHide)="closeDialog()">
+
+  <div class="p-fluid">
+    <div class="field">
+      <label for="name">Name</label>
+      <input
+        id="name"
+        pInputText
+        [(ngModel)]="newSource.name" />
+    </div>
+
+    <div class="field">
+      <label for="endpoint">Endpoint</label>
+      <input
+        id="endpoint"
+        pInputText
+        placeholder="http://localhost:9000"
+        [(ngModel)]="newSource.configuration.endpoint" />
+    </div>
+
+    <div class="field">
+      <label for="username">Username</label>
+      <input
+        id="username"
+        pInputText
+        [(ngModel)]="newSource.configuration.username" />
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <input
+        id="password"
+        type="password"
+        pInputText
+        [(ngModel)]="newSource.configuration.password" />
+    </div>
+
+    <div class="field">
+      <label for="source_type">Source Type</label>
+      <p-dropdown
+        inputId="source_type"
+        [options]="sourceTypes"
+        optionLabel="label"
+        optionValue="value"
+        [(ngModel)]="newSource.source_type"
+        placeholder="Select Source Type"
+        [showClear]="true"
+        [filter]="true"
+        filterBy="label"
+        styleClass="w-full">
+      </p-dropdown>
+    </div>
+
+    <div class="field">
+      <label for="bucket">Default Bucket</label>
+      <input
+        id="bucket"
+        pInputText
+        [(ngModel)]="newSource.configuration.bucket"
+        placeholder="Optional" />
+    </div>
+
+    <div class="field">
+      <label for="folder">Root Folder</label>
+      <input
+        id="folder"
+        pInputText
+        [(ngModel)]="newSource.configuration.folder"
+        placeholder="Optional" />
+    </div>
+
+    <div class="field">
+      <label for="region">Region</label>
+      <input
+        id="region"
+        pInputText
+        [(ngModel)]="newSource.configuration.region"
+        placeholder="Optional" />
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Cancel"
+      icon="pi pi-times"
+      severity="secondary"
+      (onClick)="closeDialog()">
+    </p-button>
+
+    <p-button
+      [label]="savingSource ? 'Saving...' : (isEdit ? 'Update' : 'Save')"
+      [icon]="isEdit ? 'pi pi-save' : 'pi pi-check'"
+      [disabled]="savingSource"
+      (onClick)="saveSource()">
+    </p-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  header="Configure Data Source"
+  [(visible)]="configDialog"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '760px' }"
+  (onHide)="closeConfigDialog()">
+
+  <div class="p-fluid" *ngIf="selectedSource">
+    <div class="field">
+      <label>Data Source</label>
+      <p>{{ selectedSource.name }}</p>
+    </div>
+
+    <div class="field">
+      <label>Endpoint</label>
+      <p>{{ getConfigValue(selectedSource, 'endpoint') || '-' }}</p>
+    </div>
+
+    <div class="field">
+      <label for="config_source_type">Source Type</label>
+      <p-dropdown
+        inputId="config_source_type"
+        [options]="sourceTypes"
+        optionLabel="label"
+        optionValue="value"
+        [(ngModel)]="configModel.source_type"
+        placeholder="Select Source Type"
+        [showClear]="true"
+        [filter]="true"
+        filterBy="label"
+        styleClass="w-full">
+      </p-dropdown>
+    </div>
+
+    <div class="field">
+      <label>Status</label>
+
+      <div style="display: flex; align-items: center; gap: .75rem; flex-wrap: wrap;">
+        <p-tag
+          *ngIf="connectionStatus"
+          [value]="connectionStatus"
+          [severity]="getConnectionSeverity()">
+        </p-tag>
+
+        <p-button
+          label="Test Connection"
+          icon="pi pi-link"
+          [loading]="loadingConnection"
+          (onClick)="checkConnection()">
+        </p-button>
+
+        <p-button
+          label="Load Buckets"
+          icon="pi pi-refresh"
+          severity="secondary"
+          [loading]="loadingBuckets"
+          (onClick)="loadBuckets()">
+        </p-button>
+      </div>
+
+      <small
+        *ngIf="connectionError"
+        style="color: #dc2626; margin-top: .5rem; display: block;">
+        {{ connectionError }}
+      </small>
+    </div>
+
+    <div class="field">
+      <label for="config_bucket">Bucket</label>
+      <p-dropdown
+        inputId="config_bucket"
+        [options]="availableBuckets"
+        [(ngModel)]="selectedBucket"
+        placeholder="Select Bucket"
+        [showClear]="true"
+        [filter]="true"
+        (onChange)="onBucketChange()"
+        styleClass="w-full">
+      </p-dropdown>
+    </div>
+
+    <div class="field">
+      <label for="config_folder">Root Folder</label>
+      <input
+        id="config_folder"
+        pInputText
+        [(ngModel)]="configModel.folder"
+        placeholder="Optional folder path" />
+    </div>
+
+    <div class="field">
+      <label for="config_region">Region</label>
+      <input
+        id="config_region"
+        pInputText
+        [(ngModel)]="configModel.region"
+        placeholder="Optional region" />
+    </div>
+
+    <div class="field">
+      <label>Assets</label>
+
+      <div
+        *ngIf="loadingAssets"
+        style="display: flex; justify-content: center; padding: 1rem 0;">
+        <p-progressSpinner
+          strokeWidth="4"
+          [style]="{ width: '42px', height: '42px' }">
+        </p-progressSpinner>
+      </div>
+
+      <p-table
+        *ngIf="!loadingAssets"
+        [value]="assets"
+        [paginator]="true"
+        [rows]="5"
+        responsiveLayout="scroll">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Size</th>
+            <th>Last Modified</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-file>
+          <tr>
+            <td>{{ file.name }}</td>
+            <td>{{ file.type || '-' }}</td>
+            <td>{{ formatBytes(file.size) }}</td>
+            <td>{{ file.last_modified ? (file.last_modified | date:'medium') : '-' }}</td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="4">
+              {{ selectedBucket ? 'No assets found in this bucket.' : 'Select a bucket to view assets.' }}
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Close"
+      icon="pi pi-times"
+      severity="secondary"
+      (onClick)="closeConfigDialog()">
+    </p-button>
+
+    <p-button
+      label="Save Configuration"
+      icon="pi pi-save"
+      [disabled]="savingConfiguration"
+      (onClick)="saveConfiguration()">
+    </p-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  header="Delete Data Source"
+  [(visible)]="deleteDialog"
+  [modal]="true"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '420px' }">
+
+  <div style="display: flex; align-items: center; gap: 1rem;">
+    <i
+      class="pi pi-exclamation-triangle"
+      style="font-size: 2rem; color: #f59e0b;">
+    </i>
+
+    <div>
+      <h3 style="margin: 0 0 .5rem;">
+        Delete Data Source?
+      </h3>
+
+      <p style="margin: 0; color: var(--text-color-secondary);">
+        Are you sure you want to delete
+        <strong>{{ selectedSource?.name }}</strong>?
+        <br><br>
+        This action cannot be undone.
+      </p>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Cancel"
+      severity="secondary"
+      icon="pi pi-times"
+      (onClick)="closeDeleteDialog()">
+    </p-button>
+
+    <p-button
+      label="Delete"
+      severity="danger"
+      icon="pi pi-trash"
+      [disabled]="deletingSource"
+      (onClick)="deleteSource()">
+    </p-button>
+  </ng-template>
+</p-dialog>

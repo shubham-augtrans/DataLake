@@ -1,0 +1,242 @@
+.dashboard {
+  height: 100%;
+  overflow-y: auto;
+  padding: 0.75rem;
+  box-sizing: border-box;
+  background: var(--surface-ground);
+  color: var(--text-color);
+  font-size: 0.8rem;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.2;
+  color: var(--text-color);
+}
+
+.topbar p {
+  margin: 0.15rem 0 0;
+  font-size: 0.72rem;
+  color: var(--text-color-secondary);
+}
+
+.actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.summary-card,
+.chart-card,
+.usage-card,
+.activity-card {
+  border: 1px solid var(--surface-border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface-card);
+}
+
+.summary-card .p-card-body,
+.chart-card .p-card-body,
+.usage-card .p-card-body,
+.activity-card .p-card-body {
+  padding: 0.6rem;
+}
+
+.summary-card .card-head,
+.section-head,
+.activity-row,
+.usage-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.summary-card .card-head span,
+.section-head span {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-color-secondary);
+}
+
+.card-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-top: 0.25rem;
+  line-height: 1.1;
+  color: var(--text-color);
+}
+
+.card-note {
+  color: var(--text-color-secondary);
+  margin-top: 0.15rem;
+  font-size: 0.68rem;
+}
+
+.main-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.mock-chart {
+  height: 140px;
+  display: flex;
+  align-items: end;
+  gap: 0.3rem;
+  border-bottom: 1px solid var(--surface-border);
+  padding-bottom: 0.5rem;
+}
+
+.bar {
+  flex: 1;
+  background: color-mix(in srgb, var(--primary-color) 16%, transparent);
+  border-radius: 0.2rem 0.2rem 0 0;
+  position: relative;
+  min-width: 0;
+}
+
+.bar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--primary-color);
+}
+
+.h30 { height: 30%; }
+.h40 { height: 40%; }
+.h45 { height: 45%; }
+.h60 { height: 60%; }
+.h75 { height: 75%; }
+.h85 { height: 85%; }
+.h90 { height: 90%; }
+
+.days {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.35rem;
+  color: var(--text-color-secondary);
+  font-size: 0.62rem;
+}
+
+.usage-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.usage-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.usage-item .usage-row span {
+  font-size: 0.68rem;
+}
+
+.activity-card {
+  margin-top: 0.5rem;
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.activity-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-item i {
+  margin-top: 0.15rem;
+  color: var(--primary-color);
+  font-size: 0.8rem;
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-content strong {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.activity-content span {
+  font-size: 0.62rem;
+  color: var(--text-color-secondary);
+}
+
+.activity-content p {
+  margin: 0.15rem 0 0;
+  color: var(--text-color-secondary);
+  font-size: 0.65rem;
+  line-height: 1.3;
+}
+
+@media (max-width: 1200px) {
+  .cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 0.5rem;
+  }
+
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .topbar h1 {
+    font-size: 0.95rem;
+  }
+
+  .mock-chart {
+    height: 120px;
+  }
+}
+
+@media (max-width: 520px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}

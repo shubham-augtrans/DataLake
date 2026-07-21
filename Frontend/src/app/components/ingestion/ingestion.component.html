@@ -1,0 +1,308 @@
+<div class="ingestion-page">
+
+  <!-- Header -->
+  <div class="page-header">
+
+    <div>
+      <h1>Ingestion Pipelines</h1>
+      <p>Manage ingestion pipelines between data sources and destinations.</p>
+    </div>
+
+    <p-button
+      label="New Pipeline"
+      icon="pi pi-plus"
+      (onClick)="openNewPipelineDialog()">
+    </p-button>
+
+  </div>
+
+  <!-- Pipeline Cards -->
+  <div class="sources-grid">
+
+    <p-card
+      *ngFor="let pipeline of ingestionPipelines"
+      styleClass="source-card">
+
+      <!-- Header -->
+      <ng-template pTemplate="header">
+
+        <div class="card-header">
+
+          <div class="source-meta">
+
+            <div class="source-avatar">
+              {{ getShortName(pipeline.name) }}
+            </div>
+
+            <div>
+              <h3>{{ pipeline.name }}</h3>
+              <p>{{ pipeline.source_name }} → {{ pipeline.destination_name }}</p>
+            </div>
+
+          </div>
+
+          <!-- <button
+            pButton
+            type="button"
+            icon="pi pi-ellipsis-v"
+            class="p-button-text p-button-rounded card-menu-btn">
+          </button> -->
+
+        </div>
+
+      </ng-template>
+
+      <!-- Body -->
+      <div class="card-body">
+
+        <div class="info-row">
+          <span>Pipeline</span>
+          <span>{{ pipeline.name }}</span>
+        </div>
+
+        <div class="info-row">
+          <span>Source</span>
+          <span>{{ pipeline.source_name }}</span>
+        </div>
+
+        <div class="info-row">
+          <span>Destination</span>
+          <span>{{ pipeline.destination_name }}</span>
+        </div>
+
+        <div class="info-row">
+          <span>Sync Interval</span>
+          <span>{{ pipeline.sync_interval }} hours</span>
+        </div>
+
+        <div class="info-row">
+          <span>Created</span>
+          <span>{{ pipeline.created_at | date:'medium' }}</span>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+<ng-template pTemplate="footer">
+  <div class="card-actions">
+    <p-button
+      label="Edit"
+      icon="pi pi-pencil"
+      styleClass="action-btn action-primary"
+      (onClick)="editPipeline(pipeline)">
+    </p-button>
+
+    <p-button
+      label="Sync Now"
+      icon="pi pi-sync"
+      severity="info"
+      styleClass="action-btn action-secondary"
+      (onClick)="syncNow(pipeline)">
+    </p-button>
+
+    <p-button
+      label="Delete"
+      icon="pi pi-trash"
+      severity="danger"
+      styleClass="action-btn action-secondary"
+      (onClick)="confirmDelete(pipeline)">
+    </p-button>
+  </div>
+</ng-template>
+
+    </p-card>
+
+    <!-- Empty State -->
+
+    <div
+      *ngIf="ingestionPipelines.length === 0"
+      class="empty-state">
+
+      <i
+        class="pi pi-upload"
+        style="font-size:3rem">
+      </i>
+
+      <h3>No Ingestion Pipelines Found</h3>
+
+      <p>Create your first ingestion pipeline.</p>
+
+      <p-button
+        label="Add Pipeline"
+        icon="pi pi-plus"
+        (onClick)="openNewPipelineDialog()">
+      </p-button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ======================================================
+     Add / Edit Dialog
+======================================================= -->
+
+<p-dialog
+  [header]="isEdit ? 'Edit Ingestion Pipeline' : 'Add Ingestion Pipeline'"
+  [(visible)]="displayDialog"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '550px' }"
+  (onHide)="closeDialog()">
+
+  <div class="p-fluid">
+
+    <!-- Pipeline Name -->
+
+    <div class="field">
+
+      <label for="name">Pipeline Name</label>
+
+      <input
+        id="name"
+        pInputText
+        [(ngModel)]="newPipeline.name"
+        placeholder="Enter pipeline name" />
+
+    </div>
+
+    <!-- Data Source -->
+
+    <div class="field">
+
+      <label>Data Source</label>
+
+      <p-dropdown
+        [options]="dataSources"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="Select Data Source"
+        appendTo="body"
+        [(ngModel)]="newPipeline.source"
+        styleClass="w-full">
+      </p-dropdown>
+
+    </div>
+
+    <!-- Data Destination -->
+
+    <div class="field">
+
+      <label>Data Destination</label>
+
+      <p-dropdown
+        [options]="dataDestinations"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="Select Data Destination"
+        appendTo="body"
+        [(ngModel)]="newPipeline.destination"
+        styleClass="w-full">
+      </p-dropdown>
+
+    </div>
+
+    <!-- Sync Interval -->
+
+    <div class="field">
+
+      <label>Sync Interval (Minutes)</label>
+
+      <p-inputNumber
+        [(ngModel)]="newPipeline.sync_interval"
+        [min]="1"
+        [showButtons]="true"
+        inputId="syncInterval"
+        styleClass="w-full">
+      </p-inputNumber>
+
+    </div>
+
+  </div>
+
+  <ng-template pTemplate="footer">
+
+    <p-button
+      label="Cancel"
+      severity="secondary"
+      icon="pi pi-times"
+      (onClick)="closeDialog()">
+    </p-button>
+
+    <p-button
+      [label]="isEdit ? 'Update' : 'Save'"
+      [icon]="isEdit ? 'pi pi-save' : 'pi pi-check'"
+      (onClick)="savePipeline()">
+    </p-button>
+
+  </ng-template>
+
+</p-dialog>
+
+<!-- ======================================================
+     Delete Dialog
+======================================================= -->
+
+<p-dialog
+  header="Delete Ingestion Pipeline"
+  [(visible)]="deleteDialog"
+  [modal]="true"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '430px' }">
+
+  <div
+    style="display:flex;
+           align-items:center;
+           gap:1rem;">
+
+    <i
+      class="pi pi-exclamation-triangle"
+      style="font-size:2rem;color:#f59e0b;">
+    </i>
+
+    <div>
+
+      <h3 style="margin:0 0 .5rem;">
+        Delete Pipeline?
+      </h3>
+
+      <p style="margin:0;color:var(--text-color-secondary);">
+
+        Are you sure you want to delete
+
+        <strong>{{ selectedPipeline?.name }}</strong>?
+
+        <br><br>
+
+        This action cannot be undone.
+
+      </p>
+
+    </div>
+
+  </div>
+
+  <ng-template pTemplate="footer">
+
+    <p-button
+      label="Cancel"
+      severity="secondary"
+      icon="pi pi-times"
+      (onClick)="closeDeleteDialog()">
+    </p-button>
+
+    <p-button
+      label="Delete"
+      severity="danger"
+      icon="pi pi-trash"
+      (onClick)="deletePipeline()">
+    </p-button>
+
+  </ng-template>
+
+</p-dialog>

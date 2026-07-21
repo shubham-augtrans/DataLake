@@ -1,0 +1,25 @@
+<div class="sidebar">
+  <div class="brand">
+    <div class="brand-icon">AT</div>
+    <div class="brand-text">
+      <div class="brand-title">Augmented</div>
+      <div class="brand-subtitle">Transformations</div>
+    </div>
+  </div>
+
+  <div class="menu">
+<a
+    *ngFor="let item of menuItems"
+    [routerLink]="item.route"
+    routerLinkActive="active"
+    class="menu-item">
+
+    <i [class]="item.icon"></i>
+    <span>{{ item.label }}</span>
+</a>
+  </div>
+
+  <div class="version">
+    v2.4.0-enterprise
+  </div>
+</div>

@@ -1,0 +1,241 @@
+/* Updated CSS with enhanced visual design and PrimeNG icons */
+.login-container {
+  display: flex;
+  height: 100vh;
+  background-color: var(--surface-ground);
+}
+
+.left-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-600) 100%);
+  color: var(--primary-color-text);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.left-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  opacity: 0.3;
+}
+
+.hero-content {
+  text-align: center;
+  z-index: 1;
+  position: relative;
+}
+
+.hero-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color-text);
+  opacity: 0.9;
+}
+
+.platform-title {
+  font-size: 3rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: var(--primary-color-text);
+  margin-bottom: 1rem;
+}
+
+.platform-subtitle {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 400px;
+  line-height: 1.5;
+  margin: 0 auto;
+}
+
+.right-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: var(--surface-0);
+}
+
+.login-card {
+  max-width: 420px;
+  width: 100%;
+  padding: 2.5rem;
+  border: 1px solid var(--surface-border);
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  background-color: var(--surface-card);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-icon {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.login-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+.login-subtitle {
+  color: var(--text-color-secondary);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.field {
+  margin-bottom: 1.5rem;
+}
+
+.field label {
+  color: var(--text-color);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.field-icon {
+  color: var(--primary-color);
+}
+
+.p-inputgroup {
+  width: 100%;
+}
+
+.p-inputgroup-addon {
+  background: var(--primary-50);
+  border-color: var(--primary-200);
+  color: var(--primary-color);
+}
+
+.p-error {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Button container to align the button to the right */
+.button-container {
+  display: flex;
+  justify-content: flex-end; /* Aligns the button to the right */
+  width: 100%; /* Ensures the container spans the full width */
+  margin-top: 1.5rem; /* Matches the mt-4 spacing from your original code */
+  padding: 0; /* Remove any padding that might shift the button */
+}
+
+.login-button {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  width: auto !important; /* Override PrimeNG’s potential full-width styles */
+  display: inline-flex !important; /* Ensure the button respects flexbox alignment */
+  margin-left: auto; /* Additional safeguard to push the button to the right */
+}
+
+
+
+.forgot-password,
+.create-account {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: color 0.2s;
+}
+
+.forgot-password:hover,
+.create-account:hover {
+  color: var(--primary-600);
+  text-decoration: underline;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+  }
+  
+  .left-content {
+    flex: 0 0 auto;
+    min-height: 250px;
+  }
+  
+  .platform-title {
+    font-size: 2rem;
+  }
+  
+  .hero-icon {
+    font-size: 3rem;
+  }
+  
+  .platform-subtitle {
+    font-size: 1rem;
+  }
+  
+  .right-content {
+    flex: 1;
+  }
+  
+  .login-card {
+    max-width: 100%;
+    margin: 1rem;
+    padding: 2rem;
+  }
+  
+  .login-title {
+    font-size: 1.5rem;
+  }
+}
+
+/* Animation for better UX */
+.login-card {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-content {
+  animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

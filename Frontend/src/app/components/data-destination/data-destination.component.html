@@ -1,0 +1,260 @@
+<div class="data-sources-page">
+  <div class="page-header">
+    <div>
+      <h1>Data Destinations</h1>
+      <p>Manage connections to external data systems and platforms.</p>
+    </div>
+
+    <p-button
+      label="New Destination"
+      icon="pi pi-plus"
+      (onClick)="openNewSourceDialog()">
+    </p-button>
+  </div>
+
+  <div class="sources-grid">
+    <p-card
+      *ngFor="let source of dataDestinations"
+      styleClass="source-card">
+
+      <ng-template pTemplate="header">
+        <div class="card-header">
+          <div class="source-meta">
+            <div class="source-avatar">
+              {{ getShortName(source.name) }}
+            </div>
+
+            <div>
+              <h3>{{ source.name }}</h3>
+              <p>{{ source.destination_type || '-' }}</p>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
+      <div class="card-body">
+        <div class="info-row">
+          <span>Name</span>
+          <span>{{ source.name }}</span>
+        </div>
+
+        <div class="info-row">
+          <span>Destination Type</span>
+          <span>{{ source.destination_type || '-' }}</span>
+        </div>
+
+        <div class="info-row" *ngIf="getConfigValue(source, 'host')">
+          <span>Host</span>
+          <span>{{ getConfigValue(source, 'host') }}</span>
+        </div>
+
+        <div class="info-row" *ngIf="getConfigValue(source, 'endpoint')">
+          <span>Endpoint</span>
+          <span>{{ getConfigValue(source, 'endpoint') }}</span>
+        </div>
+
+        <div class="info-row" *ngIf="getConfigValue(source, 'database')">
+          <span>Database</span>
+          <span>{{ getConfigValue(source, 'database') }}</span>
+        </div>
+
+        <div class="info-row" *ngIf="getConfigValue(source, 'bucket')">
+          <span>Bucket</span>
+          <span>{{ getConfigValue(source, 'bucket') }}</span>
+        </div>
+
+        <div class="info-row" *ngIf="getConfigValue(source, 'username')">
+          <span>Username</span>
+          <span>{{ getConfigValue(source, 'username') }}</span>
+        </div>
+
+        <div class="info-row" *ngIf="getConfigValue(source, 'access_key')">
+          <span>Access Key</span>
+          <span>{{ getConfigValue(source, 'access_key') }}</span>
+        </div>
+
+        <div class="info-row">
+          <span>Created</span>
+          <span>{{ source.created_at | date:'medium' }}</span>
+        </div>
+      </div>
+
+      <ng-template pTemplate="footer">
+        <div class="card-actions">
+          <p-button
+            icon="pi pi-external-link"
+            pTooltip="Open Jupyter Notebook"
+            tooltipPosition="top"
+            styleClass="action-btn action-tertiary"
+            [loading]="jupyterLoadingId === source.id"
+            [disabled]="jupyterLoadingId === source.id"
+            (onClick)="openJupyterNotebook(source)">
+          </p-button>
+
+          <p-button
+            label="Edit"
+            icon="pi pi-pencil"
+            styleClass="action-btn action-primary"
+            (onClick)="editSource(source)">
+          </p-button>
+
+          <p-button
+            label="Delete"
+            icon="pi pi-trash"
+            severity="danger"
+            styleClass="action-btn action-secondary"
+            (onClick)="confirmDelete(source)">
+          </p-button>
+        </div>
+      </ng-template>
+    </p-card>
+
+    <div
+      *ngIf="dataDestinations.length === 0"
+      class="empty-state">
+      <i
+        class="pi pi-database"
+        style="font-size: 3rem">
+      </i>
+
+      <h3>No Data Destinations Found</h3>
+      <p>Create your first data destination.</p>
+
+      <p-button
+        label="Add Destination"
+        icon="pi pi-plus"
+        (onClick)="openNewSourceDialog()">
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  [header]="isEdit ? 'Edit Data Destination' : 'Add Data Destination'"
+  [(visible)]="displayDialog"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [baseZIndex]="10000"
+  [style]="{ width: '560px' }"
+  [contentStyle]="{ 'max-height': '70vh', 'overflow-y': 'auto', 'overflow-x': 'hidden' }"
+  (onHide)="closeDialog()">
+
+  <div class="p-fluid">
+    <div class="field">
+      <label for="name">Name</label>
+      <input
+        id="name"
+        type="text"
+        pInputText
+        [(ngModel)]="newDestination.name" />
+    </div>
+
+    <div class="field">
+      <label for="destination_type">Destination Type</label>
+      <p-dropdown
+        inputId="destination_type"
+        [options]="destinationTypes"
+        optionLabel="label"
+        optionValue="value"
+        [(ngModel)]="newDestination.destination_type"
+        (onChange)="onDestinationTypeChange()"
+        placeholder="Select Destination Type"
+        [showClear]="true"
+        [filter]="true"
+        filterBy="label"
+        appendTo="body"
+        styleClass="w-full">
+      </p-dropdown>
+    </div>
+
+    <div class="field">
+      <label for="description">Description</label>
+      <input
+        id="description"
+        type="text"
+        pInputText
+        [(ngModel)]="newDestination.description" />
+    </div>
+
+    <div *ngIf="newDestination.destination_type">
+      <div
+        class="field"
+        *ngFor="let field of visibleConfigFields; trackBy: trackByFieldKey">
+        <label [for]="field.key">{{ field.label }}</label>
+        <input
+          [id]="field.key"
+          [type]="field.type || 'text'"
+          [placeholder]="field.placeholder || ''"
+          pInputText
+          [ngModel]="getNewConfigValue(field.key)"
+          (ngModelChange)="setNewConfigValue(field.key, $event)" />
+      </div>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer-actions">
+      <p-button
+        label="Cancel"
+        icon="pi pi-times"
+        severity="secondary"
+        (onClick)="closeDialog()">
+      </p-button>
+
+      <p-button
+        [label]="isEdit ? 'Update' : 'Save'"
+        [icon]="isEdit ? 'pi pi-save' : 'pi pi-check'"
+        (onClick)="saveSource()">
+      </p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  header="Delete Data Destination"
+  [(visible)]="deleteDialog"
+  [modal]="true"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [baseZIndex]="10000"
+  [style]="{ width: '420px' }">
+
+  <div style="display: flex; align-items: center; gap: 1rem;">
+    <i
+      class="pi pi-exclamation-triangle"
+      style="font-size: 2rem; color: #f59e0b;">
+    </i>
+
+    <div>
+      <h3 style="margin: 0 0 .5rem;">
+        Delete Data Destination?
+      </h3>
+
+      <p style="margin: 0; color: var(--text-color-secondary);">
+        Are you sure you want to delete
+        <strong>{{ selectedDestination?.name }}</strong>?
+        <br><br>
+        This action cannot be undone.
+      </p>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Cancel"
+      severity="secondary"
+      icon="pi pi-times"
+      (onClick)="closeDeleteDialog()">
+    </p-button>
+
+    <p-button
+      label="Delete"
+      severity="danger"
+      icon="pi pi-trash"
+      (onClick)="deleteSource()">
+    </p-button>
+  </ng-template>
+</p-dialog>
