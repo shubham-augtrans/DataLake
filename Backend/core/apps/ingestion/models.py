@@ -11,21 +11,51 @@ class IngestionPipeline(models.Model):
     source = models.ForeignKey(
         DataSource,
         on_delete=models.CASCADE,
-        related_name="pipelines"
+        related_name="pipelines",
     )
 
     destination = models.ForeignKey(
         DataDestination,
         on_delete=models.CASCADE,
-        related_name="pipelines"
+        related_name="pipelines",
     )
 
     sync_interval = models.PositiveSmallIntegerField(
         validators=[
             MinValueValidator(1),
-            MaxValueValidator(24)
+            MaxValueValidator(24),
         ],
-        help_text="Sync interval in hours (1-24)"
+        help_text="Sync interval in hours (1-24)",
+    )
+
+    # NiFi references
+    nifi_process_group_id = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+    )
+
+    nifi_source_processor_id = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+    )
+
+    nifi_destination_processor_id = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+    )
+
+    nifi_status = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+    )
+
+    nifi_last_error = models.TextField(
+        null=True,
+        blank=True,
     )
 
     created_at = models.DateTimeField(auto_now_add=True)

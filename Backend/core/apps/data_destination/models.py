@@ -4,15 +4,15 @@ from django.db import models
 class DataDestination(models.Model):
 
     DESTINATION_TYPES = [
-        ("postgresql", "PostgreSQL"),
-        ("mysql", "MySQL"),
-         ("mongo", "MongoDB"),
-        ("sqlserver", "SQL Server"),
-        ("oracle", "Oracle"),
-        ("snowflake", "Snowflake"),
-        ("delta_lake", "Delta Lake"),
-        ("aws_s3", "AWS S3"),
-        ("azure_blob", "Azure Blob"),
+        # ("postgresql", "PostgreSQL"),
+        # ("mysql", "MySQL"),
+        #  ("mongo", "MongoDB"),
+        # ("sqlserver", "SQL Server"),
+        # ("oracle", "Oracle"),
+        # ("snowflake", "Snowflake"),
+        # ("delta_lake", "Delta Lake"),
+        # ("aws_s3", "AWS S3"),
+        # ("azure_blob", "Azure Blob"),
         ("minio", "MinIO"),
     ]
 

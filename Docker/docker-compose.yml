@@ -71,8 +71,9 @@ services:
       retries: 10
       start_period: 30s
 
+
   nifi:
-    image: apache/nifi:2.0.0-M2
+    image: apache/nifi:1.28.1
     container_name: nifi
     hostname: nifi
     restart: unless-stopped
@@ -86,21 +87,20 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      NIFI_WEB_HTTP_PORT: "8080"
-      NIFI_WEB_HTTP_HOST: "0.0.0.0"
-      NIFI_SENSITIVE_PROPS_KEY: changeme-12-characters-minimum
+      NIFI_WEB_HTTPS_PORT: "8443"
+      NIFI_WEB_HTTPS_HOST: "0.0.0.0"
       NIFI_WEB_PROXY_HOST: "nifi:8443,localhost:8443"
+      NIFI_SENSITIVE_PROPS_KEY: qazplm123456
       NIFI_JVM_HEAP: "1g"
       SINGLE_USER_CREDENTIALS_USERNAME: admin
-      SINGLE_USER_CREDENTIALS_PASSWORD: datalake-admin-password
+      SINGLE_USER_CREDENTIALS_PASSWORD: qazplm123456
       MINIO_ENDPOINT: http://minio:9000
       MINIO_ACCESS_KEY: admin
       MINIO_SECRET_KEY: password
     ports:
       - "8443:8443"
-      - "8088:8080"
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsSk https://nifi:8443/nifi/ >/dev/null || exit 1"]
+      test: ["CMD-SHELL", "curl -fsSk https://localhost:8443/nifi/ >/dev/null || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 10
@@ -159,7 +159,7 @@ services:
       - /opt/spark-apps/mongo_to_minio.py
 
   minio:
-    image: minio/minio:latest
+    image: minio/minio:RELEASE.2024-12-18T13-15-44Z
     container_name: minio
     restart: unless-stopped
     environment:
@@ -179,7 +179,7 @@ services:
       interval: 15s
       timeout: 5s
       retries: 10
-      start_period: 20s
+      start_period: 60s
 
   mc:
     image: minio/mc:latest
@@ -220,7 +220,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 20s
+      start_period: 60s
 
   mongodb:
     image: mongo:8
@@ -240,7 +240,7 @@ services:
       interval: 15s
       timeout: 10s
       retries: 10
-      start_period: 20s
+      start_period: 60s
 
   mongo-express:
     image: mongo-express:latest
@@ -292,7 +292,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 20s
+      start_period: 60s
 
   ranger:
     image: mr3project/ranger:2.4.0
@@ -325,64 +325,65 @@ services:
       retries: 10
       start_period: 120s
 
-  backend:
-    build:
-      context: ./Backend
-      dockerfile: Dockerfile
-    container_name: django-backend
-    restart: unless-stopped
-    networks:
-      - iceberg_net
-    depends_on:
-      postgres:
-        condition: service_healthy
-      mongodb:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-      spark-master:
-        condition: service_healthy
-      spark-worker:
-        condition: service_healthy
-      nifi:
-        condition: service_healthy
-    environment:
-      NIFI_BASE_URL: https://nifi:8443/nifi-api
-      NIFI_USERNAME: admin
-      NIFI_PASSWORD: datalake-admin-password
-      NIFI_INGESTION_PROCESS_GROUP_ID: root
-      DJANGO_INTERNAL_BASE_URL: http://backend:8000
-      TRINO_URL: http://trino:8080
-      TRINO_USER: trino
-      TRINO_CATALOG: lakehouse
-      TRINO_SCHEMA: bronze
-      RANGER_URL: http://ranger:6080
-      RANGER_USERNAME: admin
-      RANGER_PASSWORD: password
-      RANGER_SERVICE: lakehouse
-      SPARK_MASTER_URL: spark://spark-master:7077
-      SPARK_LOCAL_JARS_DIR: /opt/spark-ivy-cache/jars
-      SPARK_IVY_DIR: /opt/spark-ivy-cache
-      INTERNAL_SCHEDULER_TOKEN: dev-internal-scheduler-token
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./Backend/core:/app
-      - ./Apache-Spark/ivy-cache:/opt/spark-ivy-cache:ro
-    command: >
-      sh -c "
-      python manage.py migrate &&
-      python manage.py provision_nifi_flow || true;
-      python manage.py runserver 0.0.0.0:8000
-      "
-  angular-frontend:
-    build:
-      context: ./Frontend
-      dockerfile: Dockerfile
-    container_name: angular-frontend
-    ports:
-      - "4200:4200"
-    restart: unless-stopped
+  # backend:
+  #   build:
+  #     context: ../Backend
+  #     dockerfile: Dockerfile
+  #   container_name: django-backend
+  #   restart: unless-stopped
+  #   networks:
+  #     - iceberg_net
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     mongodb:
+  #       condition: service_healthy
+  #     minio:
+  #       condition: service_healthy
+  #     spark-master:
+  #       condition: service_healthy
+  #     spark-worker:
+  #       condition: service_healthy
+  #     nifi:
+  #       condition: service_healthy
+  #   environment:
+  #     NIFI_BASE_URL: https://nifi:8443/nifi-api
+  #     NIFI_USERNAME: admin
+  #     NIFI_PASSWORD: datalake-admin-password
+  #     NIFI_INGESTION_PROCESS_GROUP_ID: root
+  #     DJANGO_INTERNAL_BASE_URL: http://backend:8000
+  #     TRINO_URL: http://trino:8080
+  #     TRINO_USER: trino
+  #     TRINO_CATALOG: lakehouse
+  #     TRINO_SCHEMA: bronze
+  #     RANGER_URL: http://ranger:6080
+  #     RANGER_USERNAME: admin
+  #     RANGER_PASSWORD: password
+  #     RANGER_SERVICE: lakehouse
+  #     SPARK_MASTER_URL: spark://spark-master:7077
+  #     SPARK_LOCAL_JARS_DIR: /opt/spark-ivy-cache/jars
+  #     SPARK_IVY_DIR: /opt/spark-ivy-cache
+  #     INTERNAL_SCHEDULER_TOKEN: dev-internal-scheduler-token
+  #   ports:
+  #     - "8000:8000"
+  #   volumes:
+  #     - ./Backend/core:/app
+  #     - ./Apache-Spark/ivy-cache:/opt/spark-ivy-cache:ro
+  #   command: >
+  #     sh -c "
+  #     python manage.py migrate &&
+  #     python manage.py provision_nifi_flow || true;
+  #     python manage.py runserver 0.0.0.0:8000
+  #     "
+  # angular-frontend:
+  #   build:
+  #     context: ../Frontend
+  #     dockerfile: Dockerfile
+  #   container_name: angular-frontend
+  #   ports:
+  #     - "4200:4200"
+  #   restart: unless-stopped
+
 volumes:
   postgres_data:
   mongodb_data:

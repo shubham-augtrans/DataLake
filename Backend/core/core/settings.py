@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -152,3 +154,23 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+NIFI_URL = os.getenv(
+    "NIFI_URL",
+    "https://172.16.15.113:8443/nifi-api",
+)
+
+NIFI_USERNAME = os.getenv(
+    "NIFI_USERNAME",
+    "admin",
+)
+
+NIFI_PASSWORD = os.getenv(
+    "NIFI_PASSWORD",
+    "qazplm123456",
+)
+
+NIFI_ROOT_PROCESS_GROUP_ID = os.getenv(
+    "NIFI_ROOT_PROCESS_GROUP_ID",
+    "",
+)
