@@ -1,4 +1,188 @@
 services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    restart: unless-stopped
+    networks:
+      - iceberg_net
+    environment:
+      POSTGRES_USER: shubham
+      POSTGRES_PASSWORD: Shubham@123456
+      POSTGRES_DB: datalake
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-postgres.sh:/docker-entrypoint-initdb.d/init-postgres.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shubham -d datalake"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+  metabase:
+    image: metabase/metabase:latest
+    container_name: metabase
+    restart: unless-stopped
+    networks:
+      - iceberg_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: metabase
+      MB_DB_PORT: "5432"
+      MB_DB_USER: shubham
+      MB_DB_PASS: Shubham@123456
+      MB_DB_HOST: postgres
+    ports:
+      - "3000:3000"
+    volumes:
+      - metabase_data:/metabase.db
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:3000/api/health >/dev/null || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 90s
+
+  kafka:
+    image: apache/kafka:3.9.0
+    container_name: kafka
+    hostname: kafka
+    restart: unless-stopped
+    networks:
+      - iceberg_net
+    environment:
+      KAFKA_NODE_ID: "0"
+      KAFKA_PROCESS_ROLES: controller,broker
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "0@kafka:9093"
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENERS: BROKER://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      KAFKA_ADVERTISED_LISTENERS: BROKER://kafka:9092,EXTERNAL://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,BROKER:SASL_PLAINTEXT,EXTERNAL:SASL_PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: BROKER
+      KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+      KAFKA_LISTENER_NAME_BROKER_PLAIN_SASL_JAAS_CONFIG: >-
+        org.apache.kafka.common.security.plain.PlainLoginModule required
+        username="shubham" password="Shubham@123456"
+        user_shubham="Shubham@123456";
+      KAFKA_LISTENER_NAME_EXTERNAL_PLAIN_SASL_JAAS_CONFIG: >-
+        org.apache.kafka.common.security.plain.PlainLoginModule required
+        username="shubham" password="Shubham@123456"
+        user_shubham="Shubham@123456";
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    ports:
+      - "9094:9094"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/9092' || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    restart: unless-stopped
+    networks:
+      - iceberg_net
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL: SASL_PLAINTEXT
+      KAFKA_CLUSTERS_0_PROPERTIES_SASL_MECHANISM: PLAIN
+      KAFKA_CLUSTERS_0_PROPERTIES_SASL_JAAS_CONFIG: >-
+        org.apache.kafka.common.security.plain.PlainLoginModule required
+        username="shubham" password="Shubham@123456";
+      AUTH_TYPE: LOGIN_FORM
+      SPRING_SECURITY_USER_NAME: shubham
+      SPRING_SECURITY_USER_PASSWORD: Shubham@123456
+    ports:
+      - "8089:8080"
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    networks:
+      - iceberg_net
+    environment:
+      GF_SECURITY_ADMIN_USER: shubham
+      GF_SECURITY_ADMIN_PASSWORD: Shubham@123456
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:3000/api/health >/dev/null || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
+
+  influxdb:
+    image: influxdb:2
+    container_name: influxdb
+    restart: unless-stopped
+    networks:
+      - iceberg_net
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: shubham
+      DOCKER_INFLUXDB_INIT_PASSWORD: Shubham@123456
+      DOCKER_INFLUXDB_INIT_ORG: datalake
+      DOCKER_INFLUXDB_INIT_BUCKET: datalake
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8086/health >/dev/null || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
+
+  nifi:
+    image: apache/nifi:1.28.1
+    container_name: nifi
+    hostname: nifi
+    restart: unless-stopped
+    networks:
+      - iceberg_net
+    depends_on:
+      minio:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      NIFI_WEB_HTTPS_PORT: "8443"
+      NIFI_WEB_HTTPS_HOST: "0.0.0.0"
+      NIFI_WEB_PROXY_HOST: "nifi:8443,localhost:8443"
+      NIFI_SENSITIVE_PROPS_KEY: "Shubham@123456"
+      NIFI_JVM_HEAP: "1g"
+      SINGLE_USER_CREDENTIALS_USERNAME: shubham
+      SINGLE_USER_CREDENTIALS_PASSWORD: "Shubham@123456"
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: shubham
+      MINIO_SECRET_KEY: "Shubham@123456"
+    ports:
+      - "8443:8443"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsSk https://localhost:8443/nifi/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 90s
+
   spark-master:
     image: apache/spark:3.5.6
     container_name: spark-master
@@ -9,15 +193,15 @@ services:
     depends_on:
       minio:
         condition: service_healthy
-      mongodb:
-        condition: service_started
+      iceberg-rest:
+        condition: service_healthy
     environment:
       SPARK_NO_DAEMONIZE: "true"
       SPARK_MASTER_HOST: spark-master
       SPARK_MASTER_PORT: "7077"
       SPARK_MASTER_WEBUI_PORT: "8080"
-      AWS_ACCESS_KEY_ID: admin
-      AWS_SECRET_ACCESS_KEY: password
+      AWS_ACCESS_KEY_ID: shubham
+      AWS_SECRET_ACCESS_KEY: "Shubham@123456"
       AWS_REGION: us-east-1
     command:
       - /opt/spark/bin/spark-class
@@ -53,8 +237,8 @@ services:
       SPARK_WORKER_CORES: "2"
       SPARK_WORKER_MEMORY: "2g"
       SPARK_WORKER_WEBUI_PORT: "8081"
-      AWS_ACCESS_KEY_ID: admin
-      AWS_SECRET_ACCESS_KEY: password
+      AWS_ACCESS_KEY_ID: shubham
+      AWS_SECRET_ACCESS_KEY: "Shubham@123456"
       AWS_REGION: us-east-1
     command:
       - /opt/spark/bin/spark-class
@@ -71,100 +255,110 @@ services:
       retries: 10
       start_period: 30s
 
+  iceberg-rest-init:
+    image: busybox:latest
+    container_name: iceberg-rest-init
+    restart: "no"
+    volumes:
+      - iceberg_rest_data:/tmp/iceberg-rest
+    # The fixture image runs as uid 1000; a fresh named volume is root-owned,
+    # so hand it over once before the real service starts.
+    entrypoint: ["sh", "-c", "chown -R 1000:1000 /tmp/iceberg-rest"]
 
-  nifi:
-    image: apache/nifi:1.28.1
-    container_name: nifi
-    hostname: nifi
+  iceberg-rest:
+    image: apache/iceberg-rest-fixture:1.9.1
+    container_name: iceberg-rest
+    hostname: iceberg-rest
     restart: unless-stopped
     networks:
       - iceberg_net
     depends_on:
       minio:
         condition: service_healthy
-      mongodb:
+      mc:
+        condition: service_completed_successfully
+      iceberg-rest-init:
+        condition: service_completed_successfully
+    environment:
+      AWS_ACCESS_KEY_ID: shubham
+      AWS_SECRET_ACCESS_KEY: "Shubham@123456"
+      AWS_REGION: us-east-1
+      # Persist the fixture's catalog metadata (namespaces/tables) to a file-backed
+      # SQLite DB instead of the default in-memory one, so it survives restarts.
+      CATALOG_CATALOG__IMPL: org.apache.iceberg.jdbc.JdbcCatalog
+      CATALOG_URI: jdbc:sqlite:/tmp/iceberg-rest/catalog.db
+      CATALOG_JDBC_SCHEMA__VERSION: V1
+      # MinIO as the S3-compatible object store backing the catalog's warehouse.
+      CATALOG_WAREHOUSE: s3://warehouse/
+      CATALOG_IO__IMPL: org.apache.iceberg.aws.s3.S3FileIO
+      CATALOG_S3_ENDPOINT: http://minio:9000
+      CATALOG_S3_PATH__STYLE__ACCESS: "true"
+      CATALOG_S3_REGION: us-east-1
+    ports:
+      - "8181:8181"
+    volumes:
+      - iceberg_rest_data:/tmp/iceberg-rest
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8181/v1/config >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  trino:
+    image: trinodb/trino:470
+    container_name: trino
+    hostname: trino
+    restart: unless-stopped
+    networks:
+      - iceberg_net
+    depends_on:
+      minio:
         condition: service_healthy
-      postgres:
+      iceberg-rest:
         condition: service_healthy
     environment:
-      NIFI_WEB_HTTPS_PORT: "8443"
-      NIFI_WEB_HTTPS_HOST: "0.0.0.0"
-      NIFI_WEB_PROXY_HOST: "nifi:8443,localhost:8443"
-      NIFI_SENSITIVE_PROPS_KEY: qazplm123456
-      NIFI_JVM_HEAP: "1g"
-      SINGLE_USER_CREDENTIALS_USERNAME: admin
-      SINGLE_USER_CREDENTIALS_PASSWORD: qazplm123456
-      MINIO_ENDPOINT: http://minio:9000
-      MINIO_ACCESS_KEY: admin
-      MINIO_SECRET_KEY: password
+      AWS_ACCESS_KEY_ID: shubham
+      AWS_SECRET_ACCESS_KEY: "Shubham@123456"
+    volumes:
+      - ./trino/etc:/etc/trino
     ports:
-      - "8443:8443"
+      - "8082:8080"
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsSk https://localhost:8443/nifi/ >/dev/null || exit 1"]
-      interval: 30s
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/v1/info >/dev/null || exit 1"]
+      interval: 20s
       timeout: 10s
       retries: 10
-      start_period: 90s
+      start_period: 40s
 
-  spark-submit:
-    image: apache/spark:3.5.6
-    container_name: spark-submit
-    hostname: spark-submit
-    restart: "no"
+  jupyter:
+    image: jupyter/pyspark-notebook:latest
+    container_name: jupyter
+    restart: unless-stopped
     networks:
       - iceberg_net
     depends_on:
       spark-master:
         condition: service_healthy
-      spark-worker:
-        condition: service_healthy
-      mongodb:
-        condition: service_started
       minio:
         condition: service_healthy
-      mc:
-        condition: service_completed_successfully
-    volumes:
-      - ./apps:/opt/spark-apps
-      - ./ivy-cache:/tmp/ivy
     environment:
-      AWS_ACCESS_KEY_ID: admin
-      AWS_SECRET_ACCESS_KEY: password
+      JUPYTER_TOKEN: "Shubham@123456"
+      AWS_ACCESS_KEY_ID: shubham
+      AWS_SECRET_ACCESS_KEY: "Shubham@123456"
       AWS_REGION: us-east-1
-    entrypoint:
-      - /opt/spark/bin/spark-submit
-    command:
-      - --master
-      - spark://spark-master:7077
-      - --deploy-mode
-      - client
-      - --packages
-      - org.mongodb.spark:mongo-spark-connector_2.12:10.3.0,org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262
-      - --conf
-      - spark.jars.ivy=/tmp/ivy
-      - --conf
-      - spark.hadoop.fs.s3a.endpoint=http://minio:9000
-      - --conf
-      - spark.hadoop.fs.s3a.access.key=admin
-      - --conf
-      - spark.hadoop.fs.s3a.secret.key=password
-      - --conf
-      - spark.hadoop.fs.s3a.path.style.access=true
-      - --conf
-      - spark.hadoop.fs.s3a.connection.ssl.enabled=false
-      - --conf
-      - spark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem
-      - --conf
-      - spark.hadoop.fs.s3a.aws.credentials.provider=org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider
-      - /opt/spark-apps/mongo_to_minio.py
+    ports:
+      - "8888:8888"
+    volumes:
+      - jupyter_data:/home/jovyan/work
 
   minio:
     image: minio/minio:RELEASE.2024-12-18T13-15-44Z
     container_name: minio
     restart: unless-stopped
     environment:
-      MINIO_ROOT_USER: admin
-      MINIO_ROOT_PASSWORD: password
+      MINIO_ROOT_USER: shubham
+      MINIO_ROOT_PASSWORD: "Shubham@123456"
       MINIO_DOMAIN: minio
     networks:
       iceberg_net:
@@ -173,6 +367,8 @@ services:
     ports:
       - "9001:9001"
       - "9000:9000"
+    volumes:
+      - minio_data:/data
     command: ["server", "/data", "--console-address", ":9001"]
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:9000/minio/health/live >/dev/null || exit 1"]
@@ -191,139 +387,14 @@ services:
     networks:
       - iceberg_net
     environment:
-      AWS_ACCESS_KEY_ID: admin
-      AWS_SECRET_ACCESS_KEY: password
+      AWS_ACCESS_KEY_ID: shubham
+      AWS_SECRET_ACCESS_KEY: "Shubham@123456"
       AWS_REGION: us-east-1
     entrypoint: >
       /bin/sh -c "
-      mc alias set minio http://minio:9000 admin password &&
+      mc alias set minio http://minio:9000 shubham 'Shubham@123456' &&
       mc mb --ignore-existing minio/warehouse
       "
-
-  postgres:
-    image: postgres:16
-    container_name: postgres
-    restart: unless-stopped
-    networks:
-      - iceberg_net
-    environment:
-      POSTGRES_USER: lakehouse
-      POSTGRES_PASSWORD: lakehouse
-      POSTGRES_DB: lakehouse
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./lakehouse_dump_utf8.sql:/tmp/lakehouse_dump.sql:ro
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U lakehouse -d lakehouse"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 60s
-
-  mongodb:
-    image: mongo:8
-    container_name: mongodb
-    restart: unless-stopped
-    networks:
-      - iceberg_net
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: mongoadmin
-      MONGO_INITDB_ROOT_PASSWORD: mongoadmin
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
-    healthcheck:
-      test: ["CMD-SHELL", "mongosh --quiet --username mongoadmin --password mongoadmin --authenticationDatabase admin --eval 'db.adminCommand({ ping: 1 }).ok' | grep 1"]
-      interval: 15s
-      timeout: 10s
-      retries: 10
-      start_period: 60s
-
-  mongo-express:
-    image: mongo-express:latest
-    container_name: mongo-express
-    restart: unless-stopped
-    networks:
-      - iceberg_net
-    depends_on:
-      mongodb:
-        condition: service_healthy
-    ports:
-      - "18081:8081"
-    environment:
-      ME_CONFIG_MONGODB_URL: mongodb://mongoadmin:mongoadmin@mongodb:27017/?authSource=admin
-      ME_CONFIG_BASICAUTH: "false"
-
-  trino:
-    image: trinodb/trino:470
-    container_name: trino
-    restart: unless-stopped
-    networks:
-      - iceberg_net
-    depends_on:
-      minio:
-        condition: service_healthy
-    ports:
-      - "8082:8080"
-    volumes:
-      - ./trino/etc:/etc/trino
-    healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/v1/info >/dev/null || exit 1"]
-      interval: 20s
-      timeout: 10s
-      retries: 10
-      start_period: 40s
-
-  ranger-db:
-    image: postgres:16
-    container_name: ranger-db
-    restart: unless-stopped
-    networks:
-      - iceberg_net
-    environment:
-      POSTGRES_USER: rangerdba
-      POSTGRES_PASSWORD: rangerdba
-      POSTGRES_DB: ranger
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U rangerdba -d ranger"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 60s
-
-  ranger:
-    image: mr3project/ranger:2.4.0
-    platform: linux/amd64
-    container_name: ranger
-    restart: unless-stopped
-    hostname: ranger
-    networks:
-      - iceberg_net
-    depends_on:
-      ranger-db:
-        condition: service_healthy
-    environment:
-      RANGER_DB_TYPE: postgres
-      RANGER_DB_HOST: ranger-db
-      RANGER_DB_PORT: "5432"
-      RANGER_DB_NAME: ranger
-      RANGER_DB_USER: rangerdba
-      RANGER_DB_PASSWORD: rangerdba
-      RANGER_ADMIN_PASSWORD: password
-      RANGER_AUTH_DB: "false"
-      RANGER_ADMIN_USER: admin
-    command: ["/opt/mr3-run/ranger/start-ranger.sh"]
-    ports:
-      - "6080:6080"
-    healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:6080 >/dev/null || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 10
-      start_period: 120s
 
   # backend:
   #   build:
@@ -336,8 +407,6 @@ services:
   #   depends_on:
   #     postgres:
   #       condition: service_healthy
-  #     mongodb:
-  #       condition: service_healthy
   #     minio:
   #       condition: service_healthy
   #     spark-master:
@@ -348,18 +417,10 @@ services:
   #       condition: service_healthy
   #   environment:
   #     NIFI_BASE_URL: https://nifi:8443/nifi-api
-  #     NIFI_USERNAME: admin
-  #     NIFI_PASSWORD: datalake-admin-password
+  #     NIFI_USERNAME: shubham
+  #     NIFI_PASSWORD: Shubham@123456
   #     NIFI_INGESTION_PROCESS_GROUP_ID: root
   #     DJANGO_INTERNAL_BASE_URL: http://backend:8000
-  #     TRINO_URL: http://trino:8080
-  #     TRINO_USER: trino
-  #     TRINO_CATALOG: lakehouse
-  #     TRINO_SCHEMA: bronze
-  #     RANGER_URL: http://ranger:6080
-  #     RANGER_USERNAME: admin
-  #     RANGER_PASSWORD: password
-  #     RANGER_SERVICE: lakehouse
   #     SPARK_MASTER_URL: spark://spark-master:7077
   #     SPARK_LOCAL_JARS_DIR: /opt/spark-ivy-cache/jars
   #     SPARK_IVY_DIR: /opt/spark-ivy-cache
@@ -383,10 +444,33 @@ services:
   #   ports:
   #     - "4200:4200"
   #   restart: unless-stopped
+  # nginx:
+  #     build:
+  #       context: ..
+  #       dockerfile: Docker/nginx/Dockerfile
+
+  #     ports:
+  #       - "80:80"
+
+  #     depends_on:
+  #       - backend
+
+  #     volumes:
+  #       - static_volume:/staticfiles
+  #       - media_volume:/media
+
+  #     networks:
+  #       - iceberg_net
 
 volumes:
   postgres_data:
-  mongodb_data:
+  metabase_data:
+  kafka_data:
+  grafana_data:
+  influxdb_data:
+  minio_data:
+  jupyter_data:
+  iceberg_rest_data:
 
 networks:
   iceberg_net:
