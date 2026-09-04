@@ -322,6 +322,7 @@ services:
       AWS_SECRET_ACCESS_KEY: "Shubham@123456"
     volumes:
       - ./trino/etc:/etc/trino
+      - trino_ranger_policycache:/etc/ranger/trino/policycache
     ports:
       - "8082:8080"
     healthcheck:
@@ -330,6 +331,43 @@ services:
       timeout: 10s
       retries: 10
       start_period: 40s
+
+  ollama:
+    image: ollama/ollama:0.33.2
+    container_name: ollama
+    hostname: ollama
+    restart: unless-stopped
+    networks:
+      - iceberg_net
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  ollama-init:
+    image: ollama/ollama:0.33.2
+    container_name: ollama-init
+    restart: "no"
+    networks:
+      - iceberg_net
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    # Pulls the model into the ollama service's shared volume once; a no-op
+    # (fast exit) on subsequent `docker compose up` runs since it's already cached.
+    # 1.5b chosen over 0.5b after live testing: 0.5b frequently produced broken/
+    # semantically wrong SQL (missing GROUP BY, wrong column, invalid aggregates).
+    # 1.5b is meaningfully more reliable while still running fast on CPU-only hosts;
+    # 3b was tested too but is impractically slow here without a GPU.
+    entrypoint: ["ollama", "pull", "qwen2.5:1.5b"]
 
   jupyter:
     image: jupyter/pyspark-notebook:latest
@@ -395,6 +433,60 @@ services:
       mc alias set minio http://minio:9000 shubham 'Shubham@123456' &&
       mc mb --ignore-existing minio/warehouse
       "
+
+  ranger-db:
+    image: apache/ranger-db:2.8.0
+    container_name: ranger-db
+    hostname: ranger-db
+    restart: unless-stopped
+    networks:
+      - iceberg_net
+    environment:
+      # The apache/ranger admin image's setup script hardcodes db_root_user=postgres,
+      # so this superuser must be named exactly "postgres" for it to connect.
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "Shubham@123456"
+      POSTGRES_DB: ranger
+    volumes:
+      - ranger_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ranger"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  ranger:
+    image: apache/ranger:2.8.0
+    container_name: ranger
+    hostname: ranger
+    restart: unless-stopped
+    networks:
+      - iceberg_net
+    depends_on:
+      ranger-db:
+        condition: service_healthy
+    environment:
+      RANGER_VERSION: "2.8.0"
+      RANGER_DB_TYPE: postgres
+      # Read by ranger.sh at first boot: connects to ranger-db as the "postgres"
+      # superuser using this password, then creates the "rangeradmin" app DB user
+      # and the Ranger Admin UI login (both using RANGER_DB_PASSWORD).
+      POSTGRES_PASSWORD: "Shubham@123456"
+      RANGER_DB_USER: rangeradmin
+      RANGER_DB_PASSWORD: "Shubham@123456"
+    volumes:
+      - ranger_admin_data:/var/log/ranger
+    ports:
+      - "6080:6080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:6080/login.jsp >/dev/null || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 20
+      start_period: 180s
+    command:
+      - /home/ranger/scripts/ranger.sh
 
   # backend:
   #   build:
@@ -471,6 +563,10 @@ volumes:
   minio_data:
   jupyter_data:
   iceberg_rest_data:
+  ollama_data:
+  ranger_db_data:
+  ranger_admin_data:
+  trino_ranger_policycache:
 
 networks:
   iceberg_net:

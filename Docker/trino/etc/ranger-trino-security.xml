@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <property>
+    <name>ranger.plugin.trino.service.name</name>
+    <value>dev_trino</value>
+  </property>
+  <property>
+    <name>ranger.plugin.trino.policy.source.impl</name>
+    <value>org.apache.ranger.admin.client.RangerAdminRESTClient</value>
+  </property>
+  <property>
+    <name>ranger.plugin.trino.policy.rest.url</name>
+    <value>http://ranger:6080</value>
+  </property>
+  <property>
+    <name>ranger.plugin.trino.policy.pollIntervalMs</name>
+    <value>30000</value>
+  </property>
+  <property>
+    <name>ranger.plugin.trino.policy.cache.dir</name>
+    <value>/etc/ranger/trino/policycache</value>
+  </property>
+  <property>
+    <name>ranger.plugin.trino.policy.rest.client.connection.timeoutMs</name>
+    <value>120000</value>
+  </property>
+  <property>
+    <name>ranger.plugin.trino.policy.rest.client.read.timeoutMs</name>
+    <value>30000</value>
+  </property>
+</configuration>
