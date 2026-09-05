@@ -1,6 +1,7 @@
 from apps.ingestion.services.job_builder import (
     PostgresToMinioJobBuilder,
-    MongoToMinioJobBuilder
+    MongoToMinioJobBuilder,
+    KafkaToMinioJobBuilder
 )
 
 
@@ -30,6 +31,12 @@ class PipelineService:
             and destination_type == "minio"
         ):
             return self._mongo_to_minio()
+
+        elif (
+            source_type == "kafka"
+            and destination_type == "minio"
+        ):
+            return self._kafka_to_minio()
 
         raise Exception(
             f"Unsupported pipeline: "
@@ -94,4 +101,34 @@ class PipelineService:
             ]
         )
 
-        return result    
+        return result
+
+    def _kafka_to_minio(self):
+
+        builder = KafkaToMinioJobBuilder(
+            self.pipeline
+        )
+
+        result = builder.build()
+
+        self.pipeline.nifi_process_group_id = (
+            result["process_group_id"]
+        )
+
+        self.pipeline.nifi_source_processor_id = (
+            result["source_processor_id"]
+        )
+
+        self.pipeline.nifi_destination_processor_id = (
+            result["destination_processor_id"]
+        )
+
+        self.pipeline.save(
+            update_fields=[
+                "nifi_process_group_id",
+                "nifi_source_processor_id",
+                "nifi_destination_processor_id",
+            ]
+        )
+
+        return result

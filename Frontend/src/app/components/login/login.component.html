@@ -1,34 +1,75 @@
 <div class="login-container">
+
+  <!-- Left: Brand / Hero -->
   <div class="left-content">
-    <div class="hero-content">
-      <i class="pi pi-microchip-ai"></i>
-      <h1 class="platform-title">Welcome to Datalake Platform</h1>
-      <p class="platform-subtitle">Sign in to access your account</p>
+
+    <div class="brand-mark">
+      <i class="pi pi-warehouse brand-icon"></i>
+      <span class="brand-name">AT Datalake</span>
     </div>
+
+    <!-- decorative floating icons -->
+    <i class="pi pi-database floating-icon icon-1"></i>
+    <i class="pi pi-cloud floating-icon icon-2"></i>
+    <i class="pi pi-server floating-icon icon-3"></i>
+    <i class="pi pi-sitemap floating-icon icon-4"></i>
+    <i class="pi pi-sync floating-icon icon-5"></i>
+    <i class="pi pi-box floating-icon icon-6"></i>
+
+    <div class="hero-content">
+      <h1 class="platform-title">
+        Augmented Transformation's <span>Datalake</span>
+      </h1>
+      <p class="platform-subtitle">
+        One platform to connect, ingest, and query all your data —
+        from raw source to lakehouse.
+      </p>
+
+      <div class="feature-grid">
+        <div class="feature-item">
+          <i class="pi pi-database"></i>
+          <span>Unified Data Sources</span>
+        </div>
+        <div class="feature-item">
+          <i class="pi pi-sitemap"></i>
+          <span>Ingestion Pipelines</span>
+        </div>
+        <div class="feature-item">
+          <i class="pi pi-code"></i>
+          <span>SQL Query Editor</span>
+        </div>
+        <div class="feature-item">
+          <i class="pi pi-chart-bar"></i>
+          <span>Dashboards &amp; Insights</span>
+        </div>
+      </div>
+    </div>
+
   </div>
 
+  <!-- Right: Login Card -->
   <div class="right-content">
     <div class="card login-card">
+
       <div class="login-header">
-        <i class="pi pi-user-plus login-icon"></i>
-        <h2 class="login-title">Welcome Back</h2>
-        <p class="login-subtitle">Sign in to your account</p>
+        <div class="login-icon-wrapper">
+          <i class="pi pi-database login-icon"></i>
+        </div>
+        <h2 class="login-title">Welcome back</h2>
+        <p class="login-subtitle">Sign in to Augmented Transformation's Datalake</p>
       </div>
 
-      <form [formGroup]="userForm" (ngSubmit)="onLogin()" class="flex flex-column gap-4">
+      <form [formGroup]="userForm" (ngSubmit)="onLogin()" class="login-form">
 
         <!-- Email -->
         <div class="field">
-          <label for="email" class="block text-900 font-medium mb-2">
+          <label for="email">
             <i class="pi pi-envelope field-icon"></i>
             Email
           </label>
 
-          <div class="p-inputgroup">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-envelope"></i>
-            </span>
-
+          <div class="input-icon-field">
+            <i class="pi pi-envelope input-icon"></i>
             <input
               pInputText
               id="email"
@@ -41,7 +82,7 @@
 
           <small
             *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched"
-            class="p-error block mt-1"
+            class="p-error"
           >
             <i class="pi pi-exclamation-triangle"></i>
 
@@ -57,29 +98,24 @@
 
         <!-- Password -->
         <div class="field">
-          <label for="password" class="block text-900 font-medium mb-2">
+          <label for="password">
             <i class="pi pi-lock field-icon"></i>
             Password
           </label>
 
-          <div class="p-inputgroup">
-            <span class="p-inputgroup-addon">
-              <i class="pi pi-lock"></i>
-            </span>
-
-            <input
-              pInputText
-              id="password"
-              formControlName="password"
-              type="password"
-              class="w-full"
-              placeholder="Enter your password"
-            />
-          </div>
+          <p-password
+            inputId="password"
+            formControlName="password"
+            [toggleMask]="true"
+            [feedback]="false"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            placeholder="Enter your password">
+          </p-password>
 
           <small
             *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched"
-            class="p-error block mt-1"
+            class="p-error"
           >
             <i class="pi pi-exclamation-triangle"></i>
 
@@ -93,18 +129,31 @@
           </small>
         </div>
 
+        <!-- Login error -->
+        <div class="form-error" *ngIf="errorMessage">
+          <i class="pi pi-exclamation-circle"></i>
+          <span>{{ errorMessage }}</span>
+        </div>
+
         <div class="button-container">
           <p-button
             label="Sign In"
             type="submit"
             icon="pi pi-sign-in"
-            styleClass="login-button"
+            styleClass="login-button w-full"
             [disabled]="userForm.invalid"
             [loading]="isLoading">
           </p-button>
         </div>
 
       </form>
+
+      <div class="login-footer">
+        <i class="pi pi-shield"></i>
+        <span>Augmented Transformation &copy; {{ currentYear }}</span>
+      </div>
+
     </div>
   </div>
+
 </div>

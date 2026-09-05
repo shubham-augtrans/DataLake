@@ -6,6 +6,7 @@ class DataSource(models.Model):
     SOURCE_TYPES = [
         ("mongo", "MongoDB"),
         ("postgres", "PostgreSQL"),
+        ("kafka", "Kafka"),
         # ("postgresql", "PostgreSQL"),
         # ("minio", "MinIO"),
         # ("aws_s3", "AWS S3"),

@@ -1,0 +1,118 @@
+<div class="catalog-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>Iceberg Catalog</h1>
+      <p>Datasets and tables written by Spark into the Iceberg REST catalog, backed by MinIO.</p>
+    </div>
+    <p-button icon="pi pi-refresh" label="Refresh" severity="secondary" (onClick)="refresh()"></p-button>
+  </div>
+
+  <!-- Error -->
+  <div class="catalog-error" *ngIf="errorMessage">
+    <i class="pi pi-exclamation-triangle"></i>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-state" *ngIf="loadingNamespaces">
+    <p-progressSpinner styleClass="spinner-sm"></p-progressSpinner>
+    <span>Connecting to the Iceberg REST catalog...</span>
+  </div>
+
+  <!-- Empty state -->
+  <div class="empty-state" *ngIf="!loadingNamespaces && namespaces.length === 0 && !errorMessage">
+    <i class="pi pi-database" style="font-size:3rem"></i>
+    <h3>No namespaces found</h3>
+    <p>Run a Spark job against the Iceberg REST catalog to create your first namespace and table.</p>
+  </div>
+
+  <div class="catalog-layout" *ngIf="!loadingNamespaces && namespaces.length > 0">
+
+    <!-- Namespaces / Tables tree -->
+    <div class="catalog-tree">
+      <div class="tree-section">
+        <h3 class="tree-heading">Namespaces</h3>
+        <div
+          class="tree-item"
+          *ngFor="let ns of namespaces"
+          [class.active]="ns === selectedNamespace"
+          (click)="selectNamespace(ns)">
+          <i class="pi pi-folder"></i>
+          <span>{{ ns }}</span>
+        </div>
+      </div>
+
+      <div class="tree-section" *ngIf="selectedNamespace">
+        <h3 class="tree-heading">Tables in {{ selectedNamespace }}</h3>
+
+        <div class="tree-loading" *ngIf="loadingTables">Loading tables...</div>
+
+        <div class="tree-item table-item"
+          *ngFor="let table of tables"
+          [class.active]="table === selectedTable"
+          (click)="selectTable(table)">
+          <i class="pi pi-table"></i>
+          <span>{{ table }}</span>
+        </div>
+
+        <div class="tree-empty" *ngIf="!loadingTables && tables.length === 0">
+          No tables in this namespace yet.
+        </div>
+      </div>
+    </div>
+
+    <!-- Table detail -->
+    <div class="catalog-detail">
+
+      <div class="detail-loading" *ngIf="loadingDetail">
+        <p-progressSpinner styleClass="spinner-sm"></p-progressSpinner>
+      </div>
+
+      <ng-container *ngIf="!loadingDetail && tableDetail as detail">
+        <div class="detail-header">
+          <h2>{{ detail.namespace }}.{{ detail.table }}</h2>
+          <p class="detail-location">{{ detail.location }}</p>
+        </div>
+
+        <div class="detail-stats">
+          <div class="stat-card">
+            <span class="stat-label">Records</span>
+            <span class="stat-value">{{ detail.total_records || '0' }}</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Data files</span>
+            <span class="stat-value">{{ detail.total_data_files || '0' }}</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Snapshots</span>
+            <span class="stat-value">{{ detail.snapshot_count }}</span>
+          </div>
+        </div>
+
+        <h3 class="section-heading">Schema</h3>
+        <div class="schema-table">
+          <div class="schema-row schema-header">
+            <span>Column</span>
+            <span>Type</span>
+            <span>Required</span>
+          </div>
+          <div class="schema-row" *ngFor="let col of detail.columns">
+            <span class="col-name">{{ col.name }}</span>
+            <span class="col-type">{{ col.type }}</span>
+            <span>
+              <p-tag [value]="col.required ? 'Required' : 'Nullable'" [severity]="col.required ? 'warning' : 'secondary'"></p-tag>
+            </span>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="detail-empty" *ngIf="!loadingDetail && !tableDetail && selectedNamespace && tables.length === 0">
+        Select or create a table to see its schema.
+      </div>
+    </div>
+
+  </div>
+
+</div>

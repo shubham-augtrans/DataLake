@@ -1,145 +1,179 @@
 :host {
   display: block;
   min-height: 100%;
-  background: var(--app-surface, var(--surface-ground, #f8f9ff));
-  color: var(--app-text, var(--text-color, #0b1c30));
+  background-color: #11131c;
+  color: #e1e1ef;
+  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .ingestion-page {
-  padding: 1.5rem;
-  max-width: 1600px;
+  padding: 24px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
 /* ===========================
    Header
 =========================== */
-
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  color: var(--text-color-secondary);
-  margin-bottom: 0.5rem;
+  gap: 8px;
+  font-size: 11px;
+  color: #c3c6d8;
+  margin-bottom: 8px;
 }
 
 .breadcrumb .current {
-  color: var(--primary-color);
+  color: #b4c5ff;
   font-weight: 600;
 }
 
 .separator {
-  color: var(--surface-border);
+  color: #424655;
 }
 
-h1 {
+.page-header h1 {
   margin: 0;
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #e1e1ef;
 }
 
 .page-header p {
-  margin: .4rem 0 0;
-  color: var(--text-color-secondary);
+  margin: 6px 0 0;
+  color: #c3c6d8;
+  font-size: 12px;
+}
+
+:host ::ng-deep .page-header .p-button {
+  background: #b4c5ff;
+  color: #002a78;
+  border: none;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 8px 18px;
+}
+
+:host ::ng-deep .page-header .p-button:hover {
+  background: #dbe1ff;
+  box-shadow: 0 4px 14px rgba(180, 197, 255, 0.3);
 }
 
 /* ===========================
    Grid
 =========================== */
-
 .sources-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
 }
 
 /* ===========================
    Card
 =========================== */
-
 :host ::ng-deep .source-card {
   height: 100%;
   border-radius: 14px;
-  border: 1px solid var(--surface-border);
+  border: 1px solid #424655;
   overflow: hidden;
-  transition: all .25s ease;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, .04);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  background-color: #1d1f29 !important;
+  color: #e1e1ef;
+  display: flex;
+  flex-direction: column;
+}
+
+:host ::ng-deep .source-card .p-card-body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+:host ::ng-deep .source-card .p-card-content {
+  padding: 0;
+  flex: 1;
 }
 
 :host ::ng-deep .source-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, .08);
+  transform: translateY(-3px);
+  border-color: #8d90a1;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 1.25rem 1.25rem 0;
+  padding: 18px 20px 14px;
+  background-color: #191b24;
+  border-bottom: 1px solid #424655;
 }
 
 .source-meta {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 14px;
+  min-width: 0;
 }
 
 .source-avatar {
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
-  background: var(--primary-color);
-  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #b4c5ff 0%, #8ca6ff 100%);
+  color: #002a78;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 13px;
   flex-shrink: 0;
 }
 
 .source-meta h3 {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: 14px;
   font-weight: 600;
+  color: #e1e1ef;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .source-meta p {
-  margin: .35rem 0 0;
-  color: var(--text-color-secondary);
-  font-size: .85rem;
-  word-break: break-word;
-}
-
-.card-menu-btn {
-  width: 2rem;
-  height: 2rem;
+  margin: 3px 0 0;
+  color: #c3c6d8;
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  word-break: break-all;
 }
 
 /* ===========================
    Body
 =========================== */
-
 .card-body {
-  padding: 1.25rem;
+  padding: 16px 20px;
 }
 
 .info-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 1rem;
-  padding: .65rem 0;
-  border-bottom: 1px solid var(--surface-border);
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(66, 70, 85, 0.5);
 }
 
 .info-row:last-child {
@@ -147,157 +181,305 @@ h1 {
 }
 
 .info-row span:first-child {
-  color: var(--text-color-secondary);
-  font-size: .9rem;
+  color: #c3c6d8;
+  font-size: 10px;
   font-weight: 500;
 }
 
 .info-row span:last-child {
-  font-size: .9rem;
+  font-size: 10px;
   text-align: right;
   word-break: break-word;
+  color: #e1e1ef;
+  font-family: 'JetBrains Mono', monospace;
   font-weight: 500;
 }
 
 /* ===========================
    Footer
 =========================== */
-
 :host ::ng-deep .card-actions {
   display: flex;
-  gap: .75rem;
-  padding: 1rem 1.25rem 1.25rem;
+  gap: 8px;
+  padding: 14px 20px 18px;
+  background-color: #191b24;
+  border-top: 1px solid #424655;
+  margin-top: auto;
 }
 
-:host ::ng-deep .action-btn {
+:host ::ng-deep .action-btn.p-button {
   flex: 1;
-}
-
-:host ::ng-deep .action-primary.p-button,
-:host ::ng-deep .action-secondary.p-button {
-  width: 100%;
-}
-
-/* ===========================
-   Header Button
-=========================== */
-
-:host ::ng-deep .page-header .p-button {
-  min-width: 160px;
+  border-radius: 8px;
+  font-size: 9px;
+  padding: 6px 10px;
+  font-weight: 500;
 }
 
 /* ===========================
    Empty State
 =========================== */
-
 .empty-state {
   grid-column: 1 / -1;
-  padding: 5rem 2rem;
+  padding: 4rem 2rem;
   text-align: center;
-  background: #fff;
-  border: 2px dashed var(--surface-border);
-  border-radius: 12px;
+  background: #1d1f29;
+  border: 1px dashed #424655;
+  border-radius: 14px;
 }
 
 .empty-state i {
-  color: var(--primary-color);
+  color: #b4c5ff;
   margin-bottom: 1rem;
 }
 
 .empty-state h3 {
-  margin: .75rem 0;
+  margin: 0.75rem 0;
+  color: #e1e1ef;
 }
 
 .empty-state p {
-  color: var(--text-color-secondary);
+  color: #c3c6d8;
   margin-bottom: 1.5rem;
 }
 
 /* ===========================
    Dialog
 =========================== */
-
 .field {
   display: flex;
   flex-direction: column;
-  margin-bottom: 1.2rem;
+  margin-bottom: 14px;
 }
 
 .field label {
-  font-weight: 600;
-  margin-bottom: .45rem;
+  font-size: 10px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #c3c6d8;
 }
 
 .w-full {
   width: 100%;
 }
 
-:host ::ng-deep .p-dropdown,
-:host ::ng-deep .p-inputnumber,
-:host ::ng-deep .p-inputtext {
-  width: 100%;
-}
-
-:host ::ng-deep .p-dialog .p-dialog-content {
-  padding-top: 1rem;
-}
-
-:host ::ng-deep .p-dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: .75rem;
-}
-
-/* ===========================
-   Responsive
-=========================== */
-
-@media (max-width: 1400px) {
-  .sources-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (max-width: 992px) {
+@media (max-width: 1100px) {
   .sources-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
 
+@media (max-width: 768px) {
+  .sources-grid {
+    grid-template-columns: 1fr;
+  }
   .page-header {
     flex-direction: column;
     align-items: stretch;
   }
+}
 
-  :host ::ng-deep .page-header .p-button {
-    width: 100%;
+/* ===========================
+   Section blocks
+=========================== */
+.section-block {
+  margin-bottom: 36px;
+}
+
+.section-heading {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #e1e1ef;
+}
+
+.section-subheading {
+  margin: 0 0 16px;
+  font-size: 11px;
+  color: #c3c6d8;
+}
+
+/* ===========================
+   Connector grid ("Add data")
+=========================== */
+.connector-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.connector-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 12px;
+  border: 1px solid #424655;
+  background-color: #1d1f29;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.connector-card:hover:not(.disabled) {
+  transform: translateY(-2px);
+  border-color: #8d90a1;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.connector-card.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.connector-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #b4c5ff 0%, #8ca6ff 100%);
+  color: #002a78;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.connector-info {
+  min-width: 0;
+}
+
+.connector-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.connector-info h3 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #e1e1ef;
+}
+
+.connector-info p {
+  margin: 4px 0 0;
+  font-size: 10px;
+  color: #c3c6d8;
+  line-height: 1.4;
+}
+
+@media (max-width: 1100px) {
+  .connector-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 640px) {
-
-  .sources-grid {
+@media (max-width: 768px) {
+  .connector-grid {
     grid-template-columns: 1fr;
   }
+}
 
-  .ingestion-page {
-    padding: 1rem;
-  }
+/* ===========================
+   Wizard (p-stepper)
+=========================== */
+:host ::ng-deep .p-dialog .p-dialog-content {
+  background-color: #11131c;
+}
 
-  h1 {
-    font-size: 1.6rem;
-  }
+:host ::ng-deep .p-stepper .p-stepper-header .p-stepper-title {
+  color: #e1e1ef;
+  font-weight: 600;
+}
 
-  .card-header {
-    flex-direction: column;
-    gap: 1rem;
-  }
+:host ::ng-deep .p-stepper .p-stepper-header .p-stepper-number {
+  background-color: #1d1f29;
+  border: 1px solid #424655;
+  color: #c3c6d8;
+}
 
-  :host ::ng-deep .card-actions {
-    flex-direction: column;
-  }
+:host ::ng-deep .p-stepper .p-highlight .p-stepper-number {
+  background-color: #b4c5ff;
+  color: #002a78;
+  border-color: #b4c5ff;
+}
 
-  :host ::ng-deep .action-btn {
-    width: 100%;
-  }
+:host ::ng-deep .p-stepper .p-stepper-separator {
+  background-color: #424655;
+}
 
+.step-description {
+  margin: 0 0 16px;
+  font-size: 11px;
+  color: #c3c6d8;
+}
+
+.field-row {
+  display: flex;
+  gap: 14px;
+}
+
+.field-row .field {
+  flex: 1;
+}
+
+.mode-toggle {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px 10px;
+  margin-bottom: 18px;
+}
+
+.mode-toggle label {
+  font-size: 11px;
+  color: #e1e1ef;
+}
+
+.step-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.step-actions p-button:only-child {
+  margin-left: auto;
+}
+
+.wizard-summary {
+  margin-top: 10px;
+  padding: 14px 16px;
+  border: 1px solid #424655;
+  border-radius: 10px;
+  background-color: #1d1f29;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 10px;
+  border-bottom: 1px solid rgba(66, 70, 85, 0.5);
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+.summary-row span:first-child {
+  color: #c3c6d8;
+}
+
+.summary-row span:last-child {
+  color: #e1e1ef;
+  font-weight: 500;
+}
+
+.wizard-error {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background-color: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  font-size: 10px;
 }

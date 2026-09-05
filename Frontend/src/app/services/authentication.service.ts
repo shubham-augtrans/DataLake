@@ -100,20 +100,42 @@ tap(response => {
   }
 
   logout(): Observable<any> {
-   
-    
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('user');
-    this.isAuthenticatedSubject.next(false);
-    
-    return this.http.post(`${this.API_URL}/api/logout/`, {}).pipe(
+    const accessToken = localStorage.getItem('access_token');
+    const refreshToken = localStorage.getItem('refresh_token');
+
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+
+    if (accessToken) {
+      headers = headers.set('Authorization', `Bearer ${accessToken}`);
+    }
+
+    const payload = {
+      refresh: refreshToken || ''
+    };
+
+    return this.http.post(`${this.API_URL}/users/logout/`, payload, { headers }).pipe(
+      tap(() => {
+        this.clearLocalStorage();
+      }),
       catchError(error => {
-        console.error('Logout error:', error);
+        console.warn('Backend logout response or token invalid:', error);
+        // Clear local storage regardless of backend response to ensure user is logged out locally
+        this.clearLocalStorage();
         return throwError(() => error);
       })
     );
   }
+
+  clearLocalStorage(): void {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
+    this.isAuthenticatedSubject.next(false);
+  }
+
 
   isLoggedIn(): boolean {
     return this.hasToken();

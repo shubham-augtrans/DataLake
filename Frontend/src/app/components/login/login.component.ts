@@ -45,6 +45,7 @@ export class LoginComponent implements OnDestroy {
 
   isLoading = false;
   errorMessage = '';
+  currentYear = new Date().getFullYear();
 
   userForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],

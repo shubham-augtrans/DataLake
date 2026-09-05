@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/app.component.css"],
+  "sourcesContent": [".layout {\r\n  display: flex;\r\n  height: 100vh;\r\n  overflow: hidden;\r\n}\r\n\r\n.sidebar-pane {\r\n  width: 10%;\r\n  min-width: 160px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.dashboard-pane {\r\n  flex: 1;\r\n  min-width: 0;\r\n  overflow: hidden;\r\n}"],
+  "mappings": ";AAAA,CAAC;AACC,WAAS;AACT,UAAQ;AACR,YAAU;AACZ;AAEA,CAAC;AACC,SAAO;AACP,aAAW;AACX,eAAa;AACf;AAEA,CAAC;AACC,QAAM;AACN,aAAW;AACX,YAAU;AACZ;",
+  "names": []
+}

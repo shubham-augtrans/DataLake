@@ -1,8 +1,30 @@
-@import "primeng/resources/themes/lara-light-blue/theme.css";/* You can add global styles to this file, and also import other style files */
+@import "primeng/resources/primeng.min.css";
+@import "primeng/resources/themes/aura-dark-indigo/theme.css";
 @import "primeicons/primeicons.css";
+
+:root {
+  --app-bg: #11131c;
+  --app-surface: #11131c;
+  --app-surface-container: #1d1f29;
+  --app-surface-container-high: #282933;
+  --app-surface-container-highest: #32343e;
+  --app-surface-container-low: #191b24;
+  --app-surface-container-lowest: #0c0e17;
+  --app-outline: #8d90a1;
+  --app-outline-variant: #424655;
+  --app-primary: #b4c5ff;
+  --app-primary-container: #1b66ff;
+  --app-on-primary: #002a78;
+  --app-on-surface: #e1e1ef;
+  --app-on-surface-variant: #c3c6d8;
+  --app-error: #ffb4ab;
+  --app-error-container: #93000a;
+}
 
 html {
   font-size: 12px;
+  background-color: #11131c;
+  color: #e1e1ef;
 }
 
 html,
@@ -10,15 +32,133 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+  background-color: #11131c;
+  color: #e1e1ef;
+  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
 }
+
 html, body, app-root {
-  font-family: "Poppins", sans-serif;
+  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
+
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #11131c;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #32343e;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #424655;
+}
+
+/* PrimeNG Dark Theme Global Overrides */
+.p-component {
+  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.p-dialog {
+  background-color: #1d1f29 !important;
+  border: 1px solid #424655 !important;
+  border-radius: 14px !important;
+  color: #e1e1ef !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6) !important;
+}
+
+.p-dialog .p-dialog-header {
+  background-color: #191b24 !important;
+  border-bottom: 1px solid #424655 !important;
+  color: #e1e1ef !important;
+  padding: 1.2rem 1.5rem !important;
+}
+
+.p-dialog .p-dialog-content {
+  background-color: #1d1f29 !important;
+  color: #e1e1ef !important;
+  padding: 1.5rem !important;
+}
+
+.p-dialog .p-dialog-footer {
+  background-color: #191b24 !important;
+  border-top: 1px solid #424655 !important;
+  padding: 1rem 1.5rem !important;
+}
+
+.p-inputtext, 
+.p-dropdown,
+.p-inputnumber-input {
+  background-color: #11131c !important;
+  border: 1px solid #424655 !important;
+  color: #e1e1ef !important;
+  border-radius: 8px !important;
+}
+
+.p-inputtext:focus,
+.p-dropdown:focus,
+.p-dropdown.p-focus,
+.p-inputnumber-input:focus {
+  border-color: #b4c5ff !important;
+  box-shadow: 0 0 0 2px rgba(180, 197, 255, 0.2) !important;
+}
+
+.p-dropdown-panel {
+  background-color: #1d1f29 !important;
+  border: 1px solid #424655 !important;
+  color: #e1e1ef !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+}
+
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+  color: #c3c6d8 !important;
+}
+
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item:hover,
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
+  background-color: #282933 !important;
+  color: #e1e1ef !important;
+}
+
+.p-datatable .p-datatable-header,
+.p-datatable .p-datatable-thead > tr > th {
+  background-color: #191b24 !important;
+  color: #c3c6d8 !important;
+  border-color: #424655 !important;
+  font-family: 'Hanken Grotesk', sans-serif !important;
+  font-size: 10px !important;
+}
+
+.p-datatable .p-datatable-tbody > tr {
+  background-color: #1d1f29 !important;
+  color: #e1e1ef !important;
+  border-color: #424655 !important;
+}
+
+.p-datatable .p-datatable-tbody > tr:hover {
+  background-color: #282933 !important;
+}
+
+.p-paginator {
+  background-color: #191b24 !important;
+  border-color: #424655 !important;
+  color: #c3c6d8 !important;
+}
+
 
 @font-face {
   font-family: "Poppins";

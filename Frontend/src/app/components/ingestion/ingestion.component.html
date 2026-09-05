@@ -2,149 +2,429 @@
 
   <!-- Header -->
   <div class="page-header">
-
     <div>
-      <h1>Ingestion Pipelines</h1>
-      <p>Manage ingestion pipelines between data sources and destinations.</p>
+      <h1>Data Ingestion</h1>
+      <p>Connect a data source and land it in your lakehouse.</p>
     </div>
-
-    <p-button
-      label="New Pipeline"
-      icon="pi pi-plus"
-      (onClick)="openNewPipelineDialog()">
-    </p-button>
-
   </div>
 
-  <!-- Pipeline Cards -->
-  <div class="sources-grid">
+  <!-- ======================================================
+       Add data - connector grid
+  ======================================================= -->
 
-    <p-card
-      *ngFor="let pipeline of ingestionPipelines"
-      styleClass="source-card">
+  <div class="section-block">
+    <h2 class="section-heading">Add data</h2>
+    <p class="section-subheading">Get started by connecting to a data source.</p>
 
-      <!-- Header -->
-      <ng-template pTemplate="header">
+    <div class="connector-grid">
+      <div
+        *ngFor="let connector of connectors"
+        class="connector-card"
+        [class.disabled]="!connector.enabled"
+        (click)="openWizard(connector)">
 
-        <div class="card-header">
+        <div class="connector-icon">
+          <span class="material-symbols-outlined">{{ connector.icon }}</span>
+        </div>
 
-          <div class="source-meta">
-
-            <div class="source-avatar">
-              {{ getShortName(pipeline.name) }}
-            </div>
-
-            <div>
-              <h3>{{ pipeline.name }}</h3>
-              <p>{{ pipeline.source_name }} → {{ pipeline.destination_name }}</p>
-            </div>
-
+        <div class="connector-info">
+          <div class="connector-title-row">
+            <h3>{{ connector.label }}</h3>
+            <p-tag *ngIf="!connector.enabled" value="Coming soon" severity="secondary"></p-tag>
           </div>
-
-          <!-- <button
-            pButton
-            type="button"
-            icon="pi pi-ellipsis-v"
-            class="p-button-text p-button-rounded card-menu-btn">
-          </button> -->
-
-        </div>
-
-      </ng-template>
-
-      <!-- Body -->
-      <div class="card-body">
-
-        <div class="info-row">
-          <span>Pipeline</span>
-          <span>{{ pipeline.name }}</span>
-        </div>
-
-        <div class="info-row">
-          <span>Source</span>
-          <span>{{ pipeline.source_name }}</span>
-        </div>
-
-        <div class="info-row">
-          <span>Destination</span>
-          <span>{{ pipeline.destination_name }}</span>
-        </div>
-
-        <div class="info-row">
-          <span>Sync Interval</span>
-          <span>{{ pipeline.sync_interval }} hours</span>
-        </div>
-
-        <div class="info-row">
-          <span>Created</span>
-          <span>{{ pipeline.created_at | date:'medium' }}</span>
+          <p>{{ connector.description }}</p>
         </div>
 
       </div>
-
-      <!-- Footer -->
-<ng-template pTemplate="footer">
-  <div class="card-actions">
-    <p-button
-      label="Edit"
-      icon="pi pi-pencil"
-      styleClass="action-btn action-primary"
-      (onClick)="editPipeline(pipeline)">
-    </p-button>
-
-    <p-button
-      label="Sync Now"
-      icon="pi pi-sync"
-      severity="info"
-      styleClass="action-btn action-secondary"
-      (onClick)="syncNow(pipeline)">
-    </p-button>
-
-    <p-button
-      label="Delete"
-      icon="pi pi-trash"
-      severity="danger"
-      styleClass="action-btn action-secondary"
-      (onClick)="confirmDelete(pipeline)">
-    </p-button>
+    </div>
   </div>
-</ng-template>
 
-    </p-card>
+  <!-- ======================================================
+       Existing pipelines
+  ======================================================= -->
 
-    <!-- Empty State -->
+  <div class="section-block">
+    <h2 class="section-heading">Your ingestion pipelines</h2>
 
-    <div
-      *ngIf="ingestionPipelines.length === 0"
-      class="empty-state">
+    <div class="sources-grid">
 
-      <i
-        class="pi pi-upload"
-        style="font-size:3rem">
-      </i>
+      <p-card
+        *ngFor="let pipeline of ingestionPipelines"
+        styleClass="source-card">
 
-      <h3>No Ingestion Pipelines Found</h3>
+        <ng-template pTemplate="header">
+          <div class="card-header">
+            <div class="source-meta">
+              <div class="source-avatar">
+                {{ getShortName(pipeline.name) }}
+              </div>
+              <div>
+                <h3>{{ pipeline.name }}</h3>
+                <p>{{ pipeline.source_name }} → {{ pipeline.destination_name }}</p>
+              </div>
+            </div>
+          </div>
+        </ng-template>
 
-      <p>Create your first ingestion pipeline.</p>
+        <div class="card-body">
+          <div class="info-row">
+            <span>Pipeline</span>
+            <span>{{ pipeline.name }}</span>
+          </div>
+          <div class="info-row">
+            <span>Source</span>
+            <span>{{ pipeline.source_name }}</span>
+          </div>
+          <div class="info-row">
+            <span>Destination</span>
+            <span>{{ pipeline.destination_name }}</span>
+          </div>
+          <div class="info-row">
+            <span>Sync Interval</span>
+            <span>{{ pipeline.sync_interval }} hours</span>
+          </div>
+          <div class="info-row">
+            <span>Created</span>
+            <span>{{ pipeline.created_at | date:'medium' }}</span>
+          </div>
+        </div>
 
-      <p-button
-        label="Add Pipeline"
-        icon="pi pi-plus"
-        (onClick)="openNewPipelineDialog()">
-      </p-button>
+        <ng-template pTemplate="footer">
+          <div class="card-actions">
+            <p-button
+              label="Edit"
+              icon="pi pi-pencil"
+              styleClass="action-btn action-primary"
+              (onClick)="editPipeline(pipeline)">
+            </p-button>
+
+            <p-button
+              label="Sync Now"
+              icon="pi pi-sync"
+              severity="info"
+              styleClass="action-btn action-secondary"
+              (onClick)="syncNow(pipeline)">
+            </p-button>
+
+            <p-button
+              label="Delete"
+              icon="pi pi-trash"
+              severity="danger"
+              styleClass="action-btn action-secondary"
+              (onClick)="confirmDelete(pipeline)">
+            </p-button>
+          </div>
+        </ng-template>
+
+      </p-card>
+
+      <!-- Empty State -->
+      <div *ngIf="ingestionPipelines.length === 0" class="empty-state">
+        <i class="pi pi-upload" style="font-size:3rem"></i>
+        <h3>No Ingestion Pipelines Found</h3>
+        <p>Pick a connector above to create your first ingestion pipeline.</p>
+      </div>
 
     </div>
-
   </div>
 
 </div>
 
 <!-- ======================================================
-     Add / Edit Dialog
+     Add data wizard
 ======================================================= -->
 
 <p-dialog
-  [header]="isEdit ? 'Edit Ingestion Pipeline' : 'Add Ingestion Pipeline'"
+  [header]="selectedConnector ? 'Ingest data from ' + selectedConnector.label : 'Ingest data'"
+  [(visible)]="wizardVisible"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '900px', maxWidth: '95vw' }"
+  (onHide)="closeWizard()">
+
+  <p-stepper orientation="vertical" [linear]="true" *ngIf="selectedConnector">
+
+    <!-- Step 1: Connection -->
+    <p-stepperPanel header="Connection">
+      <ng-template pTemplate="content" let-nextCallback="nextCallback">
+
+        <p class="step-description">Provide credentials to connect to the source.</p>
+
+        <div class="mode-toggle" *ngIf="existingSourcesForConnector.length > 0">
+          <p-radioButton
+            name="connectionMode"
+            value="existing"
+            [(ngModel)]="connectionMode"
+            inputId="mode-existing">
+          </p-radioButton>
+          <label for="mode-existing">Use an existing connection</label>
+
+          <p-radioButton
+            name="connectionMode"
+            value="new"
+            [(ngModel)]="connectionMode"
+            inputId="mode-new">
+          </p-radioButton>
+          <label for="mode-new">Create a new connection</label>
+        </div>
+
+        <div *ngIf="connectionMode === 'existing'" class="field">
+          <label>Existing {{ selectedConnector.label }} source</label>
+          <p-dropdown
+            [options]="existingSourcesForConnector"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Select a data source"
+            appendTo="body"
+            [(ngModel)]="existingSourceId"
+            styleClass="w-full">
+          </p-dropdown>
+        </div>
+
+        <ng-container *ngIf="connectionMode === 'new'">
+          <div class="field">
+            <label>Connection name</label>
+            <input pInputText [(ngModel)]="sourceForm.name" placeholder="e.g. Orders Postgres" />
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Host</label>
+              <input pInputText [(ngModel)]="sourceForm.host" placeholder="localhost" />
+            </div>
+            <div class="field">
+              <label>Port</label>
+              <input pInputText [(ngModel)]="sourceForm.port" placeholder="Port" />
+            </div>
+          </div>
+
+          <div class="field" *ngIf="selectedConnector.key === 'postgres'">
+            <label>Database</label>
+            <input pInputText [(ngModel)]="sourceForm.database" placeholder="mydb" />
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Username</label>
+              <input pInputText [(ngModel)]="sourceForm.username" placeholder="Username" />
+            </div>
+            <div class="field">
+              <label>Password</label>
+              <p-password [(ngModel)]="sourceForm.password" [feedback]="false" [toggleMask]="true" styleClass="w-full" inputStyleClass="w-full"></p-password>
+            </div>
+          </div>
+
+          <div class="field" *ngIf="selectedConnector.key === 'mongo'">
+            <label>Auth Source</label>
+            <input pInputText [(ngModel)]="sourceForm.authSource" placeholder="admin" />
+          </div>
+        </ng-container>
+
+        <div class="step-actions">
+          <p-button label="Next" icon="pi pi-arrow-right" iconPos="right" [disabled]="!isConnectionStepValid" (onClick)="nextCallback.emit()"></p-button>
+        </div>
+
+      </ng-template>
+    </p-stepperPanel>
+
+    <!-- Step 2: Ingestion setup -->
+    <p-stepperPanel header="Ingestion setup">
+      <ng-template pTemplate="content" let-nextCallback="nextCallback" let-prevCallback="prevCallback">
+
+        <p class="step-description">Name this ingestion pipeline.</p>
+
+        <div class="field">
+          <label>Pipeline name</label>
+          <input pInputText [(ngModel)]="pipelineName" placeholder="e.g. Orders to Lakehouse" />
+        </div>
+
+        <div class="step-actions">
+          <p-button label="Back" icon="pi pi-arrow-left" severity="secondary" (onClick)="prevCallback.emit()"></p-button>
+          <p-button label="Next" icon="pi pi-arrow-right" iconPos="right" [disabled]="!isIngestionSetupStepValid" (onClick)="nextCallback.emit()"></p-button>
+        </div>
+
+      </ng-template>
+    </p-stepperPanel>
+
+    <!-- Step 3: Source -->
+    <p-stepperPanel header="Source">
+      <ng-template pTemplate="content" let-nextCallback="nextCallback" let-prevCallback="prevCallback">
+
+        <ng-container *ngIf="selectedConnector.key === 'postgres'">
+          <p class="step-description">Which table do you want to ingest?</p>
+          <div class="field">
+            <label>Table name</label>
+            <input pInputText [(ngModel)]="sourceDetails.table" placeholder="public.orders" />
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="selectedConnector.key === 'mongo'">
+          <p class="step-description">Which database and collection do you want to ingest?</p>
+          <div class="field-row">
+            <div class="field">
+              <label>Database</label>
+              <input pInputText [(ngModel)]="sourceDetails.database" placeholder="mydb" />
+            </div>
+            <div class="field">
+              <label>Collection</label>
+              <input pInputText [(ngModel)]="sourceDetails.collection" placeholder="orders" />
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="selectedConnector.key === 'kafka'">
+          <p class="step-description">Which topic do you want to consume from?</p>
+          <div class="field">
+            <label>Topic name</label>
+            <input pInputText [(ngModel)]="sourceDetails.topic" placeholder="orders-events" />
+          </div>
+        </ng-container>
+
+        <div class="step-actions">
+          <p-button label="Back" icon="pi pi-arrow-left" severity="secondary" (onClick)="prevCallback.emit()"></p-button>
+          <p-button label="Next" icon="pi pi-arrow-right" iconPos="right" [disabled]="!isSourceStepValid" (onClick)="nextCallback.emit()"></p-button>
+        </div>
+
+      </ng-template>
+    </p-stepperPanel>
+
+    <!-- Step 4: Destination -->
+    <p-stepperPanel header="Destination">
+      <ng-template pTemplate="content" let-nextCallback="nextCallback" let-prevCallback="prevCallback">
+
+        <p class="step-description">Choose where the ingested data should land.</p>
+
+        <div class="mode-toggle" *ngIf="minioDestinations.length > 0">
+          <p-radioButton
+            name="destinationMode"
+            value="existing"
+            [(ngModel)]="destinationMode"
+            inputId="dest-existing">
+          </p-radioButton>
+          <label for="dest-existing">Use an existing MinIO destination</label>
+
+          <p-radioButton
+            name="destinationMode"
+            value="new"
+            [(ngModel)]="destinationMode"
+            inputId="dest-new">
+          </p-radioButton>
+          <label for="dest-new">Create a new destination</label>
+        </div>
+
+        <div *ngIf="destinationMode === 'existing'" class="field">
+          <label>Existing MinIO destination</label>
+          <p-dropdown
+            [options]="minioDestinations"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Select a destination"
+            appendTo="body"
+            [(ngModel)]="existingDestinationId"
+            styleClass="w-full">
+          </p-dropdown>
+        </div>
+
+        <ng-container *ngIf="destinationMode === 'new'">
+          <div class="field">
+            <label>Destination name</label>
+            <input pInputText [(ngModel)]="destinationForm.name" placeholder="e.g. Lakehouse MinIO" />
+          </div>
+
+          <div class="field">
+            <label>Endpoint</label>
+            <input pInputText [(ngModel)]="destinationForm.endpoint" placeholder="http://minio:9000" />
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Access Key</label>
+              <input pInputText [(ngModel)]="destinationForm.access_key" placeholder="Access key" />
+            </div>
+            <div class="field">
+              <label>Secret Key</label>
+              <p-password [(ngModel)]="destinationForm.secret_key" [feedback]="false" [toggleMask]="true" styleClass="w-full" inputStyleClass="w-full"></p-password>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Bucket</label>
+            <input pInputText [(ngModel)]="destinationForm.bucket" placeholder="warehouse" />
+          </div>
+        </ng-container>
+
+        <div class="step-actions">
+          <p-button label="Back" icon="pi pi-arrow-left" severity="secondary" (onClick)="prevCallback.emit()"></p-button>
+          <p-button label="Next" icon="pi pi-arrow-right" iconPos="right" [disabled]="!isDestinationStepValid" (onClick)="nextCallback.emit()"></p-button>
+        </div>
+
+      </ng-template>
+    </p-stepperPanel>
+
+    <!-- Step 5: Schedules and notifications -->
+    <p-stepperPanel header="Schedules and notifications">
+      <ng-template pTemplate="content" let-prevCallback="prevCallback">
+
+        <p class="step-description">How often should this pipeline sync?</p>
+
+        <div class="field">
+          <label>Sync Interval (hours)</label>
+          <p-inputNumber
+            [(ngModel)]="syncInterval"
+            [min]="1"
+            [max]="24"
+            [showButtons]="true"
+            styleClass="w-full">
+          </p-inputNumber>
+        </div>
+
+        <div class="wizard-summary">
+          <div class="summary-row">
+            <span>Pipeline</span>
+            <span>{{ pipelineName || '—' }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Source</span>
+            <span>{{ sourceSummaryLabel }} ({{ selectedConnector.label }})</span>
+          </div>
+          <div class="summary-row">
+            <span>Destination</span>
+            <span>{{ destinationSummaryLabel }} (MinIO)</span>
+          </div>
+          <div class="summary-row">
+            <span>Sync Interval</span>
+            <span>{{ syncInterval }} hours</span>
+          </div>
+        </div>
+
+        <div class="wizard-error" *ngIf="wizardError">{{ wizardError }}</div>
+
+        <div class="step-actions">
+          <p-button label="Back" icon="pi pi-arrow-left" severity="secondary" (onClick)="prevCallback.emit()"></p-button>
+          <p-button
+            label="Create pipeline"
+            icon="pi pi-check"
+            [loading]="wizardSaving"
+            [disabled]="!isScheduleStepValid"
+            (onClick)="createPipeline()">
+          </p-button>
+        </div>
+
+      </ng-template>
+    </p-stepperPanel>
+
+  </p-stepper>
+
+</p-dialog>
+
+<!-- ======================================================
+     Edit Dialog
+======================================================= -->
+
+<p-dialog
+  header="Edit Ingestion Pipeline"
   [(visible)]="displayDialog"
   [modal]="true"
   [closable]="true"
@@ -155,26 +435,13 @@
 
   <div class="p-fluid">
 
-    <!-- Pipeline Name -->
-
     <div class="field">
-
       <label for="name">Pipeline Name</label>
-
-      <input
-        id="name"
-        pInputText
-        [(ngModel)]="newPipeline.name"
-        placeholder="Enter pipeline name" />
-
+      <input id="name" pInputText [(ngModel)]="newPipeline.name" placeholder="Enter pipeline name" />
     </div>
 
-    <!-- Data Source -->
-
     <div class="field">
-
       <label>Data Source</label>
-
       <p-dropdown
         [options]="dataSources"
         optionLabel="name"
@@ -184,15 +451,10 @@
         [(ngModel)]="newPipeline.source"
         styleClass="w-full">
       </p-dropdown>
-
     </div>
 
-    <!-- Data Destination -->
-
     <div class="field">
-
       <label>Data Destination</label>
-
       <p-dropdown
         [options]="dataDestinations"
         optionLabel="name"
@@ -202,42 +464,25 @@
         [(ngModel)]="newPipeline.destination"
         styleClass="w-full">
       </p-dropdown>
-
     </div>
 
-    <!-- Sync Interval -->
-
     <div class="field">
-
-      <label>Sync Interval (Minutes)</label>
-
+      <label>Sync Interval (hours)</label>
       <p-inputNumber
         [(ngModel)]="newPipeline.sync_interval"
         [min]="1"
+        [max]="24"
         [showButtons]="true"
         inputId="syncInterval"
         styleClass="w-full">
       </p-inputNumber>
-
     </div>
 
   </div>
 
   <ng-template pTemplate="footer">
-
-    <p-button
-      label="Cancel"
-      severity="secondary"
-      icon="pi pi-times"
-      (onClick)="closeDialog()">
-    </p-button>
-
-    <p-button
-      [label]="isEdit ? 'Update' : 'Save'"
-      [icon]="isEdit ? 'pi pi-save' : 'pi pi-check'"
-      (onClick)="savePipeline()">
-    </p-button>
-
+    <p-button label="Cancel" severity="secondary" icon="pi pi-times" (onClick)="closeDialog()"></p-button>
+    <p-button label="Update" icon="pi pi-save" (onClick)="savePipeline()"></p-button>
   </ng-template>
 
 </p-dialog>
@@ -255,54 +500,21 @@
   [resizable]="false"
   [style]="{ width: '430px' }">
 
-  <div
-    style="display:flex;
-           align-items:center;
-           gap:1rem;">
-
-    <i
-      class="pi pi-exclamation-triangle"
-      style="font-size:2rem;color:#f59e0b;">
-    </i>
-
+  <div style="display:flex; align-items:center; gap:1rem;">
+    <i class="pi pi-exclamation-triangle" style="font-size:2rem;color:#f59e0b;"></i>
     <div>
-
-      <h3 style="margin:0 0 .5rem;">
-        Delete Pipeline?
-      </h3>
-
+      <h3 style="margin:0 0 .5rem;">Delete Pipeline?</h3>
       <p style="margin:0;color:var(--text-color-secondary);">
-
-        Are you sure you want to delete
-
-        <strong>{{ selectedPipeline?.name }}</strong>?
-
+        Are you sure you want to delete <strong>{{ selectedPipeline?.name }}</strong>?
         <br><br>
-
         This action cannot be undone.
-
       </p>
-
     </div>
-
   </div>
 
   <ng-template pTemplate="footer">
-
-    <p-button
-      label="Cancel"
-      severity="secondary"
-      icon="pi pi-times"
-      (onClick)="closeDeleteDialog()">
-    </p-button>
-
-    <p-button
-      label="Delete"
-      severity="danger"
-      icon="pi pi-trash"
-      (onClick)="deletePipeline()">
-    </p-button>
-
+    <p-button label="Cancel" severity="secondary" icon="pi pi-times" (onClick)="closeDeleteDialog()"></p-button>
+    <p-button label="Delete" severity="danger" icon="pi pi-trash" (onClick)="deletePipeline()"></p-button>
   </ng-template>
 
 </p-dialog>

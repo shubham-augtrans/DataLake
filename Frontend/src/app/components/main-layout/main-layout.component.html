@@ -4,6 +4,30 @@
   </div>
 
   <div class="content-pane">
-    <router-outlet></router-outlet>
+    <header class="top-header">
+      <div class="header-left">
+        <!-- <span class="material-symbols-outlined brand-icon">interests</span> -->
+        <!-- <span class="brand-name">AT Datalake</span> -->
+      </div>
+
+      <div class="header-right">
+        <div class="search-box">
+          <span class="material-symbols-outlined search-icon">search</span>
+          <input class="search-input" placeholder="Search workspace..." type="text"/>
+        </div>
+        <button class="icon-button" type="button">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <div class="divider-v"></div>
+        <div class="user-avatar" (click)="profileMenu.toggle($event)">
+          <span class="material-symbols-outlined">person</span>
+        </div>
+        <p-menu #profileMenu [model]="profileMenuItems" [popup]="true" appendTo="body" [baseZIndex]="10000" styleClass="dark-profile-menu"></p-menu>
+      </div>
+    </header>
+
+    <div class="page-outlet">
+      <router-outlet></router-outlet>
+    </div>
   </div>
 </div>

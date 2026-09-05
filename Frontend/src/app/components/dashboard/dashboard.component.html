@@ -1,100 +1,150 @@
-<div class="dashboard">
-  <div class="topbar">
-    <div>
-      <h1>Executive Overview</h1>
-      <p>System health and AI infrastructure summary for today.</p>
-    </div>
+<div class="dashboard-root">
+  <!-- Main Dashboard Content -->
+  <main class="main-content">
+    <div class="content-wrapper">
 
-    <div class="actions">
-      <button pButton type="button" label="Connect Source" icon="pi pi-link" class="p-button-outlined"></button>
-      <button pButton type="button" label="Build Agent" icon="pi pi-sparkles" class="p-button-outlined"></button>
-      <button pButton type="button" label="View Logs" icon="pi pi-terminal"></button>
-    </div>
-  </div>
-
-  <div class="cards">
-    <p-card *ngFor="let card of cards" class="summary-card">
-      <ng-template pTemplate="title">
-        <div class="card-head">
-          <span>{{ card.title }}</span>
-          <i class="pi" [ngClass]="card.icon"></i>
-        </div>
-      </ng-template>
-
-      <div class="card-value">{{ card.value }}</div>
-      <div class="card-note">{{ card.note }}</div>
-    </p-card>
-  </div>
-
-  <div class="main-grid">
-    <p-card class="chart-card">
-      <ng-template pTemplate="title">
-        <div class="section-head">
-          <span>Ingestion Volume</span>
-          <p-dropdown
-            [options]="rangeOptions"
-           
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Select Range"
-          ></p-dropdown>
-        </div>
-      </ng-template>
-
-      <div class="mock-chart">
-        <div class="bar h30"></div>
-        <div class="bar h45"></div>
-        <div class="bar h60"></div>
-        <div class="bar h40"></div>
-        <div class="bar h75"></div>
-        <div class="bar h90"></div>
-        <div class="bar h85"></div>
-      </div>
-
-      <div class="days">
-        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-      </div>
-    </p-card>
-
-    <p-card class="usage-card">
-      <ng-template pTemplate="title">
-        <span>AI Model Usage</span>
-      </ng-template>
-
-      <div class="usage-item" *ngFor="let model of modelUsage">
-        <div class="usage-row">
-          <span>{{ model.name }}</span>
-          <span>{{ model.value }}%</span>
-        </div>
-        <p-progressBar [value]="model.value"></p-progressBar>
-      </div>
-    </p-card>
-  </div>
-
-  <p-card class="activity-card">
-    <ng-template pTemplate="title">
-      <div class="section-head">
-        <span>System Activity Log</span>
-        <button pButton type="button" label="View All" class="p-button-text"></button>
-      </div>
-    </ng-template>
-
-    <div class="activity-list">
-      <div class="activity-item" *ngFor="let item of activity">
-        <i class="pi" [ngClass]="{
-          'pi-times-circle': item.type === 'error',
-          'pi-check-circle': item.type === 'success',
-          'pi-info-circle': item.type === 'info'
-        }"></i>
-
-        <div class="activity-content">
-          <div class="activity-row">
-            <strong>{{ item.title }}</strong>
-            <span>{{ item.time }}</span>
+      <!-- Hero / Welcome Banner -->
+      <section class="welcome-card">
+        <div class="welcome-info">
+          <h1 class="welcome-title">Welcome back, Data Scientist</h1>
+          <p class="welcome-subtitle">Your workspace is active. 3 clusters are running normally.</p>
+          
+          <div class="welcome-actions">
+            <button class="btn btn-primary" (click)="openNewNotebook()" type="button">
+              <span class="material-symbols-outlined">add</span>
+              <span>New Notebook</span>
+            </button>
+            <button class="btn btn-secondary" (click)="navigateTo('/data-destinations')" type="button">
+              <span class="material-symbols-outlined">terminal</span>
+              <span>New Query</span>
+            </button>
+            <button class="btn btn-secondary" (click)="navigateTo('/ingestion-pipelines')" type="button">
+              <span class="material-symbols-outlined">dashboard</span>
+              <span>Create Dashboard</span>
+            </button>
           </div>
-          <p>{{ item.description }}</p>
         </div>
+        <div class="welcome-glow-fx"></div>
+      </section>
+
+      <!-- KPI Metrics Grid -->
+      <section class="kpi-grid">
+        <!-- Metric 1: Data Sources -->
+        <div class="kpi-card kpi-clickable" (click)="navigateTo('/data-sources')">
+          <div class="kpi-header">
+            <span class="kpi-label">DATA SOURCES</span>
+            <span class="material-symbols-outlined kpi-icon">database</span>
+          </div>
+          <div class="kpi-body">
+            <span class="kpi-value">{{ dataSourcesCount }}</span>
+          </div>
+        </div>
+
+        <!-- Metric 2: Data Destinations -->
+        <div class="kpi-card kpi-clickable" (click)="navigateTo('/data-destinations')">
+          <div class="kpi-header">
+            <span class="kpi-label">DATA DESTINATIONS</span>
+            <span class="material-symbols-outlined kpi-icon">cloud_queue</span>
+          </div>
+          <div class="kpi-body">
+            <span class="kpi-value">{{ dataDestinationsCount }}</span>
+          </div>
+        </div>
+
+        <!-- Metric 3: Running Pipelines -->
+        <div class="kpi-card kpi-clickable" (click)="navigateTo('/ingestion-pipelines')">
+          <div class="kpi-header">
+            <span class="kpi-label">RUNNING PIPELINES</span>
+            <span class="material-symbols-outlined kpi-icon">alt_route</span>
+          </div>
+          <div class="kpi-body">
+            <span class="kpi-value">{{ runningPipelinesCount }}</span>
+            <span class="kpi-badge badge-neutral">of {{ pipelinesCount }} total</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Two Column Layout: Recent Activities & Getting Started -->
+      <div class="dashboard-columns">
+        
+        <!-- Left: Recent Activities -->
+        <section class="activities-card">
+          <div class="activities-header">
+            <h2 class="section-title">Recent Activities</h2>
+            <button class="view-all-btn" type="button">
+              <span>View All</span>
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+          </div>
+
+          <div class="activities-list">
+            <div class="activity-row" *ngFor="let item of activities">
+              <div class="activity-avatar" [ngClass]="'avatar-' + item.type">
+                <span class="material-symbols-outlined">{{ item.icon }}</span>
+              </div>
+              <div class="activity-details">
+                <div class="activity-top">
+                  <span class="activity-title">{{ item.title }}</span>
+                  <span class="activity-time">{{ item.time }}</span>
+                </div>
+                <p class="activity-desc" [class.desc-error]="item.type === 'error'">
+                  {{ item.description }}
+                </p>
+                <div class="activity-tags">
+                  <span class="tag-mono">{{ item.tag }}</span>
+                  <span class="status-pill" [ngClass]="'status-' + item.type">{{ item.statusText }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Right: Getting Started & Feature Banner -->
+        <section class="side-column">
+          <!-- Getting Started -->
+          <div class="guide-card">
+            <h3 class="guide-title">
+              <span class="material-symbols-outlined guide-icon">school</span>
+              <span>Getting Started</span>
+            </h3>
+
+            <div class="guide-links">
+              <a (click)="navigateTo('/data-sources')" class="guide-item" role="button">
+                <div class="guide-item-top">
+                  <span class="guide-item-title">Connect Data Sources</span>
+                  <span class="material-symbols-outlined guide-item-arrow">arrow_forward</span>
+                </div>
+                <p class="guide-item-desc">Learn how to link S3, GCS, or external DBs.</p>
+              </a>
+
+              <a (click)="navigateTo('/data-destinations')" class="guide-item" role="button">
+                <div class="guide-item-top">
+                  <span class="guide-item-title">Write First Query</span>
+                  <span class="material-symbols-outlined guide-item-arrow">arrow_forward</span>
+                </div>
+                <p class="guide-item-desc">Explore syntax and cluster execution basics.</p>
+              </a>
+            </div>
+          </div>
+
+          <!-- Feature Banner -->
+          <div class="feature-banner">
+            <div class="feature-bg"></div>
+            <div class="feature-overlay"></div>
+            <div class="feature-content">
+              <span class="feature-badge">New Feature</span>
+              <h4 class="feature-title">Auto-ML Integration</h4>
+              <p class="feature-desc">Train models directly from your SQL results without moving data.</p>
+              <button class="feature-action-btn" type="button" (click)="navigateTo('/ingestion-pipelines')">
+                <span>Try it now</span>
+                <span class="material-symbols-outlined">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
       </div>
+
     </div>
-  </p-card>
-</div>
+  </main>
+</div>

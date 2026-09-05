@@ -27,7 +27,11 @@ SECRET_KEY = 'django-insecure-=wwjaefvd%arg_0qufn^ws^-)*oz6o!z!p+lqtkpm1@idl4sr3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "datalake.augtrans.com",
+    "localhost",
+    "127.0.0.1",
+]
 
 
 # Application definition
@@ -40,10 +44,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "corsheaders",
+    "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
     "apps.users",
     "apps.data_sources",
     "apps.data_destination",
     "apps.ingestion",
+    "apps.query",
+    "apps.catalog",
+    "apps.playground",
 ]
 
 MIDDLEWARE = [
@@ -155,6 +164,12 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://datalake.augtrans.com",
+    "https://datalake.augtrans.com",
+    "http://localhost:4200"
+]
+
 NIFI_URL = os.getenv(
     "NIFI_URL",
     "https://172.16.15.113:8443/nifi-api",
@@ -162,15 +177,34 @@ NIFI_URL = os.getenv(
 
 NIFI_USERNAME = os.getenv(
     "NIFI_USERNAME",
-    "admin",
+    "shubham",
 )
 
 NIFI_PASSWORD = os.getenv(
     "NIFI_PASSWORD",
-    "qazplm123456",
+    "Shubham@123456",
 )
 
 NIFI_ROOT_PROCESS_GROUP_ID = os.getenv(
     "NIFI_ROOT_PROCESS_GROUP_ID",
     "",
 )
+
+ICEBERG_REST_URL = os.getenv(
+    "ICEBERG_REST_URL",
+    "http://localhost:8181",
+)
+
+OLLAMA_URL = os.getenv(
+    "OLLAMA_URL",
+    "http://localhost:11434",
+)
+
+OLLAMA_MODEL = os.getenv(
+    "OLLAMA_MODEL",
+    "qwen2.5:1.5b",
+)
+
+TRINO_HOST = os.getenv("TRINO_HOST", "localhost")
+TRINO_PORT = int(os.getenv("TRINO_PORT", "8082"))
+TRINO_CATALOG = os.getenv("TRINO_CATALOG", "iceberg")

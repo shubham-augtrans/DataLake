@@ -1,5 +1,5 @@
 export const Constant={
-    ACCESS_TOKEN:'ACCESS_TOKEN',
-    REFRESH_TOKEN:'REFRESH_TOKEN',
+    ACCESS_TOKEN:'access_token',
+    REFRESH_TOKEN:'refresh_token',
     USERNAME:'username'
 }
