@@ -1,0 +1,88 @@
+{
+  "startIndex": 0,
+  "pageSize": 0,
+  "totalCount": 2,
+  "resultSize": 2,
+  "queryTimeMS": 1788765159681,
+  "serviceName": "dev_trino",
+  "policies": [
+    {
+      "isEnabled": true,
+      "service": "dev_trino",
+      "name": "allow-admin-impersonate",
+      "policyType": 0,
+      "policyPriority": 0,
+      "description": "Allow the 'admin' principal to run Trino queries as itself",
+      "isAuditEnabled": true,
+      "resources": {
+        "trinouser": {
+          "values": ["*"],
+          "isExcludes": false,
+          "isRecursive": false
+        }
+      },
+      "policyItems": [
+        {
+          "accesses": [
+            { "type": "impersonate", "isAllowed": true }
+          ],
+          "users": ["admin"],
+          "delegateAdmin": false
+        }
+      ],
+      "serviceType": "trino",
+      "isDenyAllElse": false
+    },
+    {
+      "isEnabled": true,
+      "service": "dev_trino",
+      "name": "allow-admin-iceberg-catalog",
+      "policyType": 0,
+      "policyPriority": 0,
+      "description": "Allow the 'admin' principal select/show/use/execute on the iceberg catalog",
+      "isAuditEnabled": true,
+      "resources": {
+        "catalog": {
+          "values": ["iceberg"],
+          "isExcludes": false,
+          "isRecursive": false
+        },
+        "schema": {
+          "values": ["*"],
+          "isExcludes": false,
+          "isRecursive": false
+        },
+        "table": {
+          "values": ["*"],
+          "isExcludes": false,
+          "isRecursive": false
+        },
+        "column": {
+          "values": ["*"],
+          "isExcludes": false,
+          "isRecursive": false
+        }
+      },
+      "policyItems": [
+        {
+          "accesses": [
+            { "type": "select", "isAllowed": true },
+            { "type": "show", "isAllowed": true },
+            { "type": "use", "isAllowed": true },
+            { "type": "execute", "isAllowed": true }
+          ],
+          "users": ["admin"],
+          "delegateAdmin": false
+        }
+      ],
+      "serviceType": "trino",
+      "isDenyAllElse": false
+    }
+  ],
+  "metaDataInfo": {
+    "Host name": "ranger",
+    "Exported by": "admin",
+    "Export time": "Sep 07, 2026 7:12:19 AM",
+    "Ranger apache version": "2.8.0"
+  }
+}
