@@ -28,6 +28,13 @@ class IngestionPipeline(models.Model):
         help_text="Sync interval in hours (1-24)",
     )
 
+    # Table name, topic name, or collection name to ingest - meaning depends on
+    # source.source_type, same pattern as DataSource.source_type/configuration.
+    source_object = models.CharField(
+        max_length=255,
+        blank=True,
+    )
+
     # NiFi references
     nifi_process_group_id = models.CharField(
         max_length=100,

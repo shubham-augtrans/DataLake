@@ -95,29 +95,9 @@ class NiFiClient:
         )    
     def get_processor(self, processor_id):
         return self.get(
-            f"/nifi-api/processors/{processor_id}"
-        )    
+            f"/processors/{processor_id}"
+        )
 
-    # def update_controller_service(
-    #     self,
-    #     service_id,
-    #     revision_version,
-    #     properties,
-    # ):
-    #     payload = {
-    #         "revision": {
-    #             "version": revision_version,
-    #         },
-    #         "component": {
-    #             "id": service_id,
-    #             "properties": properties,
-    #         },
-    #     }
-
-    #     return self.put(
-    #         f"/nifi-api/controller-services/{service_id}",
-    #         payload,
-    #     )    
     def post(self, path, data=None, **kwargs):
         response = self.session.post(
             self._url(path),
@@ -281,6 +261,11 @@ class NiFiClient:
         revision_version,
         properties,
     ):
+        """
+        NOTE: processor properties live under component.config.properties in
+        NiFi's REST API (confirmed against a live 1.28.1 instance) - NOT
+        component.properties directly, unlike controller services below.
+        """
 
         payload = {
             "revision": {
@@ -288,13 +273,76 @@ class NiFiClient:
             },
             "component": {
                 "id": processor_id,
-                "properties": properties,
+                "config": {
+                    "properties": properties,
+                },
             },
         }
 
         return self.put(
             f"/processors/{processor_id}",
             payload,
+        )
+
+    def set_processor_auto_terminated_relationships(
+        self,
+        processor_id,
+        revision_version,
+        relationships,
+    ):
+        payload = {
+            "revision": {
+                "version": revision_version,
+            },
+            "component": {
+                "id": processor_id,
+                "config": {
+                    "autoTerminatedRelationships": relationships,
+                },
+            },
+        }
+
+        return self.put(
+            f"/processors/{processor_id}",
+            payload,
+        )
+
+    # --------------------------------------------------
+    # RUN STATUS (start/stop processors, enable/disable services)
+    # --------------------------------------------------
+
+    def update_processor_run_status(self, processor_id, revision_version, state):
+        """
+        state: "RUNNING" or "STOPPED".
+        """
+        payload = {
+            "revision": {"version": revision_version},
+            "state": state,
+        }
+
+        return self.put(
+            f"/processors/{processor_id}/run-status",
+            payload,
+        )
+
+    def update_controller_service_run_status(self, service_id, revision_version, state):
+        """
+        state: "ENABLED" or "DISABLED". A processor referencing a controller
+        service can't start until that service is ENABLED.
+        """
+        payload = {
+            "revision": {"version": revision_version},
+            "state": state,
+        }
+
+        return self.put(
+            f"/controller-services/{service_id}/run-status",
+            payload,
+        )
+
+    def get_process_group_status(self, process_group_id):
+        return self.get(
+            f"/flow/process-groups/{process_group_id}/status"
         )
 
     # --------------------------------------------------

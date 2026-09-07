@@ -457,10 +457,17 @@ export class IngestionComponent implements OnInit {
       next: (sourceId) => {
         this.resolveDestination().subscribe({
           next: (destinationId) => {
+            const sourceObject = this.selectedConnector?.key === 'postgres'
+              ? this.sourceDetails.table.trim()
+              : this.selectedConnector?.key === 'kafka'
+                ? this.sourceDetails.topic.trim()
+                : this.sourceDetails.collection.trim();
+
             const payload = {
               name: this.pipelineName.trim(),
               source: sourceId,
               destination: destinationId,
+              source_object: sourceObject,
               sync_interval: this.syncInterval
             };
 

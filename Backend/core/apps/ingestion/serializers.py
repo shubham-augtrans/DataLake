@@ -20,6 +20,7 @@ class IngestionPipelineSerializer(serializers.ModelSerializer):
             "source_name",
             "destination",
             "destination_name",
+            "source_object",
             "sync_interval",
             "created_at",
             "updated_at",

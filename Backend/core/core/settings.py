@@ -183,7 +183,12 @@ CSRF_TRUSTED_ORIGINS = [
 
 NIFI_URL = os.getenv(
     "NIFI_URL",
-    "https://172.16.15.113:8443/nifi-api",
+    "https://localhost:8443/nifi-api",
+)
+
+NIFI_JDBC_DRIVER_PATH = os.getenv(
+    "NIFI_JDBC_DRIVER_PATH",
+    "/opt/nifi/nifi-current/drivers/postgresql.jar",
 )
 
 NIFI_USERNAME = os.getenv(
@@ -204,6 +209,34 @@ NIFI_ROOT_PROCESS_GROUP_ID = os.getenv(
 ICEBERG_REST_URL = os.getenv(
     "ICEBERG_REST_URL",
     "http://localhost:8181",
+)
+
+# Used by the ingestion Spark job, which runs *inside* the spark-master
+# container via `docker exec` - needs Docker-internal hostnames, unlike
+# ICEBERG_REST_URL above which Django (on the host) talks to directly.
+SPARK_ICEBERG_REST_URL = os.getenv(
+    "SPARK_ICEBERG_REST_URL",
+    "http://iceberg-rest:8181",
+)
+
+SPARK_MINIO_ENDPOINT = os.getenv(
+    "SPARK_MINIO_ENDPOINT",
+    "http://minio:9000",
+)
+
+# Host paths bind-mounted into the throwaway spark-submit container - see
+# spark_runner.py. BASE_DIR is Backend/core, so its grandparent is the repo
+# root containing Docker/.
+_REPO_ROOT = BASE_DIR.parent.parent
+
+SPARK_APPS_HOST_PATH = os.getenv(
+    "SPARK_APPS_HOST_PATH",
+    str(_REPO_ROOT / "Docker" / "apps"),
+)
+
+SPARK_IVY_CACHE_HOST_PATH = os.getenv(
+    "SPARK_IVY_CACHE_HOST_PATH",
+    str(_REPO_ROOT / "Docker" / "ivy-cache"),
 )
 
 OLLAMA_URL = os.getenv(

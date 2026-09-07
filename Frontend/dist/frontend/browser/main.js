@@ -85347,7 +85347,8 @@ var SidebarComponent = class _SidebarComponent {
     { label: "Runs", icon: "playlist_play", route: "/runs" },
     { label: "Data Ingestion", icon: "dataset", route: "/ingestion-pipelines" },
     { label: "Visual Data Prep", icon: "dataset_linked", route: "/data-sources" },
-    { label: "Iceberg Catalog", icon: "inventory_2", route: "/iceberg-catalog" }
+    { label: "Iceberg Catalog", icon: "inventory_2", route: "/iceberg-catalog" },
+    { label: "Data Flow", icon: "schema", route: "/data-flow" }
   ];
   toolsItems = [
     { label: "NiFi", icon: "alt_route", route: "", external: true, url: environment.nifiUrl },
@@ -85449,7 +85450,7 @@ var SidebarComponent = class _SidebarComponent {
       \u0275\u0275advance(4);
       \u0275\u0275property("ngForOf", ctx.aiMlItems);
     }
-  }, dependencies: [CommonModule, NgForOf, NgIf, ButtonModule, AvatarModule, RouterLink, RouterLinkActive], styles: ['\n\n.sidebar-container[_ngcontent-%COMP%] {\n  height: 100vh;\n  width: 10%;\n  min-width: 180px;\n  max-width: 230px;\n  background-color: #111927;\n  border-right: 1px solid #1f293d;\n  display: flex;\n  flex-direction: column;\n  position: relative;\n  -webkit-user-select: none;\n  user-select: none;\n  font-family:\n    -apple-system,\n    BlinkMacSystemFont,\n    "Segoe UI",\n    Roboto,\n    Helvetica,\n    Arial,\n    sans-serif;\n  color: #c3cad7;\n  overflow: hidden;\n  transition:\n    width 0.2s ease,\n    min-width 0.2s ease,\n    max-width 0.2s ease;\n}\n.sidebar-container.collapsed[_ngcontent-%COMP%] {\n  width: 60px;\n  min-width: 60px;\n  max-width: 60px;\n}\n.sidebar-container.collapsed[_ngcontent-%COMP%]   .nav-label[_ngcontent-%COMP%], \n.sidebar-container.collapsed[_ngcontent-%COMP%]   .group-heading[_ngcontent-%COMP%], \n.sidebar-container.collapsed[_ngcontent-%COMP%]   .edition-tag[_ngcontent-%COMP%] {\n  display: none;\n}\n.sidebar-container.collapsed[_ngcontent-%COMP%]   .nav-link[_ngcontent-%COMP%] {\n  justify-content: center;\n  gap: 0;\n  padding: 8px;\n}\n.sidebar-container.collapsed[_ngcontent-%COMP%]   .brand-wrapper[_ngcontent-%COMP%] {\n  justify-content: center;\n  padding: 14px 0 10px;\n}\n.sidebar-container.collapsed[_ngcontent-%COMP%]   .new-btn-container[_ngcontent-%COMP%] {\n  padding: 8px 8px 12px;\n}\n.sidebar-container.collapsed[_ngcontent-%COMP%]   .new-button[_ngcontent-%COMP%] {\n  justify-content: center;\n  gap: 0;\n  padding: 7px;\n}\n.brand-wrapper[_ngcontent-%COMP%] {\n  padding: 14px 16px 10px;\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n.sidebar-toggle-btn[_ngcontent-%COMP%] {\n  color: #8b99af;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.icon-toggle[_ngcontent-%COMP%] {\n  font-size: 17px;\n}\n.brand-info[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n}\n.brand-logo-title[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n}\n.databricks-icon[_ngcontent-%COMP%] {\n  font-size: 17px;\n  color: #ff3621;\n}\n.brand-name[_ngcontent-%COMP%] {\n  font-size: 14px;\n  font-weight: 700;\n  color: #ffffff;\n  letter-spacing: -0.02em;\n}\n.edition-tag[_ngcontent-%COMP%] {\n  font-size: 9px;\n  color: #7b889d;\n  margin-top: -2px;\n  margin-left: 28px;\n}\n.new-btn-container[_ngcontent-%COMP%] {\n  padding: 8px 12px 12px;\n  position: relative;\n}\n.new-button[_ngcontent-%COMP%] {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 7px 14px;\n  border-radius: 6px;\n  background-color: #242436;\n  border: 1px solid #38384f;\n  color: #ffffff;\n  font-size: 11px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.15s ease;\n}\n.new-button[_ngcontent-%COMP%]:hover {\n  background-color: #2e2e42;\n  border-color: #4b4b66;\n}\n.plus-icon[_ngcontent-%COMP%] {\n  color: #ff3621;\n  font-size: 14px;\n  font-weight: 600;\n  line-height: 1;\n}\n.new-backdrop[_ngcontent-%COMP%] {\n  position: fixed;\n  inset: 0;\n  z-index: 99;\n}\n.new-dropdown[_ngcontent-%COMP%] {\n  position: absolute;\n  left: calc(100% + 4px);\n  top: 0;\n  width: 220px;\n  background-color: #1a2030;\n  border: 1px solid #2e3a50;\n  border-radius: 8px;\n  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);\n  z-index: 200;\n  overflow: hidden;\n  animation: _ngcontent-%COMP%_fadeIn 0.15s ease-out;\n}\n@keyframes _ngcontent-%COMP%_fadeIn {\n  from {\n    opacity: 0;\n    transform: translateX(-6px);\n  }\n  to {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n.new-dropdown-top[_ngcontent-%COMP%] {\n  padding: 6px 6px 4px;\n}\n.new-dropdown-divider[_ngcontent-%COMP%] {\n  height: 1px;\n  background-color: #2a3448;\n  margin: 2px 0;\n}\n.new-dropdown-section[_ngcontent-%COMP%] {\n  padding: 4px 6px;\n}\n.new-item[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  padding: 6px 10px;\n  border-radius: 5px;\n  color: #c8d3e1;\n  text-decoration: none;\n  font-size: 11px;\n  font-weight: 400;\n  transition: background-color 0.12s ease;\n  cursor: pointer;\n  white-space: nowrap;\n}\n.new-item[_ngcontent-%COMP%]:hover {\n  background-color: #253046;\n  color: #e8f0ff;\n}\n.upload-item[_ngcontent-%COMP%] {\n  color: #70b4ff;\n}\n.upload-item[_ngcontent-%COMP%]:hover {\n  background-color: rgba(112, 180, 255, 0.1);\n  color: #90cbff;\n}\n.ni-icon[_ngcontent-%COMP%] {\n  font-size: 14px;\n  color: #8292a8;\n  flex-shrink: 0;\n}\n.new-item[_ngcontent-%COMP%]:hover   .ni-icon[_ngcontent-%COMP%] {\n  color: #b4c5ff;\n}\n.upload-item[_ngcontent-%COMP%]   .ni-icon[_ngcontent-%COMP%] {\n  color: #70b4ff;\n}\n.new-dropdown-more-row[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  padding: 8px 16px;\n  color: #c8d3e1;\n  font-size: 11px;\n  font-weight: 500;\n  cursor: pointer;\n  position: relative;\n  transition: background-color 0.12s ease;\n}\n.new-dropdown-more-row[_ngcontent-%COMP%]:hover {\n  background-color: #253046;\n  color: #e8f0ff;\n}\n.more-label[_ngcontent-%COMP%] {\n  flex: 1;\n}\n.more-arrow[_ngcontent-%COMP%] {\n  font-size: 14px;\n  color: #8292a8;\n}\n.more-submenu[_ngcontent-%COMP%] {\n  position: absolute;\n  left: calc(100% + 2px);\n  bottom: 0;\n  width: 190px;\n  background-color: #1a2030;\n  border: 1px solid #2e3a50;\n  border-radius: 8px;\n  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.65);\n  z-index: 300;\n  padding: 6px;\n  animation: _ngcontent-%COMP%_fadeIn 0.12s ease-out;\n}\n.nav-scroll-container[_ngcontent-%COMP%] {\n  flex: 1;\n  overflow-y: auto;\n  padding: 0 8px 24px;\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n}\n.nav-scroll-container[_ngcontent-%COMP%]::-webkit-scrollbar {\n  width: 4px;\n}\n.nav-scroll-container[_ngcontent-%COMP%]::-webkit-scrollbar-track {\n  background: transparent;\n}\n.nav-scroll-container[_ngcontent-%COMP%]::-webkit-scrollbar-thumb {\n  background: #253046;\n  border-radius: 4px;\n}\n.nav-scroll-container[_ngcontent-%COMP%]::-webkit-scrollbar-thumb:hover {\n  background: #364460;\n}\n.nav-group[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 2px;\n}\n.group-heading[_ngcontent-%COMP%] {\n  font-size: 9px;\n  font-weight: 600;\n  color: #6c7c93;\n  padding: 6px 12px 2px;\n  letter-spacing: 0.02em;\n}\n.nav-link[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  padding: 6px 10px;\n  border-radius: 6px;\n  color: #a3b0c2;\n  text-decoration: none;\n  font-size: 11px;\n  font-weight: 400;\n  gap: 12px;\n  transition: all 0.15s ease;\n}\n.nav-link[_ngcontent-%COMP%]:hover {\n  background-color: #192335;\n  color: #e1e7f0;\n}\n.nav-link.active[_ngcontent-%COMP%] {\n  background-color: #1b2f4a;\n  color: #4da3ff;\n  font-weight: 500;\n}\n.nav-link.active[_ngcontent-%COMP%]   .nav-icon[_ngcontent-%COMP%] {\n  color: #4da3ff;\n}\n.nav-icon[_ngcontent-%COMP%] {\n  font-size: 15px;\n  color: #8292a8;\n  flex-shrink: 0;\n}\n.nav-label[_ngcontent-%COMP%] {\n  font-size: 11px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n/*# sourceMappingURL=sidebar.component.css.map */'] });
+  }, dependencies: [CommonModule, NgForOf, NgIf, ButtonModule, AvatarModule, RouterLink, RouterLinkActive], styles: ['\n\n.sidebar-container[_ngcontent-%COMP%] {\n  height: 100vh;\n  width: 10%;\n  min-width: 180px;\n  max-width: 230px;\n  background-color: #111927;\n  border-right: 1px solid #1f293d;\n  display: flex;\n  flex-direction: column;\n  position: relative;\n  -webkit-user-select: none;\n  user-select: none;\n  font-family:\n    -apple-system,\n    BlinkMacSystemFont,\n    "Segoe UI",\n    Roboto,\n    Helvetica,\n    Arial,\n    sans-serif;\n  color: #c3cad7;\n  overflow: visible;\n  transition:\n    width 0.2s ease,\n    min-width 0.2s ease,\n    max-width 0.2s ease;\n}\n.sidebar-container.collapsed[_ngcontent-%COMP%] {\n  width: 60px;\n  min-width: 60px;\n  max-width: 60px;\n}\n.sidebar-container.collapsed[_ngcontent-%COMP%]   .nav-label[_ngcontent-%COMP%], \n.sidebar-container.collapsed[_ngcontent-%COMP%]   .group-heading[_ngcontent-%COMP%], \n.sidebar-container.collapsed[_ngcontent-%COMP%]   .edition-tag[_ngcontent-%COMP%] {\n  display: none;\n}\n.sidebar-container.collapsed[_ngcontent-%COMP%]   .nav-link[_ngcontent-%COMP%] {\n  justify-content: center;\n  gap: 0;\n  padding: 8px;\n}\n.sidebar-container.collapsed[_ngcontent-%COMP%]   .brand-wrapper[_ngcontent-%COMP%] {\n  justify-content: center;\n  padding: 14px 0 10px;\n}\n.sidebar-container.collapsed[_ngcontent-%COMP%]   .new-btn-container[_ngcontent-%COMP%] {\n  padding: 8px 8px 12px;\n}\n.sidebar-container.collapsed[_ngcontent-%COMP%]   .new-button[_ngcontent-%COMP%] {\n  justify-content: center;\n  gap: 0;\n  padding: 7px;\n}\n.brand-wrapper[_ngcontent-%COMP%] {\n  padding: 14px 16px 10px;\n  display: flex;\n  align-items: center;\n  gap: 12px;\n}\n.sidebar-toggle-btn[_ngcontent-%COMP%] {\n  color: #8b99af;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.icon-toggle[_ngcontent-%COMP%] {\n  font-size: 17px;\n}\n.brand-info[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n}\n.brand-logo-title[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n}\n.databricks-icon[_ngcontent-%COMP%] {\n  font-size: 17px;\n  color: #ff3621;\n}\n.brand-name[_ngcontent-%COMP%] {\n  font-size: 14px;\n  font-weight: 700;\n  color: #ffffff;\n  letter-spacing: -0.02em;\n}\n.edition-tag[_ngcontent-%COMP%] {\n  font-size: 9px;\n  color: #7b889d;\n  margin-top: -2px;\n  margin-left: 28px;\n}\n.new-btn-container[_ngcontent-%COMP%] {\n  padding: 8px 12px 12px;\n  position: relative;\n}\n.new-button[_ngcontent-%COMP%] {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 7px 14px;\n  border-radius: 6px;\n  background-color: #242436;\n  border: 1px solid #38384f;\n  color: #ffffff;\n  font-size: 11px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.15s ease;\n}\n.new-button[_ngcontent-%COMP%]:hover {\n  background-color: #2e2e42;\n  border-color: #4b4b66;\n}\n.plus-icon[_ngcontent-%COMP%] {\n  color: #ff3621;\n  font-size: 14px;\n  font-weight: 600;\n  line-height: 1;\n}\n.new-backdrop[_ngcontent-%COMP%] {\n  position: fixed;\n  inset: 0;\n  z-index: 99;\n}\n.new-dropdown[_ngcontent-%COMP%] {\n  position: absolute;\n  left: calc(100% + 4px);\n  top: 0;\n  width: 220px;\n  background-color: #1a2030;\n  border: 1px solid #2e3a50;\n  border-radius: 8px;\n  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);\n  z-index: 200;\n  overflow: hidden;\n  animation: _ngcontent-%COMP%_fadeIn 0.15s ease-out;\n}\n@keyframes _ngcontent-%COMP%_fadeIn {\n  from {\n    opacity: 0;\n    transform: translateX(-6px);\n  }\n  to {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n.new-dropdown-top[_ngcontent-%COMP%] {\n  padding: 6px 6px 4px;\n}\n.new-dropdown-divider[_ngcontent-%COMP%] {\n  height: 1px;\n  background-color: #2a3448;\n  margin: 2px 0;\n}\n.new-dropdown-section[_ngcontent-%COMP%] {\n  padding: 4px 6px;\n}\n.new-item[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  padding: 6px 10px;\n  border-radius: 5px;\n  color: #c8d3e1;\n  text-decoration: none;\n  font-size: 11px;\n  font-weight: 400;\n  transition: background-color 0.12s ease;\n  cursor: pointer;\n  white-space: nowrap;\n}\n.new-item[_ngcontent-%COMP%]:hover {\n  background-color: #253046;\n  color: #e8f0ff;\n}\n.upload-item[_ngcontent-%COMP%] {\n  color: #70b4ff;\n}\n.upload-item[_ngcontent-%COMP%]:hover {\n  background-color: rgba(112, 180, 255, 0.1);\n  color: #90cbff;\n}\n.ni-icon[_ngcontent-%COMP%] {\n  font-size: 14px;\n  color: #8292a8;\n  flex-shrink: 0;\n}\n.new-item[_ngcontent-%COMP%]:hover   .ni-icon[_ngcontent-%COMP%] {\n  color: #b4c5ff;\n}\n.upload-item[_ngcontent-%COMP%]   .ni-icon[_ngcontent-%COMP%] {\n  color: #70b4ff;\n}\n.new-dropdown-more-row[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  padding: 8px 16px;\n  color: #c8d3e1;\n  font-size: 11px;\n  font-weight: 500;\n  cursor: pointer;\n  position: relative;\n  transition: background-color 0.12s ease;\n}\n.new-dropdown-more-row[_ngcontent-%COMP%]:hover {\n  background-color: #253046;\n  color: #e8f0ff;\n}\n.more-label[_ngcontent-%COMP%] {\n  flex: 1;\n}\n.more-arrow[_ngcontent-%COMP%] {\n  font-size: 14px;\n  color: #8292a8;\n}\n.more-submenu[_ngcontent-%COMP%] {\n  position: absolute;\n  left: calc(100% + 2px);\n  bottom: 0;\n  width: 190px;\n  background-color: #1a2030;\n  border: 1px solid #2e3a50;\n  border-radius: 8px;\n  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.65);\n  z-index: 300;\n  padding: 6px;\n  animation: _ngcontent-%COMP%_fadeIn 0.12s ease-out;\n}\n.nav-scroll-container[_ngcontent-%COMP%] {\n  flex: 1;\n  overflow-y: auto;\n  padding: 0 8px 24px;\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n}\n.nav-scroll-container[_ngcontent-%COMP%]::-webkit-scrollbar {\n  width: 4px;\n}\n.nav-scroll-container[_ngcontent-%COMP%]::-webkit-scrollbar-track {\n  background: transparent;\n}\n.nav-scroll-container[_ngcontent-%COMP%]::-webkit-scrollbar-thumb {\n  background: #253046;\n  border-radius: 4px;\n}\n.nav-scroll-container[_ngcontent-%COMP%]::-webkit-scrollbar-thumb:hover {\n  background: #364460;\n}\n.nav-group[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 2px;\n}\n.group-heading[_ngcontent-%COMP%] {\n  font-size: 9px;\n  font-weight: 600;\n  color: #6c7c93;\n  padding: 6px 12px 2px;\n  letter-spacing: 0.02em;\n}\n.nav-link[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  padding: 6px 10px;\n  border-radius: 6px;\n  color: #a3b0c2;\n  text-decoration: none;\n  font-size: 11px;\n  font-weight: 400;\n  gap: 12px;\n  transition: all 0.15s ease;\n}\n.nav-link[_ngcontent-%COMP%]:hover {\n  background-color: #192335;\n  color: #e1e7f0;\n}\n.nav-link.active[_ngcontent-%COMP%] {\n  background-color: #1b2f4a;\n  color: #4da3ff;\n  font-weight: 500;\n}\n.nav-link.active[_ngcontent-%COMP%]   .nav-icon[_ngcontent-%COMP%] {\n  color: #4da3ff;\n}\n.nav-icon[_ngcontent-%COMP%] {\n  font-size: 15px;\n  color: #8292a8;\n  flex-shrink: 0;\n}\n.nav-label[_ngcontent-%COMP%] {\n  font-size: 11px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n/*# sourceMappingURL=sidebar.component.css.map */'] });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(SidebarComponent, { className: "SidebarComponent", filePath: "app\\components\\sidebar\\sidebar.component.ts", lineNumber: 28 });
@@ -88327,10 +88328,12 @@ var IngestionComponent = class _IngestionComponent {
       next: (sourceId) => {
         this.resolveDestination().subscribe({
           next: (destinationId) => {
+            const sourceObject = this.selectedConnector?.key === "postgres" ? this.sourceDetails.table.trim() : this.selectedConnector?.key === "kafka" ? this.sourceDetails.topic.trim() : this.sourceDetails.collection.trim();
             const payload = {
               name: this.pipelineName.trim(),
               source: sourceId,
               destination: destinationId,
+              source_object: sourceObject,
               sync_interval: this.syncInterval
             };
             this.configService.post("/ingestion-pipelines/", payload).subscribe({
@@ -90527,6 +90530,453 @@ var PlaygroundComponent = class _PlaygroundComponent {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(PlaygroundComponent, { className: "PlaygroundComponent", filePath: "app\\components\\playground\\playground.component.ts", lineNumber: 53 });
 })();
 
+// src/app/components/flow-chart/flow-chart.component.ts
+function FlowChartComponent__svg_path_9_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275element(0, "path", 31);
+  }
+  if (rf & 2) {
+    const c_r1 = ctx.$implicit;
+    \u0275\u0275attribute("d", c_r1.d);
+  }
+}
+function FlowChartComponent__svg_path_10_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275element(0, "path", 32);
+  }
+  if (rf & 2) {
+    const c_r2 = ctx.$implicit;
+    \u0275\u0275attribute("d", c_r2.d);
+  }
+}
+function FlowChartComponent__svg_circle_12_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275elementStart(0, "circle", 33);
+    \u0275\u0275element(1, "animateMotion", 34);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const c_r3 = ctx.$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275attribute("path", c_r3.d)("dur", c_r3.dotDuration + "s")("begin", c_r3.dotDelay + "s");
+  }
+}
+function FlowChartComponent__svg_circle_13_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275elementStart(0, "circle", 35);
+    \u0275\u0275element(1, "animateMotion", 34);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const c_r4 = ctx.$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275attribute("path", c_r4.d)("dur", c_r4.dotDuration + "s")("begin", c_r4.dotDelay + "s");
+  }
+}
+function FlowChartComponent__svg_g_14_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275elementStart(0, "g", 36);
+    \u0275\u0275element(1, "rect", 37)(2, "circle", 38);
+    \u0275\u0275elementStart(3, "foreignObject", 39);
+    \u0275\u0275namespaceHTML();
+    \u0275\u0275elementStart(4, "span", 40);
+    \u0275\u0275text(5);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275elementStart(6, "foreignObject", 41);
+    \u0275\u0275namespaceHTML();
+    \u0275\u0275elementStart(7, "div", 42)(8, "div", 43);
+    \u0275\u0275text(9);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(10, "div", 44);
+    \u0275\u0275text(11);
+    \u0275\u0275elementEnd()()()();
+  }
+  if (rf & 2) {
+    const node_r5 = ctx.$implicit;
+    const i_r6 = ctx.index;
+    \u0275\u0275classMap("accent-" + node_r5.accent);
+    \u0275\u0275styleProp("--pulse-delay", i_r6 * 0.35, "s");
+    \u0275\u0275advance();
+    \u0275\u0275attribute("x", node_r5.x - node_r5.w / 2)("y", node_r5.y - node_r5.h / 2)("width", node_r5.w)("height", node_r5.h);
+    \u0275\u0275advance();
+    \u0275\u0275attribute("cx", node_r5.x)("cy", node_r5.y - 22);
+    \u0275\u0275advance();
+    \u0275\u0275attribute("x", node_r5.x - 12)("y", node_r5.y - 34);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(node_r5.icon);
+    \u0275\u0275advance();
+    \u0275\u0275attribute("x", node_r5.x - node_r5.w / 2 + 8)("y", node_r5.y + 2)("width", node_r5.w - 16);
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate(node_r5.title);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(node_r5.subtitle);
+  }
+}
+function FlowChartComponent__svg_g_35_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275elementStart(0, "g", 36);
+    \u0275\u0275element(1, "rect", 37)(2, "circle", 45);
+    \u0275\u0275elementStart(3, "foreignObject", 46);
+    \u0275\u0275namespaceHTML();
+    \u0275\u0275elementStart(4, "span", 47);
+    \u0275\u0275text(5);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275elementStart(6, "foreignObject", 48);
+    \u0275\u0275namespaceHTML();
+    \u0275\u0275elementStart(7, "div", 42)(8, "div", 49);
+    \u0275\u0275text(9);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(10, "div", 44);
+    \u0275\u0275text(11);
+    \u0275\u0275elementEnd()()()();
+  }
+  if (rf & 2) {
+    const node_r7 = ctx.$implicit;
+    const i_r8 = ctx.index;
+    \u0275\u0275classMap("accent-" + node_r7.accent);
+    \u0275\u0275styleProp("--pulse-delay", 1.6 + i_r8 * 0.4, "s");
+    \u0275\u0275advance();
+    \u0275\u0275attribute("x", node_r7.x - node_r7.w / 2)("y", node_r7.y - node_r7.h / 2)("width", node_r7.w)("height", node_r7.h);
+    \u0275\u0275advance();
+    \u0275\u0275attribute("cx", node_r7.x)("cy", node_r7.y - 16);
+    \u0275\u0275advance();
+    \u0275\u0275attribute("x", node_r7.x - 11)("y", node_r7.y - 27);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(node_r7.icon);
+    \u0275\u0275advance();
+    \u0275\u0275attribute("x", node_r7.x - node_r7.w / 2 + 8)("y", node_r7.y + 4)("width", node_r7.w - 16);
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate(node_r7.title);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(node_r7.subtitle);
+  }
+}
+function FlowChartComponent_div_39_div_10_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 57)(1, "span", 52);
+    \u0275\u0275text(2, "bolt");
+    \u0275\u0275elementEnd();
+    \u0275\u0275text(3);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const stage_r9 = \u0275\u0275nextContext().$implicit;
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate1(" ", stage_r9.badge, " ");
+  }
+}
+function FlowChartComponent_div_39_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 50)(1, "div", 51)(2, "span", 52);
+    \u0275\u0275text(3);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(4, "div", 53);
+    \u0275\u0275text(5);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(6, "div", 54);
+    \u0275\u0275text(7);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "div", 55);
+    \u0275\u0275text(9);
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(10, FlowChartComponent_div_39_div_10_Template, 4, 1, "div", 56);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const stage_r9 = ctx.$implicit;
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate(stage_r9.icon);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(stage_r9.title);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(stage_r9.subtitle);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(stage_r9.description);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", stage_r9.badge);
+  }
+}
+function FlowChartComponent_div_43_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 58)(1, "div", 59)(2, "span", 52);
+    \u0275\u0275text(3);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(4, "div", 60);
+    \u0275\u0275text(5);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(6, "div", 61);
+    \u0275\u0275text(7);
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const consumer_r10 = ctx.$implicit;
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate(consumer_r10.icon);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(consumer_r10.title);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(consumer_r10.description);
+  }
+}
+var FlowChartComponent = class _FlowChartComponent {
+  // ---------------------------------------------------------------
+  // Animated diagram geometry - a single inline SVG, hand-laid-out
+  // so the connecting paths and their moving particles line up
+  // exactly with the node boxes.
+  // ---------------------------------------------------------------
+  pipelineNodes = [
+    { x: 100, y: 90, w: 150, h: 104, icon: "dataset", title: "Data Sources", subtitle: "Postgres \xB7 Mongo \xB7 Kafka", accent: "blue" },
+    { x: 320, y: 90, w: 150, h: 104, icon: "alt_route", title: "Apache NiFi", subtitle: "Extract & stage", accent: "blue" },
+    { x: 540, y: 90, w: 150, h: 104, icon: "inventory_2", title: "MinIO", subtitle: "Raw staging", accent: "blue" },
+    { x: 760, y: 90, w: 150, h: 104, icon: "bolt", title: "Apache Spark", subtitle: "Clean & transform", accent: "amber" },
+    { x: 980, y: 90, w: 150, h: 104, icon: "table_chart", title: "Iceberg Catalog", subtitle: "Write & register", accent: "amber" },
+    { x: 1200, y: 90, w: 150, h: 104, icon: "inventory_2", title: "MinIO", subtitle: "Parquet warehouse", accent: "green" }
+  ];
+  consumerNodes = [
+    { x: 540, y: 330, w: 150, h: 90, icon: "query_stats", title: "Trino", subtitle: "Ranger-governed", accent: "green" },
+    { x: 760, y: 330, w: 150, h: 90, icon: "terminal", title: "SQL Editor", subtitle: "Direct queries", accent: "green" },
+    { x: 980, y: 330, w: 150, h: 90, icon: "auto_awesome", title: "AI Playground", subtitle: "Prompt to dashboard", accent: "green" }
+  ];
+  // Straight connectors between consecutive pipeline nodes (edge to edge).
+  pipelineConnectors = this.pipelineNodes.slice(0, -1).map((node, i) => {
+    const next = this.pipelineNodes[i + 1];
+    const startX = node.x + node.w / 2;
+    const endX = next.x - next.w / 2;
+    return {
+      d: `M${startX},${node.y} L${endX},${next.y}`,
+      dotDelay: i * 0.35,
+      dotDuration: 1.8
+    };
+  });
+  // Curved branches from the warehouse down to each consumer.
+  branchConnectors = this.consumerNodes.map((consumer, i) => {
+    const source = this.pipelineNodes[this.pipelineNodes.length - 1];
+    const startX = source.x;
+    const startY = source.y + source.h / 2;
+    const endX = consumer.x;
+    const endY = consumer.y - consumer.h / 2;
+    const midY = (startY + endY) / 2;
+    return {
+      d: `M${startX},${startY} C${startX},${midY} ${endX},${midY} ${endX},${endY}`,
+      dotDelay: 1.6 + i * 0.4,
+      dotDuration: 2.2
+    };
+  });
+  // Format-conversion callout, anchored just below the Iceberg Catalog node -
+  // that write is where JSON actually becomes Parquet (see stage description).
+  conversionBadge = (() => {
+    const iceberg = this.pipelineNodes[4];
+    const w = 190;
+    const h = 26;
+    return {
+      x: iceberg.x - w / 2,
+      y: iceberg.y + iceberg.h / 2 + 10,
+      w,
+      h,
+      fromFormat: "JSON",
+      toFormat: "Parquet"
+    };
+  })();
+  // Governance boundary drawn only around Trino - the one consumer whose
+  // queries are actually checked by Ranger.
+  governanceBoundary = (() => {
+    const trino = this.consumerNodes[0];
+    const pad = 14;
+    const w = trino.w + pad * 2;
+    const h = trino.h + pad * 2;
+    const x = trino.x - w / 2;
+    const y = trino.y - h / 2;
+    return {
+      x,
+      y,
+      w,
+      h,
+      badgeX: x + w - 6,
+      badgeY: y + 6
+    };
+  })();
+  // ---------------------------------------------------------------
+  // Detail content below the diagram
+  // ---------------------------------------------------------------
+  stages = [
+    {
+      icon: "dataset",
+      title: "Data Sources",
+      subtitle: "PostgreSQL \xB7 MongoDB \xB7 Kafka",
+      description: "Where your raw data lives today - a database table, a collection, or a stream of events."
+    },
+    {
+      icon: "alt_route",
+      title: "Apache NiFi",
+      subtitle: "Extract & Stage",
+      description: "Pulls the configured table/topic/collection and lands it as raw JSON in a MinIO staging bucket. No transformation happens here - just extraction."
+    },
+    {
+      icon: "inventory_2",
+      title: "MinIO (Staging)",
+      subtitle: "Raw landing zone",
+      description: "A temporary holding area for the untouched batch NiFi just pulled - one JSON file per pipeline run."
+    },
+    {
+      icon: "bolt",
+      title: "Apache Spark",
+      subtitle: "Clean & Transform",
+      description: "Reads the staged batch, drops incomplete rows, deduplicates, and prepares it for the warehouse."
+    },
+    {
+      icon: "table_chart",
+      title: "Iceberg REST Catalog",
+      subtitle: "Write & Register",
+      description: "Spark writes the cleaned data straight into an Iceberg table. This single write does two things at once: converts the data to Parquet, and registers a new snapshot in the catalog.",
+      badge: "Parquet conversion happens here"
+    },
+    {
+      icon: "inventory_2",
+      title: "MinIO (Warehouse)",
+      subtitle: "Parquet + metadata",
+      description: "The actual, permanent home for your data - Parquet data files plus Iceberg's table metadata, both stored as objects in MinIO."
+    }
+  ];
+  consumers = [
+    {
+      icon: "query_stats",
+      title: "Trino",
+      description: "Governed by Apache Ranger - every query runs as the authenticated user's own identity, so access control is enforced per-user, not per-app."
+    },
+    {
+      icon: "terminal",
+      title: "SQL Editor",
+      description: "Write and run SQL directly against Postgres sources for quick, ungoverned lookups."
+    },
+    {
+      icon: "auto_awesome",
+      title: "AI Playground",
+      description: "Describe what you want in plain English - a local model generates SQL and builds a real dashboard in Metabase."
+    }
+  ];
+  static \u0275fac = function FlowChartComponent_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _FlowChartComponent)();
+  };
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _FlowChartComponent, selectors: [["app-flow-chart"]], standalone: true, features: [\u0275\u0275StandaloneFeature], decls: 55, vars: 29, consts: [[1, "flow-page"], [1, "page-header"], [1, "diagram-scroll"], ["viewBox", "0 0 1320 440", "preserveAspectRatio", "xMinYMin meet", 1, "diagram"], [1, "connectors"], ["class", "connector-line", 4, "ngFor", "ngForOf"], ["class", "connector-line branch-line", 4, "ngFor", "ngForOf"], [1, "particles"], ["r", "4", "class", "particle particle-main", 4, "ngFor", "ngForOf"], ["r", "3.5", "class", "particle particle-branch", 4, "ngFor", "ngForOf"], ["class", "node", 3, "class", "--pulse-delay", 4, "ngFor", "ngForOf"], [1, "conversion-badge"], ["rx", "13", 1, "conversion-badge-bg"], ["xmlns", "http://www.w3.org/1999/xhtml", 1, "conversion-badge-content"], [1, "material-symbols-outlined", "conversion-badge-icon"], [1, "conversion-arrow"], [1, "governance"], ["rx", "18", 1, "governance-boundary-rect"], ["r", "13", 1, "governance-badge-ring"], ["width", "18", "height", "18"], ["xmlns", "http://www.w3.org/1999/xhtml", 1, "material-symbols-outlined", "governance-badge-icon"], ["height", "16"], ["xmlns", "http://www.w3.org/1999/xhtml", 1, "governance-label"], [1, "section-heading"], [1, "stage-grid"], ["class", "stage-card", 4, "ngFor", "ngForOf"], [1, "consumers-grid"], ["class", "consumer-card", 4, "ngFor", "ngForOf"], [1, "legend"], [1, "legend-item"], [1, "material-symbols-outlined", "legend-icon"], [1, "connector-line"], [1, "connector-line", "branch-line"], ["r", "4", 1, "particle", "particle-main"], ["repeatCount", "indefinite", "rotate", "auto"], ["r", "3.5", 1, "particle", "particle-branch"], [1, "node"], ["rx", "14", 1, "node-card"], ["r", "18", 1, "node-icon-ring"], ["width", "24", "height", "24"], ["xmlns", "http://www.w3.org/1999/xhtml", 1, "material-symbols-outlined", "node-icon"], ["height", "44"], ["xmlns", "http://www.w3.org/1999/xhtml", 1, "node-text"], [1, "node-title"], [1, "node-subtitle"], ["r", "16", 1, "node-icon-ring"], ["width", "22", "height", "22"], ["xmlns", "http://www.w3.org/1999/xhtml", 1, "material-symbols-outlined", "node-icon", "small"], ["height", "36"], [1, "node-title", "small"], [1, "stage-card"], [1, "stage-icon"], [1, "material-symbols-outlined"], [1, "stage-title"], [1, "stage-subtitle"], [1, "stage-description"], ["class", "stage-badge", 4, "ngIf"], [1, "stage-badge"], [1, "consumer-card"], [1, "consumer-icon"], [1, "consumer-title"], [1, "consumer-description"]], template: function FlowChartComponent_Template(rf, ctx) {
+    if (rf & 1) {
+      \u0275\u0275elementStart(0, "div", 0)(1, "div", 1)(2, "h1");
+      \u0275\u0275text(3, "Data Flow");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(4, "p");
+      \u0275\u0275text(5, "How data actually moves through this platform, end to end - watch it flow from source to query.");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(6, "div", 2);
+      \u0275\u0275namespaceSVG();
+      \u0275\u0275elementStart(7, "svg", 3)(8, "g", 4);
+      \u0275\u0275template(9, FlowChartComponent__svg_path_9_Template, 1, 1, "path", 5)(10, FlowChartComponent__svg_path_10_Template, 1, 1, "path", 6);
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(11, "g", 7);
+      \u0275\u0275template(12, FlowChartComponent__svg_circle_12_Template, 2, 3, "circle", 8)(13, FlowChartComponent__svg_circle_13_Template, 2, 3, "circle", 9);
+      \u0275\u0275elementEnd();
+      \u0275\u0275template(14, FlowChartComponent__svg_g_14_Template, 12, 18, "g", 10);
+      \u0275\u0275elementStart(15, "g", 11);
+      \u0275\u0275element(16, "rect", 12);
+      \u0275\u0275elementStart(17, "foreignObject");
+      \u0275\u0275namespaceHTML();
+      \u0275\u0275elementStart(18, "div", 13)(19, "span", 14);
+      \u0275\u0275text(20, "sync_alt");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(21, "span");
+      \u0275\u0275text(22);
+      \u0275\u0275elementStart(23, "span", 15);
+      \u0275\u0275text(24, "\u2192");
+      \u0275\u0275elementEnd();
+      \u0275\u0275text(25);
+      \u0275\u0275elementEnd()()()();
+      \u0275\u0275namespaceSVG();
+      \u0275\u0275elementStart(26, "g", 16);
+      \u0275\u0275element(27, "rect", 17)(28, "circle", 18);
+      \u0275\u0275elementStart(29, "foreignObject", 19);
+      \u0275\u0275namespaceHTML();
+      \u0275\u0275elementStart(30, "span", 20);
+      \u0275\u0275text(31, "shield");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275namespaceSVG();
+      \u0275\u0275elementStart(32, "foreignObject", 21);
+      \u0275\u0275namespaceHTML();
+      \u0275\u0275elementStart(33, "div", 22);
+      \u0275\u0275text(34, "Ranger-governed");
+      \u0275\u0275elementEnd()()();
+      \u0275\u0275template(35, FlowChartComponent__svg_g_35_Template, 12, 18, "g", 10);
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(36, "h3", 23);
+      \u0275\u0275text(37, "The pipeline, step by step");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(38, "div", 24);
+      \u0275\u0275template(39, FlowChartComponent_div_39_Template, 11, 5, "div", 25);
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(40, "h3", 23);
+      \u0275\u0275text(41, "Consumed through");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(42, "div", 26);
+      \u0275\u0275template(43, FlowChartComponent_div_43_Template, 8, 3, "div", 27);
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(44, "div", 28)(45, "div", 29)(46, "span", 30);
+      \u0275\u0275text(47, "info");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(48, "span");
+      \u0275\u0275text(49, "NiFi only extracts and stages raw data - no cleansing or format conversion happens there.");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(50, "div", 29)(51, "span", 30);
+      \u0275\u0275text(52, "shield");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(53, "span");
+      \u0275\u0275text(54, "Ranger governance applies only to the Trino query path, not direct Postgres/SQL Editor queries.");
+      \u0275\u0275elementEnd()()()();
+    }
+    if (rf & 2) {
+      \u0275\u0275advance(9);
+      \u0275\u0275property("ngForOf", ctx.pipelineConnectors);
+      \u0275\u0275advance();
+      \u0275\u0275property("ngForOf", ctx.branchConnectors);
+      \u0275\u0275advance(2);
+      \u0275\u0275property("ngForOf", ctx.pipelineConnectors);
+      \u0275\u0275advance();
+      \u0275\u0275property("ngForOf", ctx.branchConnectors);
+      \u0275\u0275advance();
+      \u0275\u0275property("ngForOf", ctx.pipelineNodes);
+      \u0275\u0275advance(2);
+      \u0275\u0275attribute("x", ctx.conversionBadge.x)("y", ctx.conversionBadge.y)("width", ctx.conversionBadge.w)("height", ctx.conversionBadge.h);
+      \u0275\u0275advance();
+      \u0275\u0275attribute("x", ctx.conversionBadge.x)("y", ctx.conversionBadge.y)("width", ctx.conversionBadge.w)("height", ctx.conversionBadge.h);
+      \u0275\u0275advance(5);
+      \u0275\u0275textInterpolate1("", ctx.conversionBadge.fromFormat, " ");
+      \u0275\u0275advance(3);
+      \u0275\u0275textInterpolate1(" ", ctx.conversionBadge.toFormat, "");
+      \u0275\u0275advance(2);
+      \u0275\u0275attribute("x", ctx.governanceBoundary.x)("y", ctx.governanceBoundary.y)("width", ctx.governanceBoundary.w)("height", ctx.governanceBoundary.h);
+      \u0275\u0275advance();
+      \u0275\u0275attribute("cx", ctx.governanceBoundary.badgeX)("cy", ctx.governanceBoundary.badgeY);
+      \u0275\u0275advance();
+      \u0275\u0275attribute("x", ctx.governanceBoundary.badgeX - 9)("y", ctx.governanceBoundary.badgeY - 9);
+      \u0275\u0275advance(3);
+      \u0275\u0275attribute("x", ctx.governanceBoundary.x - 20)("y", ctx.governanceBoundary.y - 20)("width", ctx.governanceBoundary.w + 40);
+      \u0275\u0275advance(3);
+      \u0275\u0275property("ngForOf", ctx.consumerNodes);
+      \u0275\u0275advance(4);
+      \u0275\u0275property("ngForOf", ctx.stages);
+      \u0275\u0275advance(4);
+      \u0275\u0275property("ngForOf", ctx.consumers);
+    }
+  }, dependencies: [CommonModule, NgForOf, NgIf], styles: ['\n\n[_nghost-%COMP%] {\n  display: block;\n  min-height: 100%;\n  background-color: #11131c;\n  color: #e1e1ef;\n  font-family:\n    "Hanken Grotesk",\n    -apple-system,\n    BlinkMacSystemFont,\n    "Segoe UI",\n    Roboto,\n    sans-serif;\n}\n.flow-page[_ngcontent-%COMP%] {\n  padding: 24px;\n  max-width: 1400px;\n  margin: 0 auto;\n}\n.page-header[_ngcontent-%COMP%] {\n  margin-bottom: 20px;\n}\n.page-header[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: 22px;\n  font-weight: 600;\n  letter-spacing: -0.02em;\n  color: #e1e1ef;\n}\n.page-header[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: #c3c6d8;\n  font-size: 12px;\n}\n.diagram-scroll[_ngcontent-%COMP%] {\n  overflow-x: auto;\n  border-radius: 14px;\n  border: 1px solid #424655;\n  background-color: #14161f;\n  background-image:\n    radial-gradient(\n      circle at 1px 1px,\n      rgba(180, 197, 255, 0.08) 1px,\n      transparent 0);\n  background-size: 28px 28px;\n  margin-bottom: 32px;\n  padding: 8px;\n}\n.diagram[_ngcontent-%COMP%] {\n  display: block;\n  width: 100%;\n  min-width: 1000px;\n  height: auto;\n}\n.connector-line[_ngcontent-%COMP%] {\n  fill: none;\n  stroke: #2a2d3a;\n  stroke-width: 2;\n}\n.branch-line[_ngcontent-%COMP%] {\n  stroke: #24272f;\n  stroke-dasharray: 4 4;\n}\n.particle[_ngcontent-%COMP%] {\n  filter: drop-shadow(0 0 4px currentColor);\n}\n.particle-main[_ngcontent-%COMP%] {\n  fill: #b4c5ff;\n  color: #b4c5ff;\n}\n.particle-branch[_ngcontent-%COMP%] {\n  fill: #4ade80;\n  color: #4ade80;\n}\n.node-card[_ngcontent-%COMP%] {\n  fill: #1d1f29;\n  stroke: #424655;\n  stroke-width: 1;\n  transition: stroke 0.2s ease;\n}\n.node-icon-ring[_ngcontent-%COMP%] {\n  fill: rgba(180, 197, 255, 0.12);\n  animation: _ngcontent-%COMP%_node-pulse 2.4s ease-in-out infinite;\n  animation-delay: var(--pulse-delay, 0s);\n  transform-origin: center;\n  transform-box: fill-box;\n}\n.accent-green[_ngcontent-%COMP%]   .node-icon-ring[_ngcontent-%COMP%] {\n  fill: rgba(74, 222, 128, 0.12);\n}\n.accent-amber[_ngcontent-%COMP%]   .node-icon-ring[_ngcontent-%COMP%] {\n  fill: rgba(240, 180, 41, 0.14);\n}\n@keyframes _ngcontent-%COMP%_node-pulse {\n  0%, 100% {\n    opacity: 1;\n    transform: scale(1);\n  }\n  50% {\n    opacity: 0.7;\n    transform: scale(1.12);\n  }\n}\n.node-icon[_ngcontent-%COMP%] {\n  display: block;\n  font-size: 20px;\n  color: #b4c5ff;\n  line-height: 1;\n}\n.node-icon.small[_ngcontent-%COMP%] {\n  font-size: 17px;\n}\n.accent-green[_ngcontent-%COMP%]   .node-icon[_ngcontent-%COMP%] {\n  color: #4ade80;\n}\n.accent-amber[_ngcontent-%COMP%]   .node-icon[_ngcontent-%COMP%] {\n  color: #f0b429;\n}\n.node-text[_ngcontent-%COMP%] {\n  font-family: "Hanken Grotesk", sans-serif;\n  text-align: center;\n  line-height: 1.3;\n}\n.node-title[_ngcontent-%COMP%] {\n  font-size: 12px;\n  font-weight: 600;\n  color: #e1e1ef;\n  white-space: nowrap;\n}\n.node-title.small[_ngcontent-%COMP%] {\n  font-size: 11px;\n}\n.node-subtitle[_ngcontent-%COMP%] {\n  font-size: 9px;\n  color: #8d90a1;\n  margin-top: 2px;\n  white-space: nowrap;\n}\n.conversion-badge-bg[_ngcontent-%COMP%] {\n  fill: rgba(240, 180, 41, 0.1);\n  stroke: rgba(240, 180, 41, 0.45);\n  stroke-width: 1;\n}\n.conversion-badge-content[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  height: 100%;\n  font-family: "Hanken Grotesk", sans-serif;\n  font-size: 11px;\n  font-weight: 600;\n  color: #f0b429;\n}\n.conversion-badge-icon[_ngcontent-%COMP%] {\n  font-size: 14px;\n  animation: _ngcontent-%COMP%_conversion-spin 3s linear infinite;\n}\n.conversion-arrow[_ngcontent-%COMP%] {\n  color: #8d90a1;\n  font-weight: 400;\n}\n@keyframes _ngcontent-%COMP%_conversion-spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n.governance-boundary-rect[_ngcontent-%COMP%] {\n  fill: none;\n  stroke: #5eead4;\n  stroke-width: 1.5;\n  stroke-dasharray: 5 5;\n  opacity: 0.6;\n}\n.governance-badge-ring[_ngcontent-%COMP%] {\n  fill: #11131c;\n  stroke: #5eead4;\n  stroke-width: 1.5;\n}\n.governance-badge-icon[_ngcontent-%COMP%] {\n  display: block;\n  font-size: 15px;\n  color: #5eead4;\n  line-height: 1;\n}\n.governance-label[_ngcontent-%COMP%] {\n  text-align: center;\n  font-family: "Hanken Grotesk", sans-serif;\n  font-size: 9px;\n  font-weight: 600;\n  text-transform: uppercase;\n  letter-spacing: 0.06em;\n  color: #5eead4;\n}\n.section-heading[_ngcontent-%COMP%] {\n  margin: 0 0 14px;\n  font-size: 13px;\n  font-weight: 600;\n  color: #e1e1ef;\n}\n.stage-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));\n  gap: 12px;\n  margin-bottom: 32px;\n}\n.stage-card[_ngcontent-%COMP%] {\n  border-radius: 12px;\n  border: 1px solid #424655;\n  background-color: #1d1f29;\n  padding: 16px;\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n.stage-icon[_ngcontent-%COMP%] {\n  width: 36px;\n  height: 36px;\n  border-radius: 8px;\n  background-color: rgba(180, 197, 255, 0.12);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  margin-bottom: 4px;\n}\n.stage-icon[_ngcontent-%COMP%]   .material-symbols-outlined[_ngcontent-%COMP%] {\n  font-size: 20px;\n  color: #b4c5ff;\n}\n.stage-title[_ngcontent-%COMP%] {\n  font-size: 13px;\n  font-weight: 600;\n  color: #e1e1ef;\n}\n.stage-subtitle[_ngcontent-%COMP%] {\n  font-size: 10px;\n  font-weight: 500;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n  color: #8d90a1;\n}\n.stage-description[_ngcontent-%COMP%] {\n  font-size: 11px;\n  line-height: 1.5;\n  color: #c3c6d8;\n  flex: 1;\n}\n.stage-badge[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  padding: 5px 8px;\n  border-radius: 6px;\n  background-color: rgba(240, 180, 41, 0.12);\n  border: 1px solid rgba(240, 180, 41, 0.35);\n  color: #f0b429;\n  font-size: 9px;\n  font-weight: 600;\n  margin-top: 4px;\n}\n.stage-badge[_ngcontent-%COMP%]   .material-symbols-outlined[_ngcontent-%COMP%] {\n  font-size: 12px;\n}\n.consumers-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));\n  gap: 12px;\n  margin-bottom: 32px;\n}\n.consumer-card[_ngcontent-%COMP%] {\n  border-radius: 12px;\n  border: 1px solid #424655;\n  background-color: #14161f;\n  padding: 16px;\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n.consumer-icon[_ngcontent-%COMP%] {\n  width: 32px;\n  height: 32px;\n  border-radius: 8px;\n  background-color: rgba(74, 222, 128, 0.1);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.consumer-icon[_ngcontent-%COMP%]   .material-symbols-outlined[_ngcontent-%COMP%] {\n  font-size: 18px;\n  color: #4ade80;\n}\n.consumer-title[_ngcontent-%COMP%] {\n  font-size: 12px;\n  font-weight: 600;\n  color: #e1e1ef;\n}\n.consumer-description[_ngcontent-%COMP%] {\n  font-size: 11px;\n  line-height: 1.5;\n  color: #c3c6d8;\n}\n.legend[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}\n.legend-item[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  padding: 10px 14px;\n  border-radius: 10px;\n  background-color: rgba(180, 197, 255, 0.06);\n  border: 1px solid rgba(180, 197, 255, 0.2);\n  color: #c3c6d8;\n  font-size: 11px;\n}\n.legend-icon[_ngcontent-%COMP%] {\n  font-size: 16px;\n  color: #b4c5ff;\n  flex-shrink: 0;\n}\n@media (prefers-reduced-motion: reduce) {\n  .particle[_ngcontent-%COMP%] {\n    display: none;\n  }\n  .node-icon-ring[_ngcontent-%COMP%] {\n    animation: none;\n  }\n  .conversion-badge-icon[_ngcontent-%COMP%] {\n    animation: none;\n  }\n}\n/*# sourceMappingURL=flow-chart.component.css.map */'] });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(FlowChartComponent, { className: "FlowChartComponent", filePath: "app\\components\\flow-chart\\flow-chart.component.ts", lineNumber: 60 });
+})();
+
 // src/app/app.routes.ts
 var routes = [
   {
@@ -90631,6 +91081,10 @@ var routes = [
       {
         path: "iceberg-catalog",
         component: IcebergCatalogComponent
+      },
+      {
+        path: "data-flow",
+        component: FlowChartComponent
       },
       // AI / ML Group
       {

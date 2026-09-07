@@ -80,7 +80,8 @@ export class SidebarComponent {
     { label: 'Runs', icon: 'playlist_play', route: '/runs' },
     { label: 'Data Ingestion', icon: 'dataset', route: '/ingestion-pipelines' },
     { label: 'Visual Data Prep', icon: 'dataset_linked', route: '/data-sources' },
-    { label: 'Iceberg Catalog', icon: 'inventory_2', route: '/iceberg-catalog' }
+    { label: 'Iceberg Catalog', icon: 'inventory_2', route: '/iceberg-catalog' },
+    { label: 'Data Flow', icon: 'schema', route: '/data-flow' }
   ];
 
   toolsItems: NavItem[] = [
