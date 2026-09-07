@@ -1,0 +1,403 @@
+:host {
+  display: block;
+  min-height: 100%;
+  background-color: #11131c;
+  color: #e1e1ef;
+  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.trino-page {
+  padding: 24px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* ===========================
+   Header
+=========================== */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #e1e1ef;
+}
+
+.page-header p {
+  margin: 6px 0 0;
+  color: #c3c6d8;
+  font-size: 12px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.identity-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background-color: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  color: #4ade80;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* ===========================
+   Workspace layout
+=========================== */
+.workspace {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+/* ===========================
+   Explorer
+=========================== */
+.explorer-panel {
+  border-radius: 12px;
+  border: 1px solid #424655;
+  background-color: #1d1f29;
+  overflow: hidden;
+  min-height: 400px;
+}
+
+.explorer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid #424655;
+  background-color: #191b24;
+  font-size: 11px;
+  font-weight: 600;
+  color: #c3c6d8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: #8d90a1;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.icon-btn:hover {
+  color: #e1e1ef;
+}
+
+.explorer-loading {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.explorer-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  color: #fca5a5;
+  font-size: 10px;
+}
+
+.explorer-tree {
+  padding: 6px 0;
+  max-height: 620px;
+  overflow-y: auto;
+}
+
+.tree-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 11px;
+  color: #e1e1ef;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tree-row:hover {
+  background-color: rgba(180, 197, 255, 0.08);
+}
+
+.tree-row.depth-1 {
+  padding-left: 28px;
+}
+
+.tree-row.depth-2 {
+  padding-left: 42px;
+}
+
+.tree-row .pi-chevron-right,
+.tree-row .pi-chevron-down {
+  font-size: 9px;
+  width: 9px;
+  color: #8d90a1;
+}
+
+.tree-row.leaf {
+  padding-left: 48px;
+}
+
+.node-icon {
+  font-size: 11px;
+  color: #b4c5ff;
+}
+
+.node-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.node-spinner {
+  margin-left: auto;
+  font-size: 9px;
+  color: #8d90a1;
+}
+
+.tree-empty {
+  padding: 6px 14px;
+  font-size: 10px;
+  color: #8d90a1;
+  font-style: italic;
+}
+
+.tree-empty.depth-1 {
+  padding-left: 28px;
+}
+
+.tree-empty.depth-2 {
+  padding-left: 42px;
+}
+
+.tree-error {
+  padding: 4px 14px;
+  font-size: 9px;
+  color: #fca5a5;
+}
+
+.tree-error.depth-1 {
+  padding-left: 28px;
+}
+
+:host ::ng-deep .spinner-sm {
+  width: 24px;
+  height: 24px;
+}
+
+/* ===========================
+   Main panel / editor
+=========================== */
+.main-panel {
+  min-width: 0;
+}
+
+.editor-panel {
+  border-radius: 12px;
+  border: 1px solid #424655;
+  background-color: #1d1f29;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.sql-textarea {
+  width: 100%;
+  min-height: 180px;
+  resize: vertical;
+  border: none;
+  outline: none;
+  background-color: #14161f;
+  color: #e1e1ef;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.editor-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-top: 1px solid #424655;
+  background-color: #191b24;
+}
+
+.hint {
+  font-size: 10px;
+  color: #8d90a1;
+}
+
+/* ===========================
+   Error
+=========================== */
+.query-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background-color: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 16px;
+  white-space: pre-wrap;
+}
+
+/* ===========================
+   Results
+=========================== */
+.results-panel {
+  margin-bottom: 24px;
+}
+
+.results-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: #c3c6d8;
+  margin-bottom: 10px;
+}
+
+.dot {
+  color: #424655;
+}
+
+.truncated-note {
+  margin-left: auto;
+  color: #f0b429;
+}
+
+.no-columns {
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #424655;
+  background-color: #1d1f29;
+  color: #c3c6d8;
+  font-size: 11px;
+}
+
+:host ::ng-deep .results-table {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #424655;
+}
+
+:host ::ng-deep .results-table .p-datatable-thead > tr > th {
+  background-color: #191b24;
+  color: #c3c6d8;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-color: #424655;
+}
+
+:host ::ng-deep .results-table .p-datatable-tbody > tr {
+  background-color: #1d1f29;
+  color: #e1e1ef;
+}
+
+:host ::ng-deep .results-table .p-datatable-tbody > tr > td {
+  border-color: #2a2d3a;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+}
+
+/* ===========================
+   History
+=========================== */
+.section-heading {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e1e1ef;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.history-row {
+  display: grid;
+  grid-template-columns: 10px 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #424655;
+  background-color: #1d1f29;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.history-row:hover {
+  border-color: #8d90a1;
+}
+
+.history-status {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.history-status.status-success {
+  background-color: #4ade80;
+}
+
+.history-status.status-error {
+  background-color: #f87171;
+}
+
+.history-status.status-denied {
+  background-color: #f0b429;
+}
+
+.history-sql {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #e1e1ef;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-source {
+  font-size: 9px;
+  color: #c3c6d8;
+}
+
+.history-time {
+  font-size: 9px;
+  color: #8d90a1;
+}
+
+@media (max-width: 900px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,14 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewChecked, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { TableModule } from 'primeng/table';
-
-import Chart from 'chart.js/auto';
 
 import { ConfigService } from '../../services/config.service';
 
@@ -18,21 +15,19 @@ export interface DataSourceOption {
   source_type: string;
 }
 
-export interface ChartSpec {
-  type: 'bar' | 'line' | 'number' | 'table';
-  x_field: string | null;
-  y_field: string | null;
+export interface WidgetSummary {
+  title: string;
+  sql?: string;
+  row_count?: number;
+  duration_ms?: number;
+  chart_type?: string | null;
+  error?: string | null;
 }
 
 export interface GenerateResponse {
   prompt: string;
-  sql: string;
-  columns: string[];
-  rows: any[][];
-  row_count: number;
-  truncated: boolean;
-  duration_ms: number;
-  chart: ChartSpec;
+  dashboard_url: string;
+  widgets: WidgetSummary[];
 }
 
 const EXAMPLE_PROMPTS = [
@@ -50,15 +45,12 @@ const EXAMPLE_PROMPTS = [
     RouterLink,
     ButtonModule,
     DropdownModule,
-    ProgressSpinnerModule,
-    TableModule
+    ProgressSpinnerModule
   ],
   templateUrl: './playground.component.html',
   styleUrl: './playground.component.css'
 })
-export class PlaygroundComponent implements OnInit, AfterViewChecked {
-
-  @ViewChild('chartCanvas') chartCanvasRef?: ElementRef<HTMLCanvasElement>;
+export class PlaygroundComponent implements OnInit {
 
   constructor(private configService: ConfigService) {}
 
@@ -72,20 +64,9 @@ export class PlaygroundComponent implements OnInit, AfterViewChecked {
   errorMessage = '';
 
   result: GenerateResponse | null = null;
-  tableRows: Record<string, any>[] = [];
-
-  private chart: Chart | null = null;
-  private chartNeedsRender = false;
 
   ngOnInit(): void {
     this.loadPostgresSources();
-  }
-
-  ngAfterViewChecked(): void {
-    if (this.chartNeedsRender && this.chartCanvasRef) {
-      this.chartNeedsRender = false;
-      this.renderChart();
-    }
   }
 
   loadPostgresSources(): void {
@@ -121,7 +102,6 @@ export class PlaygroundComponent implements OnInit, AfterViewChecked {
     this.generating = true;
     this.errorMessage = '';
     this.result = null;
-    this.destroyChart();
 
     this.configService.post('/playground/generate/', {
       data_source: this.selectedSourceId,
@@ -130,71 +110,11 @@ export class PlaygroundComponent implements OnInit, AfterViewChecked {
       next: (response: GenerateResponse) => {
         this.generating = false;
         this.result = response;
-
-        this.tableRows = response.rows.map(row => {
-          const record: Record<string, any> = {};
-          response.columns.forEach((col, i) => record[col] = row[i]);
-          return record;
-        });
-
-        if (response.chart.type === 'bar' || response.chart.type === 'line') {
-          this.chartNeedsRender = true;
-        }
       },
       error: (error) => {
         this.generating = false;
-        this.errorMessage = error?.error?.error || 'Failed to generate a dashboard for this prompt.';
+        this.errorMessage = error?.error?.error || 'Failed to build a dashboard for this prompt.';
       }
     });
-  }
-
-  private renderChart(): void {
-    if (!this.result || !this.chartCanvasRef) {
-      return;
-    }
-
-    const { chart, columns, rows } = this.result;
-    if (!chart.x_field || !chart.y_field) {
-      return;
-    }
-
-    const xIndex = columns.indexOf(chart.x_field);
-    const yIndex = columns.indexOf(chart.y_field);
-
-    const labels = rows.map(row => String(row[xIndex]));
-    const data = rows.map(row => Number(row[yIndex]));
-
-    this.chart = new Chart(this.chartCanvasRef.nativeElement, {
-      type: chart.type === 'line' ? 'line' : 'bar',
-      data: {
-        labels,
-        datasets: [{
-          label: chart.y_field,
-          data,
-          backgroundColor: 'rgba(180, 197, 255, 0.5)',
-          borderColor: '#b4c5ff',
-          borderWidth: 2,
-          tension: 0.3
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { labels: { color: '#c3c6d8' } }
-        },
-        scales: {
-          x: { ticks: { color: '#c3c6d8' }, grid: { color: '#2a2d3a' } },
-          y: { ticks: { color: '#c3c6d8' }, grid: { color: '#2a2d3a' } }
-        }
-      }
-    });
-  }
-
-  private destroyChart(): void {
-    if (this.chart) {
-      this.chart.destroy();
-      this.chart = null;
-    }
   }
 }

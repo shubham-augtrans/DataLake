@@ -129,6 +129,53 @@ class ExecuteTrinoQueryView(APIView):
             )
 
 
+class TrinoSchemaExplorerView(APIView):
+    """
+    Backs the Trino editor's schema explorer tree (catalogs -> schemas ->
+    tables -> columns). Every listing runs through TrinoQueryRunner as the
+    authenticated user, so it only ever shows what Ranger allows them to see.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        trino_user = request.user.email.split("@")[0]
+        runner = TrinoQueryRunner(trino_user)
+
+        catalog = request.query_params.get("catalog")
+        schema = request.query_params.get("schema")
+        table = request.query_params.get("table")
+
+        try:
+            if table:
+                if not (catalog and schema):
+                    return Response(
+                        {"error": "catalog and schema are required with table."},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                return Response({"columns": runner.list_columns(catalog, schema, table)})
+
+            if schema:
+                if not catalog:
+                    return Response(
+                        {"error": "catalog is required with schema."},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                return Response({"tables": runner.list_tables(catalog, schema)})
+
+            if catalog:
+                return Response({"schemas": runner.list_schemas(catalog)})
+
+            return Response({"catalogs": runner.list_catalogs()})
+
+        except QueryAuthorizationError as ex:
+            return Response({"error": str(ex)}, status=status.HTTP_403_FORBIDDEN)
+
+        except QueryExecutionError as ex:
+            return Response({"error": str(ex)}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class QueryHistoryViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
@@ -136,3 +183,15 @@ class QueryHistoryViewSet(
 ):
     queryset = QueryHistory.objects.select_related("data_source").all()
     serializer_class = QueryHistorySerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        source = self.request.query_params.get("source")
+
+        if source == "trino":
+            queryset = queryset.filter(trino_user__isnull=False)
+        elif source == "postgres":
+            queryset = queryset.filter(data_source__isnull=False)
+
+        return queryset

@@ -1,3 +1,4 @@
+import json
 import re
 from decimal import Decimal
 
@@ -7,6 +8,7 @@ from django.conf import settings
 from apps.query.services import PostgresQueryRunner, QueryExecutionError
 
 OLLAMA_TIMEOUT = 60
+MAX_DASHBOARD_WIDGETS = 4
 BLOCKED_KEYWORDS = (
     "insert", "update", "delete", "drop", "alter",
     "truncate", "grant", "revoke", "create", "replace",
@@ -150,3 +152,97 @@ def infer_chart(columns, rows):
 def _looks_temporal(column_name):
     name = column_name.lower()
     return any(token in name for token in ("time", "date", "created", "updated", "at"))
+
+
+def decompose_prompt(prompt, schema_summary, max_widgets=MAX_DASHBOARD_WIDGETS):
+    """
+    Ask Ollama to break a high-level dashboard prompt into 2-4 chartable
+    sub-questions. Never raises - on any failure (unreachable model,
+    unparsable response, empty list) this falls back to a single widget
+    covering the original prompt verbatim, i.e. today's existing behaviour.
+    """
+    system_prompt = (
+        "You are a dashboard planner. Given a database schema and a request for a "
+        "dashboard, respond with ONLY a JSON array (no prose, no markdown fences) of "
+        "2 to 4 objects, each with a short \"title\" and a \"question\" - a single, "
+        "specific, chartable question answerable with one SQL query against the "
+        "schema below. Cover different angles of the request; do not repeat the same "
+        "question twice.\n\n"
+        "Example schema:\n"
+        "orders(id integer, customer_name character varying, amount numeric, order_date timestamp)\n\n"
+        "Example request: Show me how the business is doing\n"
+        "[{\"title\": \"Revenue over time\", \"question\": \"Show total amount per day\"}, "
+        "{\"title\": \"Top customers\", \"question\": \"Show total amount per customer\"}]\n\n"
+        "Now answer this one the same way.\n\n"
+        f"Schema:\n{schema_summary}\n\n"
+        f"Request: {prompt}\n\n"
+        "JSON:"
+    )
+
+    fallback = [{"title": prompt, "question": prompt}]
+
+    try:
+        response = requests.post(
+            f"{settings.OLLAMA_URL}/api/generate",
+            json={
+                "model": settings.OLLAMA_MODEL,
+                "prompt": system_prompt,
+                "stream": False,
+            },
+            timeout=OLLAMA_TIMEOUT,
+        )
+        response.raise_for_status()
+
+        raw_text = response.json().get("response", "")
+
+        match = re.search(r"\[.*\]", raw_text, re.DOTALL)
+        if not match:
+            return fallback
+
+        items = json.loads(match.group(0))
+
+        sub_questions = [
+            {"title": str(item["title"]).strip(), "question": str(item["question"]).strip()}
+            for item in items
+            if isinstance(item, dict) and item.get("title") and item.get("question")
+        ]
+
+        if not sub_questions:
+            return fallback
+
+        return sub_questions[:max_widgets]
+
+    except (requests.RequestException, ValueError, KeyError, TypeError):
+        return fallback
+
+
+def build_widget(datasource, title, question, schema_summary):
+    """
+    Run the existing single-question pipeline (generate_sql -> run -> infer_chart)
+    for one dashboard widget. Isolated per-widget failure: returns an error entry
+    instead of raising, so one bad sub-question doesn't take down the rest of the
+    dashboard.
+    """
+    try:
+        sql = generate_sql(datasource, question, schema_summary)
+        result = PostgresQueryRunner(datasource).run(sql)
+        chart = infer_chart(result["columns"], result["rows"])
+
+        return {
+            "title": title,
+            "prompt": question,
+            "sql": sql,
+            "columns": result["columns"],
+            "rows": result["rows"],
+            "row_count": result["row_count"],
+            "truncated": result["truncated"],
+            "duration_ms": result["duration_ms"],
+            "chart": chart,
+        }
+
+    except (PromptToSqlError, QueryExecutionError) as ex:
+        return {
+            "title": title,
+            "prompt": question,
+            "error": str(ex),
+        }

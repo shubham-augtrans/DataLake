@@ -180,3 +180,30 @@ class TrinoQueryRunner:
 
         finally:
             conn.close()
+
+    def list_catalogs(self):
+        """
+        Catalogs visible to this user (per Ranger's catalog-level rules).
+        """
+        result = self.run("SHOW CATALOGS")
+        return [row[0] for row in result["rows"]]
+
+    def list_schemas(self, catalog):
+        """
+        Schemas within a catalog. Goes through the same Ranger-governed
+        connection as any other query, so a user only sees what they're
+        authorized to see.
+        """
+        result = self.run(f'SHOW SCHEMAS FROM "{catalog}"')
+        return [row[0] for row in result["rows"]]
+
+    def list_tables(self, catalog, schema):
+        result = self.run(f'SHOW TABLES FROM "{catalog}"."{schema}"')
+        return [row[0] for row in result["rows"]]
+
+    def list_columns(self, catalog, schema, table):
+        result = self.run(f'DESCRIBE "{catalog}"."{schema}"."{table}"')
+        return [
+            {"name": row[0], "type": row[1]}
+            for row in result["rows"]
+        ]

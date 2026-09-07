@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "metabase": {
+      "command": "node",
+      "args": ["mcp/metabase-server.mjs"],
+      "env": {
+        "METABASE_URL": "http://localhost:3000",
+        "TOOL_MODE": "read"
+      }
+    }
+  }
+}

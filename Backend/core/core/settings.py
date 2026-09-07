@@ -11,11 +11,22 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 import os
-import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load BASE_DIR/.env (gitignored) into the environment so os.getenv() below can
+# pick up real secrets instead of always falling back to their hardcoded defaults.
+# No dotenv dependency needed - the file is a plain KEY=VALUE list.
+_env_path = BASE_DIR / ".env"
+if _env_path.exists():
+    for _line in _env_path.read_text(encoding="utf-8").splitlines():
+        _line = _line.strip()
+        if not _line or _line.startswith("#") or "=" not in _line:
+            continue
+        _key, _value = _line.split("=", 1)
+        os.environ.setdefault(_key.strip(), _value.strip())
 
 
 # Quick-start development settings - unsuitable for production
@@ -204,6 +215,13 @@ OLLAMA_MODEL = os.getenv(
     "OLLAMA_MODEL",
     "qwen2.5:1.5b",
 )
+
+METABASE_URL = os.getenv(
+    "METABASE_URL",
+    "http://localhost:3000",
+)
+
+METABASE_API_KEY = os.getenv("METABASE_API_KEY", "")
 
 TRINO_HOST = os.getenv("TRINO_HOST", "localhost")
 TRINO_PORT = int(os.getenv("TRINO_PORT", "8082"))

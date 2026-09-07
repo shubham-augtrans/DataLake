@@ -8,6 +8,7 @@ import { MainLayoutComponent } from './components/main-layout/main-layout.compon
 import { IngestionComponent } from './components/ingestion/ingestion.component';
 import { ModuleViewComponent } from './components/module-view/module-view.component';
 import { QueryComponent } from './components/query/query.component';
+import { TrinoQueryComponent } from './components/trino-query/trino-query.component';
 import { IcebergCatalogComponent } from './components/iceberg-catalog/iceberg-catalog.component';
 import { PlaygroundComponent } from './components/playground/playground.component';
 
@@ -76,6 +77,10 @@ export const routes: Routes = [
       {
         path: 'sql-editor',
         component: QueryComponent
+      },
+      {
+        path: 'trino-editor',
+        component: TrinoQueryComponent
       },
       {
         path: 'queries',

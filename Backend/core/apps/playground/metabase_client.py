@@ -1,0 +1,135 @@
+import requests
+from django.conf import settings
+
+CHART_TO_DISPLAY = {
+    "bar": "bar",
+    "line": "line",
+    "number": "scalar",
+    "table": "table",
+}
+
+DEFAULT_SIZE_X = 12
+DEFAULT_SIZE_Y = 8
+GRID_COLUMNS = 2
+
+
+class MetabaseError(Exception):
+    pass
+
+
+class MetabaseClient:
+    """
+    Thin wrapper around the Metabase REST API used to turn a Playground
+    prompt into a real, visible Metabase dashboard (Cards + a Dashboard),
+    rather than a chart rendered locally.
+    """
+
+    def __init__(self):
+        if not settings.METABASE_API_KEY:
+            raise MetabaseError("METABASE_API_KEY is not configured.")
+
+        self.base_url = settings.METABASE_URL.rstrip("/")
+
+        self.session = requests.Session()
+        self.session.headers.update({"x-api-key": settings.METABASE_API_KEY})
+
+    def _url(self, path):
+        return f"{self.base_url}/{path.lstrip('/')}"
+
+    def _get(self, path, **kwargs):
+        response = self.session.get(self._url(path), timeout=30, **kwargs)
+        response.raise_for_status()
+        return response.json()
+
+    def _post(self, path, data=None, **kwargs):
+        response = self.session.post(self._url(path), json=data, timeout=30, **kwargs)
+
+        if not response.ok:
+            raise MetabaseError(
+                f"Metabase API error {response.status_code}: {response.text}"
+            )
+
+        return response.json() if response.content else None
+
+    def _put(self, path, data=None, **kwargs):
+        response = self.session.put(self._url(path), json=data, timeout=30, **kwargs)
+
+        if not response.ok:
+            raise MetabaseError(
+                f"Metabase API error {response.status_code}: {response.text}"
+            )
+
+        return response.json() if response.content else None
+
+    def chart_to_display(self, chart_type):
+        return CHART_TO_DISPLAY.get(chart_type, "table")
+
+    def find_database_id(self, datasource):
+        """
+        Match this Django DataSource against an already-configured Metabase
+        database connection by dbname - Django never auto-creates Metabase
+        database connections (that would duplicate credential storage and
+        risks drifting from Metabase's own connection-creation API shape).
+        """
+        dbname = (datasource.configuration or {}).get("database")
+
+        if not dbname:
+            raise MetabaseError(
+                f"Data source '{datasource.name}' has no 'database' in its configuration."
+            )
+
+        result = self._get("/api/database")
+        databases = result.get("data", result) if isinstance(result, dict) else result
+
+        for db in databases:
+            if db.get("engine") == "postgres" and (db.get("details") or {}).get("dbname") == dbname:
+                return db["id"]
+
+        raise MetabaseError(
+            f"No Metabase database connection found for database '{dbname}'. "
+            "Add it once in Metabase under Admin -> Databases, then try again."
+        )
+
+    def create_card(self, database_id, name, sql, display, collection_id=None):
+        payload = {
+            "name": name,
+            "display": display,
+            "visualization_settings": {},
+            "collection_id": collection_id,
+            "dataset_query": {
+                "type": "native",
+                "native": {"query": sql},
+                "database": database_id,
+            },
+        }
+
+        return self._post("/api/card", payload)
+
+    def create_dashboard(self, name, collection_id=None):
+        return self._post("/api/dashboard", {"name": name, "collection_id": collection_id})
+
+    def add_cards_to_dashboard(self, dashboard_id, card_ids):
+        """
+        Lay out `card_ids` two-per-row on the dashboard's grid and attach them
+        in one bulk call, using Metabase's modern PUT /api/dashboard/:id/cards
+        (verified against this project's live v0.63.13 instance).
+        """
+        cards = []
+
+        for index, card_id in enumerate(card_ids):
+            row = (index // GRID_COLUMNS) * DEFAULT_SIZE_Y
+            col = (index % GRID_COLUMNS) * DEFAULT_SIZE_X
+
+            cards.append({
+                "id": -(index + 1),
+                "card_id": card_id,
+                "row": row,
+                "col": col,
+                "size_x": DEFAULT_SIZE_X,
+                "size_y": DEFAULT_SIZE_Y,
+            })
+
+        return self._put(f"/api/dashboard/{dashboard_id}/cards", {"cards": cards})
+
+    def dashboard_url(self, dashboard_id):
+        return f"{self.base_url}/dashboard/{dashboard_id}"
