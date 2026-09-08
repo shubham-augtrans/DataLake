@@ -12,6 +12,7 @@ import { TrinoQueryComponent } from './components/trino-query/trino-query.compon
 import { IcebergCatalogComponent } from './components/iceberg-catalog/iceberg-catalog.component';
 import { PlaygroundComponent } from './components/playground/playground.component';
 import { FlowChartComponent } from './components/flow-chart/flow-chart.component';
+import { ApiDocsComponent } from './components/api-docs/api-docs.component';
 
 export const routes: Routes = [
   {
@@ -120,6 +121,11 @@ export const routes: Routes = [
       {
         path: 'data-flow',
         component: FlowChartComponent
+      },
+      // Documentation Group
+      {
+        path: 'documentation/api',
+        component: ApiDocsComponent
       },
       // AI / ML Group
       {

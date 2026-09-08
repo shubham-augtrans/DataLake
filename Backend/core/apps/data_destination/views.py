@@ -1,5 +1,6 @@
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import DataDestination
@@ -9,6 +10,7 @@ from .serializers import DataDestinationSerializer
 class DataDestinationViewSet(viewsets.ModelViewSet):
     queryset = DataDestination.objects.all().order_by("-created_at")
     serializer_class = DataDestinationSerializer
+    permission_classes = [IsAuthenticated]
 
     @action(detail=False, methods=["get"])
     def count(self, request):

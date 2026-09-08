@@ -133,3 +133,20 @@ class MetabaseClient:
 
     def dashboard_url(self, dashboard_id):
         return f"{self.base_url}/dashboard/{dashboard_id}"
+
+    def create_public_link(self, dashboard_id):
+        """
+        Mints a public, unauthenticated link for the dashboard so it can be
+        embedded in an <iframe> in the app. Requires the "Public Sharing"
+        setting to be turned on in Metabase Admin (a security setting this
+        app deliberately never toggles on its own).
+        """
+        try:
+            result = self._post(f"/api/dashboard/{dashboard_id}/public_link")
+        except MetabaseError as ex:
+            raise MetabaseError(
+                f"Could not create a public link ({ex}). "
+                "Enable 'Public Sharing' in Metabase Admin -> Settings first."
+            )
+
+        return f"{self.base_url}/public/dashboard/{result['uuid']}"

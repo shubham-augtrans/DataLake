@@ -55,7 +55,21 @@ class PipelineService:
             f"{source_type} -> {destination_type}"
         )
 
+    def _teardown_existing_flow(self):
+        """
+        Deletes the NiFi flow left over from this pipeline's previous run,
+        if any, before building a new one - otherwise every re-run of the
+        same pipeline leaves the old process group (and its processors and
+        controller services) orphaned in NiFi forever.
+        """
+        if self.pipeline.nifi_process_group_id:
+            NiFiClient().teardown_process_group(
+                self.pipeline.nifi_process_group_id
+            )
+
     def _postgres_to_minio(self):
+
+        self._teardown_existing_flow()
 
         builder = PostgresToMinioJobBuilder(
             self.pipeline
@@ -141,6 +155,8 @@ class PipelineService:
 
     def _mongo_to_minio(self):
 
+        self._teardown_existing_flow()
+
         builder = MongoToMinioJobBuilder(
             self.pipeline
         )
@@ -170,6 +186,8 @@ class PipelineService:
         return result
 
     def _kafka_to_minio(self):
+
+        self._teardown_existing_flow()
 
         builder = KafkaToMinioJobBuilder(
             self.pipeline

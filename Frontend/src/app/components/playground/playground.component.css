@@ -8,8 +8,84 @@
 
 .playground-page {
   padding: 24px;
-  max-width: 1100px;
+  max-width: 1440px;
   margin: 0 auto;
+}
+
+/* ===========================
+   Two-section layout
+=========================== */
+.playground-sections {
+  display: grid;
+  grid-template-columns: minmax(360px, 460px) 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .playground-sections {
+    grid-template-columns: 1fr;
+  }
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.widget-list-wrapper {
+  border-radius: 12px;
+  border: 1px solid #424655;
+  background-color: #1d1f29;
+  padding: 16px;
+}
+
+.widget-list-heading {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #e1e1ef;
+}
+
+.dashboard-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dashboard-section .section-heading {
+  margin: 0;
+}
+
+.dashboard-iframe {
+  width: 100%;
+  height: 720px;
+  border-radius: 12px;
+  border: 1px solid #424655;
+  background-color: #ffffff;
+}
+
+.dashboard-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 360px;
+  border-radius: 12px;
+  border: 1px dashed #424655;
+  background-color: #1d1f29;
+  color: #8d90a1;
+  font-size: 12px;
+  text-align: center;
+  padding: 24px;
+}
+
+.dashboard-placeholder i {
+  font-size: 22px;
+  color: #b4c5ff;
 }
 
 /* ===========================
@@ -173,29 +249,11 @@
   height: 28px;
 }
 
-/* ===========================
-   Result panel
-=========================== */
-.result-panel {
-  border-radius: 12px;
-  border: 1px solid #424655;
-  background-color: #1d1f29;
-  padding: 20px;
-}
-
 .sql-preview {
   display: flex;
   flex-direction: column;
   gap: 6px;
   margin-bottom: 12px;
-}
-
-.sql-label {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #8d90a1;
 }
 
 .sql-preview code {
@@ -211,36 +269,13 @@
   word-break: break-word;
 }
 
-.result-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 10px;
-  color: #c3c6d8;
-  margin-bottom: 16px;
-}
-
 .dot {
   color: #424655;
 }
 
 /* ===========================
-   Dashboard success banner
+   Open-in-Metabase link
 =========================== */
-.dashboard-success {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  border-radius: 10px;
-  background-color: rgba(74, 222, 128, 0.1);
-  border: 1px solid rgba(74, 222, 128, 0.35);
-  color: #4ade80;
-  font-size: 12px;
-  font-weight: 500;
-  margin-bottom: 20px;
-}
-
 .open-dashboard-link {
   margin-left: auto;
   display: flex;

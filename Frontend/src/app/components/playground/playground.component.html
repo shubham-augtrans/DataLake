@@ -28,85 +28,129 @@
     <a routerLink="/sql-editor" class="banner-link">Go to SQL Editor</a>
   </div>
 
-  <!-- Prompt input -->
-  <div class="prompt-panel">
-    <textarea
-      class="prompt-textarea"
-      [(ngModel)]="prompt"
-      placeholder="e.g. Show average pressure per machine"
-      rows="3">
-    </textarea>
+  <!-- Two-section layout: prompt on the left, live Metabase dashboard on the right -->
+  <div class="playground-sections">
 
-    <div class="prompt-actions">
-      <div class="example-chips">
-        <button
-          type="button"
-          class="example-chip"
-          *ngFor="let example of examplePrompts"
-          (click)="useExample(example)">
-          {{ example }}
-        </button>
+    <!-- Section 1: Prompt -->
+    <div class="section prompt-section">
+      <h3 class="section-heading">1. Describe the dashboard</h3>
+
+      <div class="prompt-panel">
+        <textarea
+          class="prompt-textarea"
+          [(ngModel)]="prompt"
+          placeholder="e.g. Show average pressure per machine"
+          rows="4">
+        </textarea>
+
+        <div class="prompt-actions">
+          <div class="example-chips">
+            <button
+              type="button"
+              class="example-chip"
+              *ngFor="let example of examplePrompts"
+              (click)="useExample(example)">
+              {{ example }}
+            </button>
+          </div>
+
+          <p-button
+            label="Generate"
+            icon="pi pi-sparkles"
+            [loading]="generating"
+            [disabled]="!canGenerate"
+            (onClick)="generate()">
+          </p-button>
+        </div>
       </div>
 
-      <p-button
-        label="Generate"
-        icon="pi pi-sparkles"
-        [loading]="generating"
-        [disabled]="!canGenerate"
-        (onClick)="generate()">
-      </p-button>
+      <!-- Error -->
+      <div class="playground-error" *ngIf="errorMessage">
+        <i class="pi pi-exclamation-triangle"></i>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- Generating -->
+      <div class="generating-state" *ngIf="generating">
+        <p-progressSpinner styleClass="spinner-sm"></p-progressSpinner>
+        <span>Asking the model, then building the dashboard in Metabase...</span>
+      </div>
+
+      <!-- Widgets -->
+      <div class="widget-list-wrapper" *ngIf="result && !generating">
+        <h4 class="widget-list-heading">Widgets created</h4>
+
+        <div class="widget-list">
+          <div class="widget-row" *ngFor="let widget of result.widgets">
+
+            <div class="widget-row-header">
+              <span class="widget-title">{{ widget.title }}</span>
+              <span class="widget-chart-type" *ngIf="widget.chart_type">{{ widget.chart_type }}</span>
+            </div>
+
+            <div class="sql-preview" *ngIf="widget.sql">
+              <code>{{ widget.sql }}</code>
+            </div>
+
+            <div class="widget-meta" *ngIf="!widget.error">
+              <span>{{ widget.row_count }} row{{ widget.row_count === 1 ? '' : 's' }}</span>
+              <span class="dot">·</span>
+              <span>{{ widget.duration_ms }} ms</span>
+            </div>
+
+            <div class="widget-error" *ngIf="widget.error">
+              <i class="pi pi-exclamation-triangle"></i>
+              <span>{{ widget.error }}</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <!-- Error -->
-  <div class="playground-error" *ngIf="errorMessage">
-    <i class="pi pi-exclamation-triangle"></i>
-    <span>{{ errorMessage }}</span>
-  </div>
+    <!-- Section 2: Live dashboard -->
+    <div class="section dashboard-section">
+      <div class="dashboard-section-header">
+        <h3 class="section-heading">2. Live dashboard</h3>
+        <a
+          *ngIf="result"
+          [href]="result.dashboard_url"
+          target="_blank"
+          rel="noopener"
+          class="open-dashboard-link">
+          Open in Metabase
+          <i class="pi pi-external-link"></i>
+        </a>
+      </div>
 
-  <!-- Generating -->
-  <div class="generating-state" *ngIf="generating">
-    <p-progressSpinner styleClass="spinner-sm"></p-progressSpinner>
-    <span>Asking the model, then building the dashboard in Metabase...</span>
-  </div>
+      <!-- Nothing generated yet -->
+      <div class="dashboard-placeholder" *ngIf="!result && !generating">
+        <i class="pi pi-objects-column"></i>
+        <span>Your dashboard will appear here once generated.</span>
+      </div>
 
-  <!-- Result -->
-  <div class="result-panel" *ngIf="result && !generating">
+      <!-- Generating -->
+      <div class="dashboard-placeholder" *ngIf="generating">
+        <p-progressSpinner styleClass="spinner-sm"></p-progressSpinner>
+        <span>Building your dashboard...</span>
+      </div>
 
-    <div class="dashboard-success">
-      <i class="pi pi-check-circle"></i>
-      <span>Dashboard created in Metabase</span>
-      <a [href]="result.dashboard_url" target="_blank" rel="noopener" class="open-dashboard-link">
-        Open in Metabase
-        <i class="pi pi-external-link"></i>
-      </a>
-    </div>
+      <!-- Embed available -->
+      <iframe
+        *ngIf="result && !generating && embedSrc"
+        [src]="embedSrc"
+        class="dashboard-iframe"
+        frameborder="0">
+      </iframe>
 
-    <h3 class="section-heading">Widgets created</h3>
-
-    <div class="widget-list">
-      <div class="widget-row" *ngFor="let widget of result.widgets">
-
-        <div class="widget-row-header">
-          <span class="widget-title">{{ widget.title }}</span>
-          <span class="widget-chart-type" *ngIf="widget.chart_type">{{ widget.chart_type }}</span>
-        </div>
-
-        <div class="sql-preview" *ngIf="widget.sql">
-          <code>{{ widget.sql }}</code>
-        </div>
-
-        <div class="widget-meta" *ngIf="!widget.error">
-          <span>{{ widget.row_count }} row{{ widget.row_count === 1 ? '' : 's' }}</span>
-          <span class="dot">·</span>
-          <span>{{ widget.duration_ms }} ms</span>
-        </div>
-
-        <div class="widget-error" *ngIf="widget.error">
-          <i class="pi pi-exclamation-triangle"></i>
-          <span>{{ widget.error }}</span>
-        </div>
-
+      <!-- Dashboard exists but embedding isn't enabled -->
+      <div class="dashboard-placeholder" *ngIf="result && !generating && !embedSrc">
+        <i class="pi pi-info-circle"></i>
+        <span>Dashboard created, but it can't be embedded here yet — ask an admin to turn on "Public Sharing" in Metabase, then generate again.</span>
+        <a [href]="result.dashboard_url" target="_blank" rel="noopener" class="open-dashboard-link">
+          Open in Metabase
+          <i class="pi pi-external-link"></i>
+        </a>
       </div>
     </div>
 

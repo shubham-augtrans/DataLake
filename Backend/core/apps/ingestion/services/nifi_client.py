@@ -440,4 +440,110 @@ class NiFiClient:
         return self.put(
             f"/controller-services/{service_id}",
             payload,
-        )   
+        )
+
+    # --------------------------------------------------
+    # DELETE / TEARDOWN
+    # --------------------------------------------------
+
+    def get_process_group_flow(self, process_group_id):
+        return self.get(
+            f"/flow/process-groups/{process_group_id}"
+        )
+
+    def get_process_group_controller_services(self, process_group_id):
+        return self.get(
+            f"/flow/process-groups/{process_group_id}/controller-services"
+        )
+
+    def delete_connection(self, connection_id, revision_version):
+        return self.delete(
+            f"/connections/{connection_id}",
+            params={"version": revision_version},
+        )
+
+    def delete_processor(self, processor_id, revision_version):
+        return self.delete(
+            f"/processors/{processor_id}",
+            params={"version": revision_version},
+        )
+
+    def delete_controller_service(self, service_id, revision_version):
+        return self.delete(
+            f"/controller-services/{service_id}",
+            params={"version": revision_version},
+        )
+
+    def delete_process_group(self, process_group_id, revision_version):
+        return self.delete(
+            f"/process-groups/{process_group_id}",
+            params={"version": revision_version},
+        )
+
+    def teardown_process_group(self, process_group_id):
+        """
+        Stops/disables and deletes everything inside a process group, then
+        the group itself - the same manual sequence a stale test flow needs
+        (stop processors -> delete connections -> delete processors ->
+        disable+delete controller services -> delete process group).
+
+        Used to clean up a pipeline's previous NiFi flow before rebuilding
+        it, so re-running a pipeline reuses the slot instead of leaking a
+        brand-new orphaned process group on every run. A missing group
+        (already deleted, or never built) is treated as already torn down.
+        """
+
+        try:
+            flow = self.get_process_group_flow(process_group_id)
+        except requests.HTTPError as ex:
+            if ex.response is not None and ex.response.status_code == 404:
+                return
+            raise
+
+        contents = flow["processGroupFlow"]["flow"]
+
+        for processor in contents.get("processors", []):
+            component = processor["component"]
+            if component.get("state") == "RUNNING":
+                self.update_processor_run_status(
+                    component["id"],
+                    processor["revision"]["version"],
+                    "STOPPED",
+                )
+
+        for connection in contents.get("connections", []):
+            self.delete_connection(
+                connection["component"]["id"],
+                connection["revision"]["version"],
+            )
+
+        for processor in contents.get("processors", []):
+            current = self.get_processor(processor["component"]["id"])
+            self.delete_processor(
+                current["component"]["id"],
+                current["revision"]["version"],
+            )
+
+        services = self.get_process_group_controller_services(process_group_id)
+
+        for service in services.get("controllerServices", []):
+            component = service["component"]
+            if component.get("state") == "ENABLED":
+                self.update_controller_service_run_status(
+                    component["id"],
+                    service["revision"]["version"],
+                    "DISABLED",
+                )
+
+        for service in services.get("controllerServices", []):
+            current = self.get_controller_service(service["component"]["id"])
+            self.delete_controller_service(
+                current["component"]["id"],
+                current["revision"]["version"],
+            )
+
+        group = self.get(f"/process-groups/{process_group_id}")
+        self.delete_process_group(
+            process_group_id,
+            group["revision"]["version"],
+        )

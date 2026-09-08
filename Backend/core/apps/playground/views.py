@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -17,6 +18,8 @@ class PromptToDashboardView(APIView):
     Metabase Card + Dashboard for the results - rendering happens in Metabase,
     not in this app.
     """
+
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         data_source_id = request.data.get("data_source")
@@ -101,9 +104,18 @@ class PromptToDashboardView(APIView):
         dashboard = metabase.create_dashboard(name=f"AI: {prompt[:60]}")
         metabase.add_cards_to_dashboard(dashboard["id"], card_ids)
 
+        try:
+            embed_url = metabase.create_public_link(dashboard["id"])
+        except MetabaseError:
+            # Public sharing may not be turned on in Metabase yet - the
+            # dashboard still exists and is reachable via dashboard_url,
+            # it just can't be embedded in an iframe until an admin enables it.
+            embed_url = None
+
         return Response({
             "prompt": prompt,
             "dashboard_url": metabase.dashboard_url(dashboard["id"]),
+            "embed_url": embed_url,
             "widgets": [
                 {
                     "title": w["title"],

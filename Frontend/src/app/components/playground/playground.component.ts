@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
@@ -27,6 +28,7 @@ export interface WidgetSummary {
 export interface GenerateResponse {
   prompt: string;
   dashboard_url: string;
+  embed_url: string | null;
   widgets: WidgetSummary[];
 }
 
@@ -52,7 +54,10 @@ const EXAMPLE_PROMPTS = [
 })
 export class PlaygroundComponent implements OnInit {
 
-  constructor(private configService: ConfigService) {}
+  constructor(
+    private configService: ConfigService,
+    private sanitizer: DomSanitizer
+  ) {}
 
   examplePrompts = EXAMPLE_PROMPTS;
 
@@ -64,6 +69,7 @@ export class PlaygroundComponent implements OnInit {
   errorMessage = '';
 
   result: GenerateResponse | null = null;
+  embedSrc: SafeResourceUrl | null = null;
 
   ngOnInit(): void {
     this.loadPostgresSources();
@@ -102,6 +108,7 @@ export class PlaygroundComponent implements OnInit {
     this.generating = true;
     this.errorMessage = '';
     this.result = null;
+    this.embedSrc = null;
 
     this.configService.post('/playground/generate/', {
       data_source: this.selectedSourceId,
@@ -110,6 +117,9 @@ export class PlaygroundComponent implements OnInit {
       next: (response: GenerateResponse) => {
         this.generating = false;
         this.result = response;
+        this.embedSrc = response.embed_url
+          ? this.sanitizer.bypassSecurityTrustResourceUrl(response.embed_url)
+          : null;
       },
       error: (error) => {
         this.generating = false;

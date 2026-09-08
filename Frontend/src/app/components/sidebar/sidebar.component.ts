@@ -96,6 +96,10 @@ export class SidebarComponent {
     { label: 'Ranger', icon: 'shield', route: '', external: true, url: environment.rangerUrl }
   ];
 
+  documentationItems: NavItem[] = [
+    { label: 'API', icon: 'api', route: '/documentation/api' }
+  ];
+
   aiMlItems: NavItem[] = [
     { label: 'Playground', icon: 'auto_awesome', route: '/playground' },
     { label: 'Agents', icon: 'support_agent', route: '/agents' },

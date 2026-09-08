@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -6,6 +7,8 @@ from .services import IcebergCatalogClient, IcebergCatalogError
 
 
 class NamespaceListView(APIView):
+
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
@@ -20,6 +23,8 @@ class NamespaceListView(APIView):
 
 
 class TableListView(APIView):
+
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         namespace = request.query_params.get("namespace")
@@ -42,6 +47,8 @@ class TableListView(APIView):
 
 
 class TableDetailView(APIView):
+
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         namespace = request.query_params.get("namespace")

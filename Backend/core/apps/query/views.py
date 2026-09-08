@@ -197,6 +197,7 @@ class QueryHistoryViewSet(
 ):
     queryset = QueryHistory.objects.select_related("data_source").all()
     serializer_class = QueryHistorySerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = super().get_queryset()
