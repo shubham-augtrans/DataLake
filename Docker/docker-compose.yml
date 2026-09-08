@@ -75,6 +75,14 @@ services:
         username="shubham" password="Shubham@123456"
         user_shubham="Shubham@123456";
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      # Single-broker cluster: the internal __consumer_offsets/transaction
+      # topics default to replication factor 3, which can never be
+      # satisfied here - they silently fail to create, which breaks every
+      # consumer group (coordinator discovery hangs forever) while
+      # producing and plain metadata calls keep working fine, masking it.
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
     ports:
       - "9094:9094"
     volumes:

@@ -4,21 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 
 import { ConfigService } from '../../services/config.service';
-
-export interface DataSourceOption {
-  id: number;
-  name: string;
-  source_type: string;
-}
 
 export interface QueryResult {
   columns: string[];
@@ -30,7 +20,6 @@ export interface QueryResult {
 
 export interface QueryHistoryItem {
   id: number;
-  data_source: number;
   data_source_name: string;
   sql_text: string;
   status: 'success' | 'error';
@@ -48,10 +37,6 @@ export interface QueryHistoryItem {
     FormsModule,
     RouterLink,
     ButtonModule,
-    DialogModule,
-    DropdownModule,
-    InputTextModule,
-    PasswordModule,
     ProgressSpinnerModule,
     TableModule,
     TooltipModule
@@ -62,9 +47,6 @@ export interface QueryHistoryItem {
 export class QueryComponent implements OnInit {
 
   constructor(private configService: ConfigService) {}
-
-  postgresSources: DataSourceOption[] = [];
-  selectedSourceId: number | null = null;
 
   sqlText = 'SELECT 1;';
 
@@ -79,39 +61,8 @@ export class QueryComponent implements OnInit {
 
   history: QueryHistoryItem[] = [];
 
-  connectionDialogVisible = false;
-  savingConnection = false;
-  connectionError = '';
-
-  connectionForm = {
-    name: '',
-    host: '',
-    port: '5432',
-    database: '',
-    username: '',
-    password: ''
-  };
-
   ngOnInit(): void {
-    this.loadPostgresSources();
     this.loadHistory();
-  }
-
-  loadPostgresSources(): void {
-    this.configService.get('/data-sources/').subscribe({
-      next: (response: DataSourceOption[]) => {
-        this.postgresSources = Array.isArray(response)
-          ? response.filter(s => s.source_type === 'postgres')
-          : [];
-
-        if (this.postgresSources.length > 0 && this.selectedSourceId === null) {
-          this.selectedSourceId = this.postgresSources[0].id;
-        }
-      },
-      error: (error) => {
-        console.error('Failed to load data sources', error);
-      }
-    });
   }
 
   loadHistory(): void {
@@ -126,7 +77,7 @@ export class QueryComponent implements OnInit {
   }
 
   get canRun(): boolean {
-    return !!this.selectedSourceId && !!this.sqlText.trim() && !this.running;
+    return !!this.sqlText.trim() && !this.running;
   }
 
   newQuery(): void {
@@ -138,7 +89,7 @@ export class QueryComponent implements OnInit {
   }
 
   runQuery(): void {
-    if (!this.canRun || !this.selectedSourceId) {
+    if (!this.canRun) {
       return;
     }
 
@@ -146,7 +97,6 @@ export class QueryComponent implements OnInit {
     this.errorMessage = '';
 
     this.configService.post('/query/execute/', {
-      data_source: this.selectedSourceId,
       sql: this.sqlText
     }).subscribe({
       next: (result: QueryResult) => {
@@ -184,57 +134,5 @@ export class QueryComponent implements OnInit {
 
   useHistoryItem(item: QueryHistoryItem): void {
     this.sqlText = item.sql_text;
-    this.selectedSourceId = item.data_source;
-  }
-
-  get isConnectionFormValid(): boolean {
-    const f = this.connectionForm;
-    return !!(f.name.trim() && f.host.trim() && f.port.trim() && f.database.trim() && f.username.trim() && f.password);
-  }
-
-  openConnectionDialog(): void {
-    this.connectionError = '';
-    this.connectionForm = { name: '', host: '', port: '5432', database: '', username: '', password: '' };
-    this.connectionDialogVisible = true;
-  }
-
-  closeConnectionDialog(): void {
-    this.connectionDialogVisible = false;
-  }
-
-  saveConnection(): void {
-    if (!this.isConnectionFormValid) {
-      return;
-    }
-
-    this.savingConnection = true;
-    this.connectionError = '';
-
-    const payload = {
-      name: this.connectionForm.name.trim(),
-      source_type: 'postgres',
-      description: '',
-      is_active: true,
-      configuration: {
-        host: this.connectionForm.host.trim(),
-        port: this.connectionForm.port.trim(),
-        database: this.connectionForm.database.trim(),
-        username: this.connectionForm.username.trim(),
-        password: this.connectionForm.password
-      }
-    };
-
-    this.configService.post('/data-sources/', payload).subscribe({
-      next: (created: DataSourceOption) => {
-        this.savingConnection = false;
-        this.connectionDialogVisible = false;
-        this.loadPostgresSources();
-        this.selectedSourceId = created.id;
-      },
-      error: (error) => {
-        this.savingConnection = false;
-        this.connectionError = error?.error?.detail || 'Failed to create connection.';
-      }
-    });
   }
 }

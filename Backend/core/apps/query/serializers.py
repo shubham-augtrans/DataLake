@@ -28,7 +28,6 @@ class QueryHistorySerializer(serializers.ModelSerializer):
 
 
 class ExecuteQuerySerializer(serializers.Serializer):
-    data_source = serializers.IntegerField()
     sql = serializers.CharField()
 
 

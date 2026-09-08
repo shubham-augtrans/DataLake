@@ -9,6 +9,11 @@ from django.conf import settings
 MAX_ROWS = 500
 STATEMENT_TIMEOUT_MS = 30_000
 
+# Schema every ingestion pipeline writes into (see spark_runner.target_table) -
+# the SQL Editor defaults to it so plain, unqualified table names resolve
+# against the lakehouse copy in MinIO instead of requiring iceberg.ingested.<table>.
+LAKEHOUSE_SCHEMA = "ingested"
+
 
 class QueryExecutionError(Exception):
     pass
@@ -125,20 +130,26 @@ class TrinoQueryRunner:
     against the real caller, not a shared service account.
     """
 
-    def __init__(self, trino_user):
+    def __init__(self, trino_user, schema=None):
         if not trino_user:
             raise QueryExecutionError("A Trino user identity is required.")
 
         self.trino_user = trino_user
+        self.schema = schema
 
     def _connect(self):
-        return trino.dbapi.connect(
+        kwargs = dict(
             host=settings.TRINO_HOST,
             port=settings.TRINO_PORT,
             user=self.trino_user,
             catalog=settings.TRINO_CATALOG,
             http_scheme="http",
         )
+
+        if self.schema:
+            kwargs["schema"] = self.schema
+
+        return trino.dbapi.connect(**kwargs)
 
     def run(self, sql_text):
         sql_text = (sql_text or "").strip()

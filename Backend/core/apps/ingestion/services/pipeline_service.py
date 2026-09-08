@@ -11,6 +11,11 @@ from apps.ingestion.services.spark_runner import SparkIngestError, run_spark_ing
 DRAIN_POLL_INTERVAL = 2
 DRAIN_TIMEOUT = 60
 
+# Kafka's consumer group join/rebalance alone can take several seconds -
+# long enough that an empty queue at t=2s means "hasn't started yet", not
+# "already drained". Postgres tolerates the same longer wait fine too.
+DRAIN_INITIAL_GRACE = 8
+
 
 class PipelineService:
 
@@ -80,7 +85,7 @@ class PipelineService:
 
         try:
             builder.start(result)
-            self._wait_for_drain(result["process_group_id"])
+            self._wait_for_drain(result["process_group_id"], result["source_processor_id"])
             builder.stop(result)
 
             spark_result = run_spark_ingest(self.pipeline, result["staging_path"])
@@ -102,26 +107,34 @@ class PipelineService:
 
         return result
 
-    def _wait_for_drain(self, process_group_id):
+    def _wait_for_drain(self, process_group_id, source_processor_id):
         """
         Waits for the batch NiFi just started to finish flowing through the
-        pipeline (queued flowfiles back to 0) before stopping the processors
-        and handing off to Spark - bounded so a stuck/misconfigured flow
-        can't hang the request forever.
+        pipeline before stopping the processors and handing off to Spark -
+        bounded so a stuck/misconfigured flow can't hang the request forever.
+
+        An empty queue alone isn't enough to mean "drained" - at t=0 the
+        queue is *always* empty, before the source has produced anything.
+        For Kafka specifically, the consumer group join/rebalance handshake
+        alone can take longer than a short grace period (confirmed via NiFi's
+        own logs: still mid "(Re-)joining group" past 8s), so this also
+        requires the source processor to have actually emitted at least one
+        flowfile before treating an empty queue as genuine completion rather
+        than "hasn't started yet".
         """
 
         nifi = NiFiClient()
         deadline = time.monotonic() + DRAIN_TIMEOUT
 
-        # QueryDatabaseTableRecord needs a moment to start producing before
-        # there's anything to drain - avoid a false "drained" read at t=0.
-        time.sleep(DRAIN_POLL_INTERVAL)
+        time.sleep(DRAIN_INITIAL_GRACE)
 
         while time.monotonic() < deadline:
+            produced = nifi.get_processor(source_processor_id)["status"]["aggregateSnapshot"]["flowFilesOut"]
+
             status = nifi.get_process_group_status(process_group_id)
             queued = status["processGroupStatus"]["aggregateSnapshot"]["flowFilesQueued"]
 
-            if queued == 0:
+            if produced > 0 and queued == 0:
                 return
 
             time.sleep(DRAIN_POLL_INTERVAL)
@@ -183,5 +196,27 @@ class PipelineService:
                 "nifi_destination_processor_id",
             ]
         )
+
+        try:
+            builder.start(result)
+            self._wait_for_drain(result["process_group_id"], result["source_processor_id"])
+            builder.stop(result)
+
+            spark_result = run_spark_ingest(self.pipeline, result["staging_path"])
+
+            self.pipeline.nifi_status = "success"
+            self.pipeline.nifi_last_error = None
+            result["table"] = spark_result["table"]
+
+        except SparkIngestError as ex:
+            builder.stop(result)
+            self.pipeline.nifi_status = "error"
+            self.pipeline.nifi_last_error = str(ex)
+            raise
+
+        finally:
+            self.pipeline.save(
+                update_fields=["nifi_status", "nifi_last_error"]
+            )
 
         return result
