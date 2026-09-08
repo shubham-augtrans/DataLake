@@ -23,10 +23,41 @@ import sys
 
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
+from pyspark.sql.types import StringType
+
+# Matches the pattern NiFi's JsonRecordSetWriter is configured to emit for
+# TIMESTAMP columns (see job_builder.py's JSON Record Writer setup).
+TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS"
 
 
 def build_spark_session():
     return SparkSession.builder.appName("pipeline-ingest").getOrCreate()
+
+
+def promote_timestamp_columns(df):
+    """
+    Spark's JSON reader infers a plain string for any text value, even one
+    that's actually a formatted timestamp - so a source TIMESTAMP column
+    would otherwise land in Iceberg as varchar instead of a real timestamp.
+    Generic (keyed off the values, not any particular column name): a
+    string column is promoted only if every one of its non-null values
+    parses against TIMESTAMP_FORMAT.
+    """
+    for field in df.schema.fields:
+        if not isinstance(field.dataType, StringType):
+            continue
+
+        parsed = F.to_timestamp(F.col(field.name), TIMESTAMP_FORMAT)
+
+        counts = df.select(
+            F.count(F.col(field.name)).alias("total"),
+            F.count(parsed).alias("parsed"),
+        ).first()
+
+        if counts["total"] > 0 and counts["total"] == counts["parsed"]:
+            df = df.withColumn(field.name, parsed)
+
+    return df
 
 
 def preprocess(raw_df):
@@ -60,7 +91,7 @@ def main():
 
     spark.sql(f"CREATE NAMESPACE IF NOT EXISTS {namespace}")
 
-    raw_df = spark.read.json(staging_path)
+    raw_df = promote_timestamp_columns(spark.read.json(staging_path))
     clean_df = preprocess(raw_df)
 
     print(f"Raw rows: {raw_df.count()} -> Clean rows after preprocessing: {clean_df.count()}")

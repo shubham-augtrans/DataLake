@@ -1,6 +1,8 @@
 import requests
 from django.conf import settings
 
+from apps.query.services import LAKEHOUSE_SCHEMA
+
 CHART_TO_DISPLAY = {
     "bar": "bar",
     "line": "line",
@@ -64,31 +66,44 @@ class MetabaseClient:
     def chart_to_display(self, chart_type):
         return CHART_TO_DISPLAY.get(chart_type, "table")
 
-    def find_database_id(self, datasource):
-        """
-        Match this Django DataSource against an already-configured Metabase
-        database connection by dbname - Django never auto-creates Metabase
-        database connections (that would duplicate credential storage and
-        risks drifting from Metabase's own connection-creation API shape).
-        """
-        dbname = (datasource.configuration or {}).get("database")
+    LAKEHOUSE_DATABASE_NAME = "Lakehouse (Trino)"
 
-        if not dbname:
-            raise MetabaseError(
-                f"Data source '{datasource.name}' has no 'database' in its configuration."
-            )
-
+    def find_or_create_lakehouse_database_id(self):
+        """
+        Metabase's own connection to the lakehouse (Iceberg tables on MinIO,
+        queried through Trino) - there's exactly one of these, shared by
+        every Playground dashboard, unlike the old per-DataSource Postgres
+        lookup. Metabase's "starburst" driver speaks Trino's wire protocol.
+        Uses TRINO_INTERNAL_HOST/PORT since Metabase - a container - can't
+        reach Trino via the host-mapped port Django uses.
+        """
         result = self._get("/api/database")
         databases = result.get("data", result) if isinstance(result, dict) else result
 
         for db in databases:
-            if db.get("engine") == "postgres" and (db.get("details") or {}).get("dbname") == dbname:
+            if db.get("name") == self.LAKEHOUSE_DATABASE_NAME:
                 return db["id"]
 
-        raise MetabaseError(
-            f"No Metabase database connection found for database '{dbname}'. "
-            "Add it once in Metabase under Admin -> Databases, then try again."
-        )
+        created = self._post("/api/database", {
+            "name": self.LAKEHOUSE_DATABASE_NAME,
+            "engine": "starburst",
+            "details": {
+                "host": settings.TRINO_INTERNAL_HOST,
+                "port": settings.TRINO_INTERNAL_PORT,
+                "catalog": settings.TRINO_CATALOG,
+                # Without a default schema, Metabase's own query execution
+                # can't resolve the unqualified table names the LLM
+                # generates (Trino error: "Schema must be specified when
+                # session schema is not set") - even though the same SQL
+                # works fine through Django's TrinoQueryRunner, which sets
+                # this explicitly on its own connection.
+                "schema": LAKEHOUSE_SCHEMA,
+                "user": settings.TRINO_METABASE_USER,
+                "ssl": False,
+            },
+        })
+
+        return created["id"]
 
     def create_card(self, database_id, name, sql, display, collection_id=None):
         payload = {

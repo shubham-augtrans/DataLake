@@ -115,12 +115,26 @@ class PostgresToMinioJobBuilder:
     def _create_json_writer_service(self, group_id):
 
         # Defaults (schema-access-strategy=inherit-record-schema) already do
-        # the right thing here - no properties need to be set.
-        return self.nifi.create_controller_service(
+        # the right thing for most fields. The one override needed: without
+        # an explicit Timestamp Format, NiFi renders TIMESTAMP columns as
+        # raw epoch-millis (confirmed live) - Spark then infers a bigint
+        # instead of a real timestamp. An ISO-8601-style pattern makes
+        # Spark's JSON reader infer a proper TimestampType instead.
+        service = self.nifi.create_controller_service(
             process_group_id=group_id,
             service_type=self.JSON_WRITER_SERVICE_TYPE,
             name="JSON Record Writer",
         )
+
+        self.nifi.update_controller_service(
+            service_id=service["id"],
+            revision_version=service["revision"]["version"],
+            properties={
+                "Timestamp Format": "yyyy-MM-dd'T'HH:mm:ss.SSS",
+            },
+        )
+
+        return service
 
     def _create_aws_credentials_service(self, group_id):
 
@@ -188,6 +202,13 @@ class PostgresToMinioJobBuilder:
                 "Database Connection Pooling Service": dbcp_service_id,
                 "Table Name": self.pipeline.source_object,
                 "qdbtr-record-writer": json_writer_service_id,
+                # Without this, NUMERIC/DECIMAL (and DATE/TIME/TIMESTAMP)
+                # columns get written out as JSON strings (e.g.
+                # "pressure":"10.58") instead of numbers - confirmed live by
+                # reading a staged batch's raw JSON. Spark then infers those
+                # columns as StringType, so they land as varchar in Iceberg
+                # and aggregates like AVG() fail on them.
+                "dbf-user-logical-types": "true",
             },
         )
 

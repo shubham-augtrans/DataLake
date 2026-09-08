@@ -1,13 +1,10 @@
 import time
 
-import psycopg2
-import psycopg2.extras
 import trino
 import trino.exceptions
 from django.conf import settings
 
 MAX_ROWS = 500
-STATEMENT_TIMEOUT_MS = 30_000
 
 # Schema every ingestion pipeline writes into (see spark_runner.target_table) -
 # the SQL Editor defaults to it so plain, unqualified table names resolve
@@ -25,101 +22,6 @@ class QueryAuthorizationError(QueryExecutionError):
     from a generic execution error so callers can return 403 instead of 400.
     """
     pass
-
-
-class PostgresQueryRunner:
-    """
-    Executes a single SQL statement against a PostgreSQL-type DataSource.
-    """
-
-    def __init__(self, datasource):
-        if datasource.source_type != "postgres":
-            raise QueryExecutionError(
-                f"SQL execution is only supported for PostgreSQL sources, "
-                f"got '{datasource.source_type}'."
-            )
-
-        self.datasource = datasource
-        self.config = datasource.configuration or {}
-
-    def _connect(self):
-        try:
-            return psycopg2.connect(
-                host=self.config["host"],
-                port=self.config.get("port", 5432),
-                dbname=self.config["database"],
-                user=self.config["username"],
-                password=self.config.get("password"),
-                connect_timeout=10,
-            )
-        except KeyError as ex:
-            raise QueryExecutionError(
-                f"Data source is missing required connection field: {ex}"
-            )
-        except psycopg2.OperationalError as ex:
-            raise QueryExecutionError(f"Failed to connect: {str(ex)}")
-
-    def run(self, sql_text):
-        sql_text = (sql_text or "").strip()
-
-        if not sql_text:
-            raise QueryExecutionError("No SQL statement provided.")
-
-        started = time.monotonic()
-
-        conn = self._connect()
-
-        try:
-            conn.autocommit = True
-
-            with conn.cursor(
-                cursor_factory=psycopg2.extras.RealDictCursor
-            ) as cursor:
-
-                cursor.execute(
-                    f"SET statement_timeout = {STATEMENT_TIMEOUT_MS}"
-                )
-
-                cursor.execute(sql_text)
-
-                if cursor.description is not None:
-                    rows = cursor.fetchmany(MAX_ROWS)
-                    columns = [col.name for col in cursor.description]
-
-                    result_rows = [
-                        [row[col] for col in columns]
-                        for row in rows
-                    ]
-
-                    duration_ms = int(
-                        (time.monotonic() - started) * 1000
-                    )
-
-                    return {
-                        "columns": columns,
-                        "rows": result_rows,
-                        "row_count": len(result_rows),
-                        "truncated": len(result_rows) == MAX_ROWS,
-                        "duration_ms": duration_ms,
-                    }
-
-                duration_ms = int(
-                    (time.monotonic() - started) * 1000
-                )
-
-                return {
-                    "columns": [],
-                    "rows": [],
-                    "row_count": cursor.rowcount,
-                    "truncated": False,
-                    "duration_ms": duration_ms,
-                }
-
-        except psycopg2.Error as ex:
-            raise QueryExecutionError(str(ex).strip())
-
-        finally:
-            conn.close()
 
 
 class TrinoQueryRunner:
@@ -168,7 +70,10 @@ class TrinoQueryRunner:
                 cursor.execute(sql_text)
                 rows = cursor.fetchmany(MAX_ROWS)
 
-            except trino.exceptions.TrinoUserError as ex:
+            except trino.exceptions.TrinoQueryError as ex:
+                # Covers both user errors (bad SQL) and external/internal
+                # errors (e.g. the Iceberg REST catalog being unreachable) -
+                # either way the caller gets a clean message, not a raw 500.
                 message = str(ex)
 
                 if "Access Denied" in message:

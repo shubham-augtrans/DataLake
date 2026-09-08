@@ -1,20 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 import { ButtonModule } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { ConfigService } from '../../services/config.service';
-
-export interface DataSourceOption {
-  id: number;
-  name: string;
-  source_type: string;
-}
 
 export interface WidgetSummary {
   title: string;
@@ -44,15 +36,13 @@ const EXAMPLE_PROMPTS = [
   imports: [
     CommonModule,
     FormsModule,
-    RouterLink,
     ButtonModule,
-    DropdownModule,
     ProgressSpinnerModule
   ],
   templateUrl: './playground.component.html',
   styleUrl: './playground.component.css'
 })
-export class PlaygroundComponent implements OnInit {
+export class PlaygroundComponent {
 
   constructor(
     private configService: ConfigService,
@@ -61,9 +51,6 @@ export class PlaygroundComponent implements OnInit {
 
   examplePrompts = EXAMPLE_PROMPTS;
 
-  postgresSources: DataSourceOption[] = [];
-  selectedSourceId: number | null = null;
-
   prompt = '';
   generating = false;
   errorMessage = '';
@@ -71,33 +58,12 @@ export class PlaygroundComponent implements OnInit {
   result: GenerateResponse | null = null;
   embedSrc: SafeResourceUrl | null = null;
 
-  ngOnInit(): void {
-    this.loadPostgresSources();
-  }
-
-  loadPostgresSources(): void {
-    this.configService.get('/data-sources/').subscribe({
-      next: (response: DataSourceOption[]) => {
-        this.postgresSources = Array.isArray(response)
-          ? response.filter(s => s.source_type === 'postgres')
-          : [];
-
-        if (this.postgresSources.length > 0 && this.selectedSourceId === null) {
-          this.selectedSourceId = this.postgresSources[0].id;
-        }
-      },
-      error: (error) => {
-        console.error('Failed to load data sources', error);
-      }
-    });
-  }
-
   useExample(example: string): void {
     this.prompt = example;
   }
 
   get canGenerate(): boolean {
-    return !!this.selectedSourceId && !!this.prompt.trim() && !this.generating;
+    return !!this.prompt.trim() && !this.generating;
   }
 
   generate(): void {
@@ -111,7 +77,6 @@ export class PlaygroundComponent implements OnInit {
     this.embedSrc = null;
 
     this.configService.post('/playground/generate/', {
-      data_source: this.selectedSourceId,
       prompt: this.prompt
     }).subscribe({
       next: (response: GenerateResponse) => {

@@ -114,52 +114,6 @@
   max-width: 520px;
 }
 
-.connection-picker {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 240px;
-}
-
-.connection-picker label {
-  font-size: 10px;
-  font-weight: 500;
-  color: #c3c6d8;
-}
-
-.w-full {
-  width: 100%;
-}
-
-/* ===========================
-   Banners
-=========================== */
-.no-connection-banner {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  background-color: rgba(180, 197, 255, 0.08);
-  border: 1px solid rgba(180, 197, 255, 0.3);
-  color: #c3c6d8;
-  font-size: 11px;
-  margin-bottom: 16px;
-}
-
-.no-connection-banner i {
-  color: #b4c5ff;
-}
-
-.no-connection-banner span {
-  flex: 1;
-}
-
-.banner-link {
-  color: #b4c5ff;
-  font-weight: 600;
-  text-decoration: none;
-}
 
 .playground-error {
   display: flex;

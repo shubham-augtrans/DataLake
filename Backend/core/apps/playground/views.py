@@ -3,7 +3,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.data_sources.models import DataSource
 from apps.query.models import QueryHistory
 from apps.query.services import QueryExecutionError
 
@@ -14,39 +13,32 @@ from .services import build_widget, decompose_prompt, fetch_schema_summary
 class PromptToDashboardView(APIView):
     """
     Turns a prompt into a real Metabase dashboard: decomposes it into a few
-    chartable sub-questions, runs each against the DataSource, and creates a
-    Metabase Card + Dashboard for the results - rendering happens in Metabase,
-    not in this app.
+    chartable sub-questions, runs each against the lakehouse (Iceberg tables
+    on MinIO, via Trino), and creates a Metabase Card + Dashboard for the
+    results - rendering happens in Metabase, not in this app.
     """
 
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        data_source_id = request.data.get("data_source")
         prompt = (request.data.get("prompt") or "").strip()
 
-        if not data_source_id or not prompt:
+        if not prompt:
             return Response(
-                {"error": "data_source and prompt are required."},
+                {"error": "prompt is required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        try:
-            datasource = DataSource.objects.get(pk=data_source_id)
-        except DataSource.DoesNotExist:
-            return Response(
-                {"error": "Data source not found."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        trino_user = request.user.email.split("@")[0]
 
         try:
-            schema_summary = fetch_schema_summary(datasource)
+            schema_summary = fetch_schema_summary(trino_user)
         except QueryExecutionError as ex:
             return Response({"error": str(ex)}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             metabase = MetabaseClient()
-            database_id = metabase.find_database_id(datasource)
+            database_id = metabase.find_or_create_lakehouse_database_id()
         except MetabaseError as ex:
             return Response({"error": str(ex)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -57,7 +49,7 @@ class PromptToDashboardView(APIView):
 
         for sub_question in sub_questions:
             widget = build_widget(
-                datasource,
+                trino_user,
                 sub_question["title"],
                 sub_question["question"],
                 schema_summary,
@@ -66,7 +58,7 @@ class PromptToDashboardView(APIView):
 
             if "error" in widget:
                 QueryHistory.objects.create(
-                    data_source=datasource,
+                    trino_user=trino_user,
                     sql_text=f"-- prompt: {prompt} :: {widget['title']}",
                     status="error",
                     error_message=widget["error"],
@@ -83,7 +75,7 @@ class PromptToDashboardView(APIView):
                 card_ids.append(card["id"])
 
                 QueryHistory.objects.create(
-                    data_source=datasource,
+                    trino_user=trino_user,
                     sql_text=f"-- prompt: {prompt} :: {widget['title']}\n{widget['sql']}",
                     status="success",
                     row_count=widget["row_count"],

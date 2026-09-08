@@ -4,28 +4,8 @@
   <div class="page-header">
     <div>
       <h1>AI Playground</h1>
-      <p>Describe the dashboard you want in plain English — a local Ollama model turns it into SQL and builds a real dashboard in Metabase.</p>
+      <p>Describe the dashboard you want in plain English — a local Ollama model turns it into SQL against the lakehouse (Iceberg tables in MinIO, via Trino) and builds a real dashboard in Metabase.</p>
     </div>
-
-    <div class="connection-picker" *ngIf="postgresSources.length > 0">
-      <label>Connection</label>
-      <p-dropdown
-        [options]="postgresSources"
-        optionLabel="name"
-        optionValue="id"
-        placeholder="Select a connection"
-        appendTo="body"
-        [(ngModel)]="selectedSourceId"
-        styleClass="w-full">
-      </p-dropdown>
-    </div>
-  </div>
-
-  <!-- No connection yet -->
-  <div class="no-connection-banner" *ngIf="postgresSources.length === 0">
-    <i class="pi pi-info-circle"></i>
-    <span>No PostgreSQL connection yet — add one from the SQL Editor or Data Ingestion first.</span>
-    <a routerLink="/sql-editor" class="banner-link">Go to SQL Editor</a>
   </div>
 
   <!-- Two-section layout: prompt on the left, live Metabase dashboard on the right -->

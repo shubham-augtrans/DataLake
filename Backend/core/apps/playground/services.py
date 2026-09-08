@@ -5,7 +5,7 @@ from decimal import Decimal
 import requests
 from django.conf import settings
 
-from apps.query.services import PostgresQueryRunner, QueryExecutionError
+from apps.query.services import LAKEHOUSE_SCHEMA, QueryExecutionError, TrinoQueryRunner
 
 OLLAMA_TIMEOUT = 60
 MAX_DASHBOARD_WIDGETS = 4
@@ -19,30 +19,24 @@ class PromptToSqlError(Exception):
     pass
 
 
-def fetch_schema_summary(datasource, max_tables=15, max_columns_per_table=20):
+def fetch_schema_summary(trino_user, max_tables=15, max_columns_per_table=20):
     """
-    Compact "table(col type, col type, ...)" schema listing for a Postgres
-    DataSource, used as grounding context for the LLM prompt.
+    Compact "table(col type, col type, ...)" schema listing for the
+    lakehouse's `ingested` schema (Iceberg tables on MinIO, queried through
+    Trino), used as grounding context for the LLM prompt.
     """
-    runner = PostgresQueryRunner(datasource)
+    runner = TrinoQueryRunner(trino_user, schema=LAKEHOUSE_SCHEMA)
 
-    result = runner.run("""
-        SELECT table_name, column_name, data_type
-        FROM information_schema.columns
-        WHERE table_schema = 'public'
-        ORDER BY table_name, ordinal_position
-    """)
+    tables = runner.list_tables(settings.TRINO_CATALOG, LAKEHOUSE_SCHEMA)
 
-    tables = {}
-    for table_name, column_name, data_type in result["rows"]:
-        columns = tables.setdefault(table_name, [])
-        if len(columns) < max_columns_per_table:
-            columns.append(f"{column_name} {data_type}")
-
-    lines = [
-        f"{table}({', '.join(columns)})"
-        for table, columns in list(tables.items())[:max_tables]
-    ]
+    lines = []
+    for table in tables[:max_tables]:
+        columns = runner.list_columns(settings.TRINO_CATALOG, LAKEHOUSE_SCHEMA, table)
+        column_descriptions = [
+            f"{column['name']} {column['type']}"
+            for column in columns[:max_columns_per_table]
+        ]
+        lines.append(f"{table}({', '.join(column_descriptions)})")
 
     return "\n".join(lines)
 
@@ -59,21 +53,27 @@ def _extract_sql(raw_text):
     if not match:
         raise PromptToSqlError("The model did not return a SQL query.")
 
+    # Truncate to the first statement (defuses stacked queries) and drop the
+    # trailing semicolon - Trino's parser rejects a statement that ends with
+    # one (unlike the Postgres driver this used to run through).
     sql = match.group(0).strip()
-    sql = sql.split(";")[0].strip() + ";"
+    sql = sql.split(";")[0].strip()
 
     return sql
 
 
-def generate_sql(datasource, prompt, schema_summary):
+def generate_sql(prompt, schema_summary):
     """
     Ask the local Ollama model for a single read-only SQL statement
     answering `prompt` against `schema_summary`.
     """
     system_prompt = (
-        "You are a SQL generator for PostgreSQL. Given a database schema and a "
-        "question, respond with ONLY a single SELECT statement that answers the "
-        "question - no explanation, no markdown fences, nothing but SQL.\n"
+        "You are a SQL generator for Trino, querying Iceberg tables in a "
+        "data lakehouse. Table names are unqualified (the schema is already "
+        "selected) - never prefix them with a catalog or schema name. Given "
+        "a database schema and a question, respond with ONLY a single "
+        "SELECT statement that answers the question - no explanation, no "
+        "markdown fences, nothing but SQL.\n"
         "Never use INSERT, UPDATE, DELETE, DROP, ALTER, or any statement other "
         "than SELECT.\n"
         "When the question asks for a breakdown 'per X' or 'by X', you MUST "
@@ -216,7 +216,7 @@ def decompose_prompt(prompt, schema_summary, max_widgets=MAX_DASHBOARD_WIDGETS):
         return fallback
 
 
-def build_widget(datasource, title, question, schema_summary):
+def build_widget(trino_user, title, question, schema_summary):
     """
     Run the existing single-question pipeline (generate_sql -> run -> infer_chart)
     for one dashboard widget. Isolated per-widget failure: returns an error entry
@@ -224,8 +224,8 @@ def build_widget(datasource, title, question, schema_summary):
     dashboard.
     """
     try:
-        sql = generate_sql(datasource, question, schema_summary)
-        result = PostgresQueryRunner(datasource).run(sql)
+        sql = generate_sql(question, schema_summary)
+        result = TrinoQueryRunner(trino_user, schema=LAKEHOUSE_SCHEMA).run(sql)
         chart = infer_chart(result["columns"], result["rows"])
 
         return {

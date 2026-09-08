@@ -259,3 +259,11 @@ METABASE_API_KEY = os.getenv("METABASE_API_KEY", "")
 TRINO_HOST = os.getenv("TRINO_HOST", "localhost")
 TRINO_PORT = int(os.getenv("TRINO_PORT", "8082"))
 TRINO_CATALOG = os.getenv("TRINO_CATALOG", "iceberg")
+
+# Trino's address as reached from *inside* the Docker network (used when
+# Metabase - itself a container - needs to connect, as opposed to Django
+# which runs on the host and uses TRINO_HOST/TRINO_PORT above). Trino's
+# container-internal port is 8080, mapped to the host-exposed 8082.
+TRINO_INTERNAL_HOST = os.getenv("TRINO_INTERNAL_HOST", "trino")
+TRINO_INTERNAL_PORT = int(os.getenv("TRINO_INTERNAL_PORT", "8080"))
+TRINO_METABASE_USER = os.getenv("TRINO_METABASE_USER", "admin")
