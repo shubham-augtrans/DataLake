@@ -3,7 +3,7 @@
   width: 100%;
   background-color: #11131c; /* surface / background */
   color: #e1e1ef; /* on-background */
-  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
   display: flex;
   flex-direction: column;
 }

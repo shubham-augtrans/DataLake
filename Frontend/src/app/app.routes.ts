@@ -13,6 +13,7 @@ import { IcebergCatalogComponent } from './components/iceberg-catalog/iceberg-ca
 import { PlaygroundComponent } from './components/playground/playground.component';
 import { FlowChartComponent } from './components/flow-chart/flow-chart.component';
 import { ApiDocsComponent } from './components/api-docs/api-docs.component';
+import { ModelsComponent } from './components/models/models.component';
 
 export const routes: Routes = [
   {
@@ -154,8 +155,7 @@ export const routes: Routes = [
       },
       {
         path: 'models',
-        component: ModuleViewComponent,
-        data: { title: 'Model Registry', icon: 'bubble_chart', description: 'Versioned machine learning model registry with deployment governance.' }
+        component: ModelsComponent
       },
       {
         path: 'serving',

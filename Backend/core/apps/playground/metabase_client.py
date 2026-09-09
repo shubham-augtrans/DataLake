@@ -121,6 +121,24 @@ class MetabaseClient:
 
         return self._post("/api/card", payload)
 
+    def update_card(self, card_id, sql, database_id, display):
+        """
+        Rewrites an existing card's query and chart type in place, instead of
+        creating a new card - used when the user asks to re-render the same
+        data differently ("same data as a pie chart") so the dashboard
+        already on screen updates rather than a second one appearing.
+        """
+        payload = {
+            "display": display,
+            "dataset_query": {
+                "type": "native",
+                "native": {"query": sql},
+                "database": database_id,
+            },
+        }
+
+        return self._put(f"/api/card/{card_id}", payload)
+
     def create_dashboard(self, name, collection_id=None):
         return self._post("/api/dashboard", {"name": name, "collection_id": collection_id})
 
@@ -143,6 +161,109 @@ class MetabaseClient:
                 "col": col,
                 "size_x": DEFAULT_SIZE_X,
                 "size_y": DEFAULT_SIZE_Y,
+            })
+
+        return self._put(f"/api/dashboard/{dashboard_id}/cards", {"cards": cards})
+
+    def append_card_to_dashboard(self, dashboard_id, card_id):
+        """
+        Adds a new card to a dashboard alongside whatever's already on it
+        (instead of replacing anything) - used when the user asks to add a
+        chart to the dashboard already on screen rather than replace it.
+        """
+        dashboard = self._get(f"/api/dashboard/{dashboard_id}")
+        existing = dashboard.get("dashcards", [])
+
+        cards = [
+            {
+                "id": dashcard["id"],
+                "card_id": dashcard["card_id"],
+                "row": dashcard["row"],
+                "col": dashcard["col"],
+                "size_x": dashcard["size_x"],
+                "size_y": dashcard["size_y"],
+            }
+            for dashcard in existing
+        ]
+
+        index = len(cards)
+        row = (index // GRID_COLUMNS) * DEFAULT_SIZE_Y
+        col = (index % GRID_COLUMNS) * DEFAULT_SIZE_X
+
+        cards.append({
+            "id": -(index + 1),
+            "card_id": card_id,
+            "row": row,
+            "col": col,
+            "size_x": DEFAULT_SIZE_X,
+            "size_y": DEFAULT_SIZE_Y,
+        })
+
+        return self._put(f"/api/dashboard/{dashboard_id}/cards", {"cards": cards})
+
+    def get_dashboard(self, dashboard_id):
+        return self._get(f"/api/dashboard/{dashboard_id}")
+
+    def get_dashboard_cards_summary(self, dashboard_id):
+        """
+        [{card_id, name, display, row, col, size_x, size_y}, ...] for the
+        cards currently on a dashboard, in on-screen order (row then col) -
+        used to let the user refer to a chart by name ("the pressure chart")
+        or position ("the second chart") in a follow-up message.
+        """
+        dashboard = self.get_dashboard(dashboard_id)
+        dashcards = dashboard.get("dashcards", [])
+
+        summary = [
+            {
+                "card_id": dc["card_id"],
+                "name": (dc.get("card") or {}).get("name", ""),
+                "display": (dc.get("card") or {}).get("display", ""),
+                "row": dc["row"],
+                "col": dc["col"],
+                "size_x": dc["size_x"],
+                "size_y": dc["size_y"],
+            }
+            for dc in dashcards
+        ]
+        summary.sort(key=lambda c: (c["row"], c["col"]))
+        return summary
+
+    def rename_card(self, card_id, name):
+        return self._put(f"/api/card/{card_id}", {"name": name})
+
+    def get_card(self, card_id):
+        return self._get(f"/api/card/{card_id}")
+
+    def update_card_visualization_settings(self, card_id, settings_patch):
+        """
+        Merges `settings_patch` into whatever visualization_settings the
+        card already has (colors, etc.) instead of replacing them wholesale,
+        so an unrelated earlier customization isn't wiped out.
+        """
+        current = self.get_card(card_id)
+        merged = {**(current.get("visualization_settings") or {}), **settings_patch}
+        return self._put(f"/api/card/{card_id}", {"visualization_settings": merged})
+
+    def update_dashcard_layout(self, dashboard_id, layout_by_card_id):
+        """
+        Repositions/resizes one or more cards already on a dashboard in a
+        single PUT - `layout_by_card_id` is {card_id: {row?, col?, size_x?,
+        size_y?}}; any card not mentioned keeps its current layout.
+        """
+        dashboard = self.get_dashboard(dashboard_id)
+        existing = dashboard.get("dashcards", [])
+
+        cards = []
+        for dc in existing:
+            patch = layout_by_card_id.get(dc["card_id"], {})
+            cards.append({
+                "id": dc["id"],
+                "card_id": dc["card_id"],
+                "row": patch.get("row", dc["row"]),
+                "col": patch.get("col", dc["col"]),
+                "size_x": patch.get("size_x", dc["size_x"]),
+                "size_y": patch.get("size_y", dc["size_y"]),
             })
 
         return self._put(f"/api/dashboard/{dashboard_id}/cards", {"cards": cards})

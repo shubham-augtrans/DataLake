@@ -691,7 +691,7 @@ const CATEGORIES: ApiCategory[] = [
         method: 'POST',
         path: '/playground/chat/',
         title: 'Chat to chart',
-        description: 'One chat message -> one chart: runs the message against the lakehouse (Iceberg tables on MinIO, via Trino) using a local Ollama model to generate the SQL, and creates a single Metabase Card + Dashboard from the result. A follow-up mentioning "same data" (e.g. "same data as a pie chart") reuses the previous turn\'s SQL verbatim instead of asking the model again - the history entries carry both the prompt and its SQL for exactly this.',
+        description: 'One chat message -> one chart: runs the message against the lakehouse (Iceberg tables on MinIO, via Trino) using the organization\'s hosted LLM (an OpenAI-compatible vLLM endpoint) to generate the SQL, and creates a single Metabase Card + Dashboard from the result. A follow-up mentioning "same data" (e.g. "same data as a pie chart") reuses the previous turn\'s SQL verbatim instead of asking the model again - the history entries carry both the prompt and its SQL for exactly this.',
         auth: 'JWT Bearer (IsAuthenticated)',
         request: 'Header: Authorization: Bearer <access_token>. No query params.',
         payload: `{
@@ -712,6 +712,113 @@ const CATEGORIES: ApiCategory[] = [
   "chart_type": "pie",
   "dashboard_url": "http://localhost:3000/dashboard/68",
   "embed_url": "http://localhost:3000/public/dashboard/d250cf05-61ee-4345-993a-2de02a252aa5"
+}`
+      }
+    ]
+  },
+  {
+    name: 'Models',
+    basePath: `${API_BASE}/llm-models`,
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/llm-models/',
+        title: 'List models',
+        description: 'Configured LLM endpoints (OpenAI-compatible) available for prompt-to-SQL generation.',
+        auth: 'JWT Bearer (IsAuthenticated)',
+        request: 'No parameters.',
+        payload: 'None (GET request).',
+        response: 'Array of LLMModel objects.',
+        sampleResult: `[
+  {
+    "id": 1,
+    "name": "Qwen3.8-27B-FP8 (Org)",
+    "api_base": "https://qwen38-27b-fp8-vllm.project-agentic-ai.serving.otw-aiapp.orbitindia.in/v1",
+    "model_name": "Qwen/Qwen3.8-27B-FP8",
+    "api_key": "eyJhbGciOi...",
+    "ca_cert": "-----BEGIN CERTIFICATE-----\\n...",
+    "is_default": true,
+    "created_at": "2026-09-09T11:20:00Z",
+    "updated_at": "2026-09-09T11:20:00Z"
+  }
+]`
+      },
+      {
+        method: 'POST',
+        path: '/llm-models/',
+        title: 'Create model',
+        description: 'Registers a new LLM endpoint. api_key and ca_cert are both optional - omit ca_cert unless the endpoint\'s TLS cert isn\'t signed by a publicly trusted CA. Setting is_default: true unsets it on every other model.',
+        auth: 'JWT Bearer (IsAuthenticated)',
+        request: 'No query params. JSON body required.',
+        payload: `{
+  "name": "Qwen3.8-27B-FP8 (Org)",
+  "api_base": "https://qwen38-27b-fp8-vllm.project-agentic-ai.serving.otw-aiapp.orbitindia.in/v1",
+  "model_name": "Qwen/Qwen3.8-27B-FP8",
+  "api_key": "eyJhbGciOi...",
+  "ca_cert": "",
+  "is_default": true
+}`,
+        response: 'The created LLMModel object.',
+        sampleResult: `{
+  "id": 2,
+  "name": "Qwen3.8-27B-FP8 (Org)",
+  "api_base": "https://qwen38-27b-fp8-vllm.project-agentic-ai.serving.otw-aiapp.orbitindia.in/v1",
+  "model_name": "Qwen/Qwen3.8-27B-FP8",
+  "api_key": "eyJhbGciOi...",
+  "ca_cert": "",
+  "is_default": true,
+  "created_at": "2026-09-09T11:21:00Z",
+  "updated_at": "2026-09-09T11:21:00Z"
+}`
+      },
+      {
+        method: 'GET',
+        path: '/llm-models/{id}/',
+        title: 'Retrieve / Update / Delete model',
+        description: 'Standard detail route. GET fetches one model; PUT/PATCH update it (PATCH {is_default: true} is the same as the set-default action below); DELETE removes it.',
+        auth: 'JWT Bearer (IsAuthenticated)',
+        request: 'Path param: id (integer). PUT/PATCH take the same body shape as create.',
+        payload: 'PUT/PATCH: same JSON shape as "Create model". GET/DELETE: none.',
+        response: 'The LLMModel object (GET/PUT/PATCH) or 204 No Content (DELETE).',
+        sampleResult: `{
+  "id": 1,
+  "name": "Qwen3.8-27B-FP8 (Org)",
+  "api_base": "https://qwen38-27b-fp8-vllm.project-agentic-ai.serving.otw-aiapp.orbitindia.in/v1",
+  "model_name": "Qwen/Qwen3.8-27B-FP8",
+  "api_key": "eyJhbGciOi...",
+  "ca_cert": "",
+  "is_default": true,
+  "created_at": "2026-09-09T11:20:00Z",
+  "updated_at": "2026-09-09T11:20:00Z"
+}`
+      },
+      {
+        method: 'GET',
+        path: '/llm-models/count/',
+        title: 'Count models',
+        description: 'Total number of configured models.',
+        auth: 'JWT Bearer (IsAuthenticated)',
+        request: 'No parameters.',
+        payload: 'None (GET request).',
+        response: 'A single count field.',
+        sampleResult: `{
+  "count": 2
+}`
+      },
+      {
+        method: 'POST',
+        path: '/llm-models/{id}/set-default/',
+        title: 'Set default model',
+        description: 'Marks this model as the default (used by AI Playground\'s SQL generation) and unsets is_default on every other model.',
+        auth: 'JWT Bearer (IsAuthenticated)',
+        request: 'Path param: id (integer). No body.',
+        payload: 'None (POST with empty body).',
+        response: 'The updated LLMModel object.',
+        sampleResult: `{
+  "id": 2,
+  "name": "Qwen3.8-27B-FP8 (Org)",
+  "is_default": true,
+  "...": "..."
 }`
       }
     ]

@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "apps.query",
     "apps.catalog",
     "apps.playground",
+    "apps.llm_models",
 ]
 
 MIDDLEWARE = [
@@ -239,15 +240,9 @@ SPARK_IVY_CACHE_HOST_PATH = os.getenv(
     str(_REPO_ROOT / "Docker" / "ivy-cache"),
 )
 
-OLLAMA_URL = os.getenv(
-    "OLLAMA_URL",
-    "http://localhost:11434",
-)
-
-OLLAMA_MODEL = os.getenv(
-    "OLLAMA_MODEL",
-    "qwen2.5:1.5b",
-)
+# AI Playground's SQL-generation LLM is configured under AI/ML -> Models
+# (apps.llm_models.LLMModel), not here - lets models be added/swapped from
+# the UI without editing .env and restarting the server.
 
 METABASE_URL = os.getenv(
     "METABASE_URL",
