@@ -8,6 +8,7 @@ CHART_TO_DISPLAY = {
     "line": "line",
     "number": "scalar",
     "table": "table",
+    "pie": "pie",
 }
 
 DEFAULT_SIZE_X = 12

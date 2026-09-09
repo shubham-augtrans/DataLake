@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .views import PromptToDashboardView
+from .views import PlaygroundChatView
 
 urlpatterns = [
-    path("generate/", PromptToDashboardView.as_view(), name="playground-generate"),
+    path("chat/", PlaygroundChatView.as_view(), name="playground-chat"),
 ]

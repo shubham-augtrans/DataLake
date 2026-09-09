@@ -689,30 +689,29 @@ const CATEGORIES: ApiCategory[] = [
     endpoints: [
       {
         method: 'POST',
-        path: '/playground/generate/',
-        title: 'Prompt to dashboard',
-        description: 'Decomposes a plain-English prompt into a few chartable sub-questions using a local Ollama model, runs each against the selected Postgres data source, and creates a real Metabase Card + Dashboard from the results.',
-        auth: 'None',
-        request: 'No query params. JSON body required.',
+        path: '/playground/chat/',
+        title: 'Chat to chart',
+        description: 'One chat message -> one chart: runs the message against the lakehouse (Iceberg tables on MinIO, via Trino) using a local Ollama model to generate the SQL, and creates a single Metabase Card + Dashboard from the result. A follow-up mentioning "same data" (e.g. "same data as a pie chart") reuses the previous turn\'s SQL verbatim instead of asking the model again - the history entries carry both the prompt and its SQL for exactly this.',
+        auth: 'JWT Bearer (IsAuthenticated)',
+        request: 'Header: Authorization: Bearer <access_token>. No query params.',
         payload: `{
-  "data_source": 2,
-  "prompt": "Show average pressure per machine"
-}`,
-        response: '{prompt, dashboard_url, embed_url, widgets[]}. embed_url is null if Metabase "Public Sharing" isn\'t enabled yet.',
-        sampleResult: `{
-  "prompt": "Show average pressure per machine",
-  "dashboard_url": "http://localhost:3000/dashboard/26",
-  "embed_url": "http://localhost:3000/public/dashboard/fdeda8bf-f978-44f0-91e1-2f44e90864d9",
-  "widgets": [
+  "prompt": "now give same data in the pie chart",
+  "history": [
     {
-      "title": "Average pressure per machine",
-      "sql": "SELECT machine_name, AVG(pressure) AS average_pressure FROM power_plant_readings GROUP BY machine_name;",
-      "row_count": 4,
-      "duration_ms": 63,
-      "chart_type": "bar",
-      "error": null
+      "prompt": "create the temperature vs pressure graph for Siemens Turbine-1",
+      "sql": "SELECT reading_time, pressure, temperature FROM power_plant_readings WHERE machine_name = 'Siemens Turbine-1' ORDER BY reading_time"
     }
   ]
+}`,
+        response: '{prompt, sql, row_count, duration_ms, chart_type, dashboard_url, embed_url}. embed_url is null if Metabase "Public Sharing" isn\'t enabled yet. Returns {error} with 400 if the SQL fails.',
+        sampleResult: `{
+  "prompt": "now give same data in the pie chart",
+  "sql": "SELECT reading_time, pressure, temperature FROM power_plant_readings WHERE machine_name = 'Siemens Turbine-1' ORDER BY reading_time",
+  "row_count": 16,
+  "duration_ms": 141,
+  "chart_type": "pie",
+  "dashboard_url": "http://localhost:3000/dashboard/68",
+  "embed_url": "http://localhost:3000/public/dashboard/d250cf05-61ee-4345-993a-2de02a252aa5"
 }`
       }
     ]

@@ -1,4 +1,3 @@
-import json
 import re
 from decimal import Decimal
 
@@ -8,11 +7,31 @@ from django.conf import settings
 from apps.query.services import LAKEHOUSE_SCHEMA, QueryExecutionError, TrinoQueryRunner
 
 OLLAMA_TIMEOUT = 60
-MAX_DASHBOARD_WIDGETS = 4
 BLOCKED_KEYWORDS = (
     "insert", "update", "delete", "drop", "alter",
     "truncate", "grant", "revoke", "create", "replace",
 )
+
+# Explicit chart-type requests in the user's own words win over the
+# deterministic shape-based inference in infer_chart() - checked longest
+# phrase first so "pie chart" matches before a bare "pie" would.
+CHART_TYPE_KEYWORDS = [
+    ("pie chart", "pie"),
+    ("pie", "pie"),
+    ("bar chart", "bar"),
+    ("bar graph", "bar"),
+    ("bar", "bar"),
+    ("line chart", "line"),
+    ("line graph", "line"),
+    ("trend line", "line"),
+    ("table", "table"),
+    ("single number", "number"),
+    ("scalar", "number"),
+]
+
+# Phrases that mean "don't run a new query, just re-render the last one" -
+# e.g. "same data" / "same info" as a pie chart instead.
+SAME_DATA_PHRASES = ("same data", "same info", "same result", "that data", "this data")
 
 
 class PromptToSqlError(Exception):
@@ -41,6 +60,33 @@ def fetch_schema_summary(trino_user, max_tables=15, max_columns_per_table=20):
     return "\n".join(lines)
 
 
+def detect_requested_chart_type(prompt):
+    """
+    Returns the chart type the user explicitly asked for ("...as a pie
+    chart"), or None if they didn't name one - in which case infer_chart()'s
+    shape-based guess is used instead.
+    """
+    lowered = prompt.lower()
+
+    for phrase, chart_type in CHART_TYPE_KEYWORDS:
+        if phrase in lowered:
+            return chart_type
+
+    return None
+
+
+def wants_same_data(prompt):
+    """
+    True if the message is asking to re-render the previous result
+    (e.g. "give same data in a pie chart") rather than ask a new question -
+    in which case the last turn's SQL is reused verbatim instead of asking
+    the model to regenerate it, which is both faster and guarantees the
+    data is actually the same.
+    """
+    lowered = prompt.lower()
+    return any(phrase in lowered for phrase in SAME_DATA_PHRASES)
+
+
 def _extract_sql(raw_text):
     """
     Pull a single SQL statement out of whatever the model returned -
@@ -62,11 +108,29 @@ def _extract_sql(raw_text):
     return sql
 
 
-def generate_sql(prompt, schema_summary):
+def generate_sql(prompt, schema_summary, history=None):
     """
     Ask the local Ollama model for a single read-only SQL statement
     answering `prompt` against `schema_summary`.
+
+    `history` (a list of {"prompt": ..., "sql": ...} dicts, oldest first)
+    lets a follow-up like "now show temperature vs pressure" inherit
+    context (e.g. "for the machine") from what was asked before,
+    chatbot-style.
     """
+    history_block = ""
+    if history:
+        numbered = "\n".join(
+            f"{i + 1}. {turn['prompt']}" for i, turn in enumerate(history)
+        )
+        history_block = (
+            "Conversation so far (oldest first) - the new question below may "
+            "omit context (like which machine, table, or time range) that "
+            "was already established here. Carry that context forward "
+            "explicitly; don't leave it implicit.\n"
+            f"{numbered}\n\n"
+        )
+
     system_prompt = (
         "You are a SQL generator for Trino, querying Iceberg tables in a "
         "data lakehouse. Table names are unqualified (the schema is already "
@@ -90,6 +154,7 @@ def generate_sql(prompt, schema_summary):
         "SQL: SELECT order_date, amount FROM orders ORDER BY order_date;\n\n"
         "Now answer this one the same way.\n\n"
         f"Schema:\n{schema_summary}\n\n"
+        f"{history_block}"
         f"Question: {prompt}\n\n"
         "SQL:"
     )
@@ -124,8 +189,8 @@ def generate_sql(prompt, schema_summary):
 
 def infer_chart(columns, rows):
     """
-    Deterministic chart-type inference from the actual result shape -
-    not trusted to the (very small) LLM.
+    Deterministic chart-type inference from the actual result shape - the
+    fallback used when the user didn't explicitly name a chart type.
     """
     if len(rows) == 1 and len(columns) == 1:
         return {"type": "number", "x_field": None, "y_field": columns[0]}
@@ -154,83 +219,29 @@ def _looks_temporal(column_name):
     return any(token in name for token in ("time", "date", "created", "updated", "at"))
 
 
-def decompose_prompt(prompt, schema_summary, max_widgets=MAX_DASHBOARD_WIDGETS):
+def build_widget(trino_user, prompt, schema_summary, history=None):
     """
-    Ask Ollama to break a high-level dashboard prompt into 2-4 chartable
-    sub-questions. Never raises - on any failure (unreachable model,
-    unparsable response, empty list) this falls back to a single widget
-    covering the original prompt verbatim, i.e. today's existing behaviour.
+    One chat turn -> one chart: generate SQL (or reuse the previous turn's,
+    if the user just wants the same data re-rendered), run it, and pick a
+    chart type. Never raises - a failure comes back as an {"error": ...}
+    entry so the caller can decide how to surface it (the UI hides it).
     """
-    system_prompt = (
-        "You are a dashboard planner. Given a database schema and a request for a "
-        "dashboard, respond with ONLY a JSON array (no prose, no markdown fences) of "
-        "2 to 4 objects, each with a short \"title\" and a \"question\" - a single, "
-        "specific, chartable question answerable with one SQL query against the "
-        "schema below. Cover different angles of the request; do not repeat the same "
-        "question twice.\n\n"
-        "Example schema:\n"
-        "orders(id integer, customer_name character varying, amount numeric, order_date timestamp)\n\n"
-        "Example request: Show me how the business is doing\n"
-        "[{\"title\": \"Revenue over time\", \"question\": \"Show total amount per day\"}, "
-        "{\"title\": \"Top customers\", \"question\": \"Show total amount per customer\"}]\n\n"
-        "Now answer this one the same way.\n\n"
-        f"Schema:\n{schema_summary}\n\n"
-        f"Request: {prompt}\n\n"
-        "JSON:"
-    )
-
-    fallback = [{"title": prompt, "question": prompt}]
+    requested_type = detect_requested_chart_type(prompt)
 
     try:
-        response = requests.post(
-            f"{settings.OLLAMA_URL}/api/generate",
-            json={
-                "model": settings.OLLAMA_MODEL,
-                "prompt": system_prompt,
-                "stream": False,
-            },
-            timeout=OLLAMA_TIMEOUT,
-        )
-        response.raise_for_status()
+        if wants_same_data(prompt) and history:
+            sql = history[-1]["sql"]
+        else:
+            sql = generate_sql(prompt, schema_summary, history=history)
 
-        raw_text = response.json().get("response", "")
-
-        match = re.search(r"\[.*\]", raw_text, re.DOTALL)
-        if not match:
-            return fallback
-
-        items = json.loads(match.group(0))
-
-        sub_questions = [
-            {"title": str(item["title"]).strip(), "question": str(item["question"]).strip()}
-            for item in items
-            if isinstance(item, dict) and item.get("title") and item.get("question")
-        ]
-
-        if not sub_questions:
-            return fallback
-
-        return sub_questions[:max_widgets]
-
-    except (requests.RequestException, ValueError, KeyError, TypeError):
-        return fallback
-
-
-def build_widget(trino_user, title, question, schema_summary):
-    """
-    Run the existing single-question pipeline (generate_sql -> run -> infer_chart)
-    for one dashboard widget. Isolated per-widget failure: returns an error entry
-    instead of raising, so one bad sub-question doesn't take down the rest of the
-    dashboard.
-    """
-    try:
-        sql = generate_sql(question, schema_summary)
         result = TrinoQueryRunner(trino_user, schema=LAKEHOUSE_SCHEMA).run(sql)
         chart = infer_chart(result["columns"], result["rows"])
 
+        if requested_type:
+            chart["type"] = requested_type
+
         return {
-            "title": title,
-            "prompt": question,
+            "prompt": prompt,
             "sql": sql,
             "columns": result["columns"],
             "rows": result["rows"],
@@ -242,7 +253,6 @@ def build_widget(trino_user, title, question, schema_summary):
 
     except (PromptToSqlError, QueryExecutionError) as ex:
         return {
-            "title": title,
-            "prompt": question,
+            "prompt": prompt,
             "error": str(ex),
         }

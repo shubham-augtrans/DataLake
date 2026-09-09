@@ -4,135 +4,136 @@
   <div class="page-header">
     <div>
       <h1>AI Playground</h1>
-      <p>Describe the dashboard you want in plain English — a local Ollama model turns it into SQL against the lakehouse (Iceberg tables in MinIO, via Trino) and builds a real dashboard in Metabase.</p>
+      <p>Chat with your data — a local Ollama model turns each message into SQL against the lakehouse (Iceberg tables in MinIO, via Trino) and renders it as a real Metabase chart below.</p>
     </div>
+    <button type="button" class="new-conversation-link" *ngIf="tiles.length > 0" (click)="newConversation()">
+      <i class="pi pi-refresh"></i>
+      New conversation
+    </button>
   </div>
 
-  <!-- Two-section layout: prompt on the left, live Metabase dashboard on the right -->
-  <div class="playground-sections">
+  <!-- Chart canvas: up to 4 tiles -->
+  <div class="canvas-grid">
 
-    <!-- Section 1: Prompt -->
-    <div class="section prompt-section">
-      <h3 class="section-heading">1. Describe the dashboard</h3>
-
-      <div class="prompt-panel">
-        <textarea
-          class="prompt-textarea"
-          [(ngModel)]="prompt"
-          placeholder="e.g. Show average pressure per machine"
-          rows="4">
-        </textarea>
-
-        <div class="prompt-actions">
-          <div class="example-chips">
-            <button
-              type="button"
-              class="example-chip"
-              *ngFor="let example of examplePrompts"
-              (click)="useExample(example)">
-              {{ example }}
-            </button>
-          </div>
-
-          <p-button
-            label="Generate"
-            icon="pi pi-sparkles"
-            [loading]="generating"
-            [disabled]="!canGenerate"
-            (onClick)="generate()">
-          </p-button>
-        </div>
-      </div>
-
-      <!-- Error -->
-      <div class="playground-error" *ngIf="errorMessage">
-        <i class="pi pi-exclamation-triangle"></i>
-        <span>{{ errorMessage }}</span>
-      </div>
-
-      <!-- Generating -->
-      <div class="generating-state" *ngIf="generating">
-        <p-progressSpinner styleClass="spinner-sm"></p-progressSpinner>
-        <span>Asking the model, then building the dashboard in Metabase...</span>
-      </div>
-
-      <!-- Widgets -->
-      <div class="widget-list-wrapper" *ngIf="result && !generating">
-        <h4 class="widget-list-heading">Widgets created</h4>
-
-        <div class="widget-list">
-          <div class="widget-row" *ngFor="let widget of result.widgets">
-
-            <div class="widget-row-header">
-              <span class="widget-title">{{ widget.title }}</span>
-              <span class="widget-chart-type" *ngIf="widget.chart_type">{{ widget.chart_type }}</span>
-            </div>
-
-            <div class="sql-preview" *ngIf="widget.sql">
-              <code>{{ widget.sql }}</code>
-            </div>
-
-            <div class="widget-meta" *ngIf="!widget.error">
-              <span>{{ widget.row_count }} row{{ widget.row_count === 1 ? '' : 's' }}</span>
-              <span class="dot">·</span>
-              <span>{{ widget.duration_ms }} ms</span>
-            </div>
-
-            <div class="widget-error" *ngIf="widget.error">
-              <i class="pi pi-exclamation-triangle"></i>
-              <span>{{ widget.error }}</span>
-            </div>
-
-          </div>
-        </div>
-      </div>
+    <div class="canvas-placeholder" *ngIf="tiles.length === 0">
+      <i class="pi pi-objects-column"></i>
+      <span>Open the chat in the bottom-right corner and ask for a chart to get started.</span>
     </div>
 
-    <!-- Section 2: Live dashboard -->
-    <div class="section dashboard-section">
-      <div class="dashboard-section-header">
-        <h3 class="section-heading">2. Live dashboard</h3>
-        <a
-          *ngIf="result"
-          [href]="result.dashboard_url"
-          target="_blank"
-          rel="noopener"
-          class="open-dashboard-link">
-          Open in Metabase
-          <i class="pi pi-external-link"></i>
-        </a>
+    <div class="chart-tile" *ngFor="let tile of tiles">
+      <div class="chart-tile-header">
+        <span class="chart-tile-prompt" [title]="tile.prompt">{{ tile.prompt }}</span>
+        <div class="chart-tile-actions">
+          <span class="chart-type-badge">{{ tile.chartType }}</span>
+          <button type="button" class="icon-btn" title="Expand" (click)="openModal(tile)">
+            <i class="pi pi-window-maximize"></i>
+          </button>
+          <a [href]="tile.dashboardUrl" target="_blank" rel="noopener" class="icon-btn" title="Open in Metabase">
+            <i class="pi pi-external-link"></i>
+          </a>
+        </div>
       </div>
 
-      <!-- Nothing generated yet -->
-      <div class="dashboard-placeholder" *ngIf="!result && !generating">
-        <i class="pi pi-objects-column"></i>
-        <span>Your dashboard will appear here once generated.</span>
-      </div>
-
-      <!-- Generating -->
-      <div class="dashboard-placeholder" *ngIf="generating">
-        <p-progressSpinner styleClass="spinner-sm"></p-progressSpinner>
-        <span>Building your dashboard...</span>
-      </div>
-
-      <!-- Embed available -->
       <iframe
-        *ngIf="result && !generating && embedSrc"
-        [src]="embedSrc"
-        class="dashboard-iframe"
+        *ngIf="tile.embedSrc"
+        [src]="tile.embedSrc"
+        class="chart-tile-iframe"
         frameborder="0">
       </iframe>
 
-      <!-- Dashboard exists but embedding isn't enabled -->
-      <div class="dashboard-placeholder" *ngIf="result && !generating && !embedSrc">
+      <div class="chart-tile-placeholder" *ngIf="!tile.embedSrc">
         <i class="pi pi-info-circle"></i>
-        <span>Dashboard created, but it can't be embedded here yet — ask an admin to turn on "Public Sharing" in Metabase, then generate again.</span>
-        <a [href]="result.dashboard_url" target="_blank" rel="noopener" class="open-dashboard-link">
-          Open in Metabase
-          <i class="pi pi-external-link"></i>
-        </a>
+        <span>Can't be embedded here yet — ask an admin to turn on "Public Sharing" in Metabase.</span>
+      </div>
+
+      <div class="chart-tile-meta">
+        <span>{{ tile.rowCount }} row{{ tile.rowCount === 1 ? '' : 's' }}</span>
+        <span class="dot">·</span>
+        <span>{{ tile.durationMs }} ms</span>
       </div>
     </div>
+
+  </div>
+
+  <!-- Modal: full-size view of one tile -->
+  <div class="modal-backdrop" *ngIf="modalTile" (click)="closeModal()">
+    <div class="modal-panel" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <span>{{ modalTile.prompt }}</span>
+        <div class="modal-header-actions">
+          <a [href]="modalTile.dashboardUrl" target="_blank" rel="noopener" class="icon-btn" title="Open in Metabase">
+            <i class="pi pi-external-link"></i>
+          </a>
+          <button type="button" class="icon-btn" title="Close" (click)="closeModal()">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+      </div>
+      <iframe
+        *ngIf="modalTile.embedSrc"
+        [src]="modalTile.embedSrc"
+        class="modal-iframe"
+        frameborder="0">
+      </iframe>
+    </div>
+  </div>
+
+  <!-- Floating chat widget: bottom-right, collapsible -->
+  <div class="chat-widget" [class.open]="chatOpen">
+
+    <div class="chat-panel" *ngIf="chatOpen">
+      <div class="chat-panel-header" (click)="toggleChat()">
+        <span>AI Chat</span>
+        <button type="button" class="icon-btn" title="Collapse">
+          <i class="pi pi-chevron-down"></i>
+        </button>
+      </div>
+
+      <div class="chat-messages">
+
+        <div class="chat-empty" *ngIf="messages.length === 0">
+          <span>Ask for a chart in plain English.</span>
+          <div class="example-chips">
+            <button type="button" class="example-chip" *ngFor="let example of examplePrompts" (click)="useExample(example)">
+              {{ example }}
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="chat-bubble"
+          *ngFor="let message of messages"
+          [class.chat-bubble-user]="message.role === 'user'"
+          [class.chat-bubble-assistant]="message.role === 'assistant'"
+          [class.chat-bubble-error]="message.isError">
+          {{ message.text }}
+        </div>
+
+        <div class="chat-bubble chat-bubble-assistant chat-bubble-typing" *ngIf="sending">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+
+      </div>
+
+      <div class="chat-input-row">
+        <textarea
+          class="chat-input"
+          [(ngModel)]="prompt"
+          placeholder="e.g. show temperature vs pressure for Siemens Turbine-1"
+          rows="2"
+          (keydown.enter)="$event.preventDefault(); send()">
+        </textarea>
+        <button type="button" class="chat-send-btn" [disabled]="!canSend" (click)="send()">
+          <i class="pi pi-send"></i>
+        </button>
+      </div>
+    </div>
+
+    <button type="button" class="chat-bubble-toggle" (click)="toggleChat()">
+      <i class="pi" [ngClass]="chatOpen ? 'pi-chevron-down' : 'pi-comments'"></i>
+    </button>
 
   </div>
 
