@@ -1,56 +1,132 @@
 <div class="playground-page">
 
-  <!-- Header -->
-  <div class="page-header">
-    <div>
-      <h1>AI Playground</h1>
-      <p>Chat with your data — a hosted LLM turns each message into SQL against the lakehouse (Iceberg tables in MinIO, via Trino) and renders it as a real Metabase chart below.</p>
+  <div class="playground-layout">
+
+    <!-- Column 1 (10%): AI Chat - the list of named conversations, ChatGPT-style -->
+    <div class="conversations-pane">
+      <div class="compose-header">
+        <span class="compose-title">AI Chat</span>
+        <button type="button" class="icon-btn" title="New chat" (click)="newConversation()">
+          <i class="pi pi-plus"></i>
+        </button>
+      </div>
+
+      <div class="conversations-list">
+        <div class="chat-history-empty" *ngIf="conversations.length === 0">
+          <span>No conversations yet.</span>
+        </div>
+        <button
+          type="button"
+          class="chat-history-item"
+          *ngFor="let conversation of conversations"
+          [class.active]="conversation.id === activeId"
+          (click)="activateConversation(conversation.id)">
+          <span class="chat-history-item-title">{{ conversation.title }}</span>
+          <i class="pi pi-times chat-history-item-delete" title="Delete" (click)="deleteConversation(conversation.id, $event)"></i>
+        </button>
+      </div>
     </div>
-    <button type="button" class="new-conversation-link" *ngIf="tiles.length > 0" (click)="newConversation()">
-      <i class="pi pi-refresh"></i>
-      New conversation
-    </button>
-  </div>
 
-  <!-- Chart canvas: one chart, replaced by every follow-up query -->
-  <div class="canvas-grid">
+    <!-- Column 2 (20%): the active conversation's transcript, with the composer at the bottom -->
+    <div class="transcript-pane">
+      <div class="history-pane-header">{{ activeTitle }}</div>
 
-    <div class="canvas-placeholder" *ngIf="tiles.length === 0">
-      <i class="pi pi-objects-column"></i>
-      <span>Open the chat in the bottom-right corner and ask for a chart to get started.</span>
+      <div class="chat-messages">
+
+        <div class="chat-empty" *ngIf="messages.length === 0">
+          <span>Ask for a chart in plain English.</span>
+          <div class="example-chips">
+            <button type="button" class="example-chip" *ngFor="let example of examplePrompts" (click)="useExample(example)">
+              {{ example }}
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="chat-bubble"
+          *ngFor="let message of messages"
+          [class.chat-bubble-user]="message.role === 'user'"
+          [class.chat-bubble-assistant]="message.role === 'assistant'"
+          [class.chat-bubble-error]="message.isError">
+          {{ message.text }}
+        </div>
+
+        <div class="chat-bubble chat-bubble-assistant chat-bubble-typing" *ngIf="sending">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+
+      </div>
+
+      <div class="compose-input-row">
+        <textarea
+          class="chat-input"
+          [(ngModel)]="prompt"
+          placeholder="e.g. show temperature vs pressure for Siemens Turbine-1"
+          rows="2"
+          (keydown.enter)="$event.preventDefault(); send()">
+        </textarea>
+        <button type="button" class="chat-send-btn" [disabled]="!canSend" (click)="send()">
+          <i class="pi pi-send"></i>
+          Send
+        </button>
+      </div>
     </div>
 
-    <div class="chart-tile" *ngFor="let tile of tiles">
-      <div class="chart-tile-header">
-        <span class="chart-tile-prompt" [title]="tile.prompt">{{ tile.prompt }}</span>
-        <div class="chart-tile-actions">
-          <span class="chart-type-badge">{{ tile.chartType }}</span>
-          <button type="button" class="icon-btn" title="Expand" (click)="openModal(tile)">
-            <i class="pi pi-window-maximize"></i>
-          </button>
-          <a [href]="tile.dashboardUrl" target="_blank" rel="noopener" class="icon-btn" title="Open in Metabase">
-            <i class="pi pi-external-link"></i>
-          </a>
+    <!-- Column 3 (70%): the chart/dashboard canvas -->
+    <div class="dashboard-pane">
+
+      <div class="page-header">
+        <div>
+          <h1>AI Playground</h1>
+          <p>Chat with your data — a hosted LLM turns each message into SQL against the lakehouse (Iceberg tables in MinIO, via Trino) and renders it as a real Metabase chart.</p>
         </div>
       </div>
 
-      <iframe
-        *ngIf="tile.embedSrc"
-        [src]="tile.embedSrc"
-        class="chart-tile-iframe"
-        frameborder="0">
-      </iframe>
+      <div class="canvas-grid">
 
-      <div class="chart-tile-placeholder" *ngIf="!tile.embedUrl">
-        <i class="pi pi-info-circle"></i>
-        <span>Can't be embedded here yet — ask an admin to turn on "Public Sharing" in Metabase.</span>
+        <div class="canvas-placeholder" *ngIf="tiles.length === 0">
+          <i class="pi pi-objects-column"></i>
+          <span>Ask for a chart on the left to get started.</span>
+        </div>
+
+        <div class="chart-tile" *ngFor="let tile of tiles">
+          <div class="chart-tile-header">
+            <span class="chart-tile-prompt" [title]="tile.prompt">{{ tile.prompt }}</span>
+            <div class="chart-tile-actions">
+              <span class="chart-type-badge">{{ tile.chartType }}</span>
+              <button type="button" class="icon-btn" title="Expand" (click)="openModal(tile)">
+                <i class="pi pi-window-maximize"></i>
+              </button>
+              <a [href]="tile.dashboardUrl" target="_blank" rel="noopener" class="edit-layout-link" title="Opens the real Metabase dashboard, where you can drag charts to rearrange/resize them">
+                <i class="pi pi-arrows-alt"></i>
+                Rearrange in Metabase
+              </a>
+            </div>
+          </div>
+
+          <iframe
+            *ngIf="tile.embedSrc"
+            [src]="tile.embedSrc"
+            class="chart-tile-iframe"
+            frameborder="0">
+          </iframe>
+
+          <div class="chart-tile-placeholder" *ngIf="!tile.embedUrl">
+            <i class="pi pi-info-circle"></i>
+            <span>Can't be embedded here yet — ask an admin to turn on "Public Sharing" in Metabase.</span>
+          </div>
+
+          <div class="chart-tile-meta">
+            <span>{{ tile.rowCount }} row{{ tile.rowCount === 1 ? '' : 's' }}</span>
+            <span class="dot">·</span>
+            <span>{{ tile.durationMs }} ms</span>
+          </div>
+        </div>
+
       </div>
 
-      <div class="chart-tile-meta">
-        <span>{{ tile.rowCount }} row{{ tile.rowCount === 1 ? '' : 's' }}</span>
-        <span class="dot">·</span>
-        <span>{{ tile.durationMs }} ms</span>
-      </div>
     </div>
 
   </div>
@@ -61,8 +137,9 @@
       <div class="modal-header">
         <span>{{ modalTile.prompt }}</span>
         <div class="modal-header-actions">
-          <a [href]="modalTile.dashboardUrl" target="_blank" rel="noopener" class="icon-btn" title="Open in Metabase">
-            <i class="pi pi-external-link"></i>
+          <a [href]="modalTile.dashboardUrl" target="_blank" rel="noopener" class="edit-layout-link" title="Opens the real Metabase dashboard, where you can drag charts to rearrange/resize them">
+            <i class="pi pi-arrows-alt"></i>
+            Rearrange in Metabase
           </a>
           <button type="button" class="icon-btn" title="Close" (click)="closeModal()">
             <i class="pi pi-times"></i>
@@ -76,100 +153,6 @@
         frameborder="0">
       </iframe>
     </div>
-  </div>
-
-  <!-- Floating chat widget: bottom-right, collapsible -->
-  <div class="chat-widget" [class.open]="chatOpen">
-
-    <div class="chat-body-row" *ngIf="chatOpen">
-
-      <!-- ChatGPT-style history sidebar, to the left of the chat panel -->
-      <div class="chat-history-sidebar" *ngIf="historyOpen">
-        <button type="button" class="chat-history-new" (click)="newConversation()">
-          <i class="pi pi-plus"></i>
-          New chat
-        </button>
-        <div class="chat-history-list">
-          <div class="chat-history-empty" *ngIf="conversations.length === 0">
-            <span>No past conversations yet.</span>
-          </div>
-          <button
-            type="button"
-            class="chat-history-item"
-            *ngFor="let conversation of conversations"
-            [class.active]="conversation.id === activeId"
-            (click)="activateConversation(conversation.id)">
-            <span class="chat-history-item-title">{{ conversation.title }}</span>
-            <i class="pi pi-times chat-history-item-delete" title="Delete" (click)="deleteConversation(conversation.id, $event)"></i>
-          </button>
-        </div>
-      </div>
-
-      <div class="chat-panel">
-        <div class="chat-panel-header">
-          <div class="chat-panel-header-title" (click)="toggleChat()">
-            <span>AI Chat</span>
-          </div>
-          <div class="chat-panel-header-actions">
-            <button type="button" class="icon-btn" [class.active]="historyOpen" title="Chat history" (click)="toggleHistory(); $event.stopPropagation()">
-              <i class="pi pi-history"></i>
-            </button>
-            <button type="button" class="icon-btn" title="New chat" (click)="newConversation(); $event.stopPropagation()">
-              <i class="pi pi-plus"></i>
-            </button>
-            <button type="button" class="icon-btn" title="Collapse" (click)="toggleChat()">
-              <i class="pi pi-chevron-down"></i>
-            </button>
-          </div>
-        </div>
-
-        <div class="chat-messages">
-
-          <div class="chat-empty" *ngIf="messages.length === 0">
-            <span>Ask for a chart in plain English.</span>
-            <div class="example-chips">
-              <button type="button" class="example-chip" *ngFor="let example of examplePrompts" (click)="useExample(example)">
-                {{ example }}
-              </button>
-            </div>
-          </div>
-
-          <div
-            class="chat-bubble"
-            *ngFor="let message of messages"
-            [class.chat-bubble-user]="message.role === 'user'"
-            [class.chat-bubble-assistant]="message.role === 'assistant'"
-            [class.chat-bubble-error]="message.isError">
-            {{ message.text }}
-          </div>
-
-          <div class="chat-bubble chat-bubble-assistant chat-bubble-typing" *ngIf="sending">
-            <span class="typing-dot"></span>
-            <span class="typing-dot"></span>
-            <span class="typing-dot"></span>
-          </div>
-
-        </div>
-
-        <div class="chat-input-row">
-          <textarea
-            class="chat-input"
-            [(ngModel)]="prompt"
-            placeholder="e.g. show temperature vs pressure for Siemens Turbine-1"
-            rows="2"
-            (keydown.enter)="$event.preventDefault(); send()">
-          </textarea>
-          <button type="button" class="chat-send-btn" [disabled]="!canSend" (click)="send()">
-            <i class="pi pi-send"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <button type="button" class="chat-bubble-toggle" (click)="toggleChat()">
-      <i class="pi" [ngClass]="chatOpen ? 'pi-chevron-down' : 'pi-comments'"></i>
-    </button>
-
   </div>
 
 </div>

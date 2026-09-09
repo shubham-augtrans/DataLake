@@ -98,9 +98,6 @@ export class PlaygroundComponent implements OnInit {
 
   examplePrompts = EXAMPLE_PROMPTS;
 
-  // Floating chat widget state
-  chatOpen = false;
-  historyOpen = false;
   prompt = '';
   sending = false;
 
@@ -178,7 +175,10 @@ export class PlaygroundComponent implements OnInit {
     this.tiles = conversation.tiles;
     this.rehydrateTiles(this.tiles);
     this.modalTile = null;
-    this.historyOpen = false;
+  }
+
+  get activeTitle(): string {
+    return this.conversations.find(c => c.id === this.activeId)?.title || 'New conversation';
   }
 
   private sanitizeUrl(url: string | null): SafeResourceUrl | null {
@@ -191,14 +191,6 @@ export class PlaygroundComponent implements OnInit {
     for (const tile of tiles) {
       tile.embedSrc = this.sanitizeUrl(tile.embedUrl);
     }
-  }
-
-  toggleChat(): void {
-    this.chatOpen = !this.chatOpen;
-  }
-
-  toggleHistory(): void {
-    this.historyOpen = !this.historyOpen;
   }
 
   useExample(example: string): void {
@@ -322,7 +314,6 @@ export class PlaygroundComponent implements OnInit {
     this.tiles = fresh.tiles;
     this.prompt = '';
     this.modalTile = null;
-    this.historyOpen = false;
 
     this.persist();
   }

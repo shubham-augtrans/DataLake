@@ -129,6 +129,23 @@ tap(response => {
     );
   }
 
+  refreshAccessToken(): Observable<string> {
+    const refreshToken = localStorage.getItem('refresh_token');
+
+    if (!refreshToken) {
+      return throwError(() => new Error('No refresh token available.'));
+    }
+
+    return this.http.post<{ access: string }>(`${this.API_URL}/users/token/refresh/`, {
+      refresh: refreshToken
+    }).pipe(
+      tap(response => {
+        localStorage.setItem('access_token', response.access);
+      }),
+      map(response => response.access)
+    );
+  }
+
   clearLocalStorage(): void {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');

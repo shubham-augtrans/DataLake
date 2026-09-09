@@ -37,19 +37,6 @@ CHART_TYPE_KEYWORDS = [
 # e.g. "same data" / "same info" as a pie chart instead.
 SAME_DATA_PHRASES = ("same data", "same info", "same result", "that data", "this data")
 
-# Phrases that mean "put this alongside what's already on the dashboard"
-# rather than replace it - checked longest phrase first isn't needed here
-# since these are single-purpose triggers, not overlapping like chart types.
-ADD_CHART_PHRASES = (
-    "add a chart", "add another chart", "add this chart", "add a new chart",
-    "add another graph", "add this graph",
-    "also show", "also add", "also plot", "also include",
-    "add it to the dashboard", "add this to the dashboard",
-    "add that to the dashboard", "on the same dashboard",
-    "in the same dashboard", "alongside", "add a graph for", "add a chart for",
-)
-
-
 class PromptToSqlError(Exception):
     pass
 
@@ -101,16 +88,6 @@ def wants_same_data(prompt):
     """
     lowered = prompt.lower()
     return any(phrase in lowered for phrase in SAME_DATA_PHRASES)
-
-
-def wants_add_chart(prompt):
-    """
-    True if the message asks for a new chart to be added to the dashboard
-    already on screen, alongside the existing one(s) - e.g. "add a chart for
-    total readings per machine" - rather than replace what's there.
-    """
-    lowered = prompt.lower()
-    return any(phrase in lowered for phrase in ADD_CHART_PHRASES)
 
 
 # Common color names -> the hex Metabase's chart palette actually understands.
@@ -262,26 +239,68 @@ def _extract_json(raw_text):
         return None
 
 
-def plan_edit(prompt, cards_summary, history=None):
+def resolve_relative_layout(anchor, placement):
     """
-    Turns an EDIT-intent message into a structured plan the caller can
-    execute against the Metabase API: which card(s) to rename/recolor/
-    resize/reposition, and/or a direct answer if it was just a question
-    about the dashboard's current state (e.g. "what's this chart called?").
+    Computes a new/moved card's row/col from an anchor card's CURRENT
+    position and a natural-language placement word ("beside"/"right",
+    "left", "below", "above") - the grid arithmetic for "beside it"/"below
+    it" is done deterministically here, not guessed by the LLM (which
+    shouldn't be trusted to reason about a 24-column grid). Returns None if
+    there's no anchor or no placement to resolve, so the caller can fall
+    back to default next-slot placement.
+    """
+    if not anchor or not placement:
+        return None
 
-    Returns {"actions": [...], "answer": "..."} - actions is empty for a
-    pure question. Never raises - a plan the caller can't make sense of
-    comes back with empty actions and the model's raw reply as the answer,
-    same fallback shape as a successful "just answer" response.
+    placement = str(placement).lower()
+    row, col = anchor["row"], anchor["col"]
+    size_x, size_y = anchor["size_x"], anchor["size_y"]
+
+    if placement in ("right", "beside"):
+        return {"row": row, "col": col + size_x}
+    if placement == "left":
+        return {"row": row, "col": max(0, col - size_x)}
+    if placement in ("below", "under", "underneath"):
+        return {"row": row + size_y, "col": col}
+    if placement == "above":
+        return {"row": max(0, row - size_y), "col": col}
+
+    return None
+
+
+def plan_dashboard_operation(prompt, cards_summary, history=None):
+    """
+    Single, dashboard-state-aware decision point for what to do with a
+    message once a dashboard already exists: create a new chart, update an
+    existing one, delete/duplicate/move/resize/rename/recolor one - or, if
+    the target is genuinely unresolvable, ask for clarification instead of
+    guessing.
+
+    This is the fix for the core failure mode: phrases like "create a new
+    chart beside it", "add another chart", "the pie chart" can only be told
+    apart from "change the existing chart" by something that can actually
+    see the dashboard's current cards - a keyword regex checked against the
+    message in isolation cannot, because "create a new chart beside it" and
+    "change the chart to a pie chart" share no distinguishing keyword.
+
+    Returns {"actions": [...], "answer": "..."}. Each action is one of:
+      {"op": "create", "layout": {"relative_to": id|null, "placement": str|null}}
+      {"op": "update", "card_id": id}
+      {"op": "delete", "card_id": id}
+      {"op": "duplicate", "card_id": id, "layout": {...}}
+      {"op": "move", "card_id": id, "layout": {...}}
+      {"op": "resize", "card_id": id, "size_x": int, "size_y": int}
+      {"op": "rename", "card_id": id, "name": str}
+      {"op": "recolor", "card_id": id, "color": str}
+    An empty actions list means "just answer, don't touch the dashboard" -
+    used both for pure questions and for genuinely ambiguous requests
+    (the "answer" then carries the clarifying question).
     """
     if not cards_summary:
-        return {
-            "actions": [],
-            "answer": "There's no chart on the dashboard yet to edit - ask for one first.",
-        }
+        return {"actions": [{"op": "create", "layout": {}}], "answer": "Creating your first chart."}
 
     cards_block = "\n".join(
-        f"{i + 1}. card_id={c['card_id']} name=\"{c['name']}\" display={c['display']} "
+        f"{i + 1}. card_id={c['card_id']} type={c['display']} title=\"{c['name']}\" "
         f"row={c['row']} col={c['col']} size_x={c['size_x']} size_y={c['size_y']}"
         for i, c in enumerate(cards_summary)
     )
@@ -294,30 +313,65 @@ def plan_edit(prompt, cards_summary, history=None):
         history_block = f"Conversation so far (oldest first):\n{numbered}\n\n"
 
     system_prompt = (
-        "You manage the layout and labeling of charts on a dashboard. Given "
-        "the user's message and the charts currently on it, respond with "
-        "ONLY a single JSON object (no prose, no markdown fences) matching "
-        "this shape:\n"
+        "You manage a multi-chart dashboard. Given the charts currently on "
+        "it and the user's latest message, decide what to do and respond "
+        "with ONLY a single JSON object (no prose, no markdown fences) "
+        "matching this shape:\n"
         '{"actions": [\n'
-        '  {"op": "rename", "card_id": <int|null>, "name": "<new title>"},\n'
-        '  {"op": "recolor", "card_id": <int|null>, "color": "<color word or hex>"},\n'
-        '  {"op": "resize", "card_id": <int|null>, "size_x": <int 4-24>, "size_y": <int 2-16>},\n'
-        '  {"op": "move", "card_id": <int|null>, "row": <int>, "col": <int>}\n'
+        '  {"op": "create", "layout": {"relative_to": <int|null>, "placement": "right"|"left"|"below"|"above"|null}},\n'
+        '  {"op": "update", "card_id": <int>},\n'
+        '  {"op": "delete", "card_id": <int>},\n'
+        '  {"op": "duplicate", "card_id": <int>, "layout": {"relative_to": <int|null>, "placement": "right"|"left"|"below"|"above"|null}},\n'
+        '  {"op": "move", "card_id": <int>, "layout": {"relative_to": <int|null>, "placement": "right"|"left"|"below"|"above"|null}},\n'
+        '  {"op": "resize", "card_id": <int>, "size_x": <int 4-24>, "size_y": <int 2-16>},\n'
+        '  {"op": "rename", "card_id": <int>, "name": "<new title>"},\n'
+        '  {"op": "recolor", "card_id": <int>, "color": "<color word or hex>"}\n'
         '], "answer": "<short natural reply>"}\n\n'
-        "Rules:\n"
-        "- card_id must be one of the card_id values listed below, or null "
-        "if the user didn't name a specific chart and there's an obvious "
-        "single target (e.g. only one chart exists, or they said 'it'/'this').\n"
-        "- The dashboard grid is 24 columns wide. The standard card size is "
-        "size_x=12 size_y=8, so two cards fit side by side per row (col=0 "
-        "and col=12). A new row N (1-indexed) starts at row=(N-1)*8.\n"
-        "- If the user names a chart by its topic (e.g. 'the pressure "
-        "chart'), match it to the closest name in the list.\n"
-        "- If the user is only asking a question and nothing needs to "
-        "change, return an empty actions array and put the answer in "
-        "'answer'.\n"
-        "- Always fill 'answer' with a short, natural confirmation of what "
-        "you did (or the answer to their question).\n\n"
+        "How to choose the operation:\n"
+        "- \"create\": the user wants a NEW, additional chart. Explicit "
+        "creation language - 'create a new chart', 'add another chart', "
+        "'add a chart', 'create one beside/below/above it', 'put another "
+        "chart on the right' - is ALWAYS create, even when it also "
+        "references an existing chart ('beside it', 'like the pie chart') - "
+        "that reference is only a LAYOUT ANCHOR or a data hint, never the "
+        "thing to modify. Never invent a card_id for create.\n"
+        "- \"update\": the user wants to change what an EXISTING chart "
+        "shows or its type, with NO creation language - e.g. 'change the "
+        "bar chart to a pie chart', 'change it to show revenue instead', "
+        "'show this as a line chart'.\n"
+        "- \"delete\": remove an existing chart ('delete the pie chart', "
+        "'remove that chart').\n"
+        "- \"duplicate\": copy an existing chart into a new one with the "
+        "same data ('duplicate this chart', 'create another chart using "
+        "the same data').\n"
+        "- \"move\": reposition an existing chart with NO data/type change "
+        "('move the pie chart below the bar chart', 'put this chart on the "
+        "right').\n"
+        "- \"resize\": change an existing chart's size with NO data/type "
+        "change ('make this chart wider', 'make the bar chart smaller').\n"
+        "- \"rename\"/\"recolor\": change only an existing chart's title or "
+        "color.\n\n"
+        "Rules for card_id (update/delete/duplicate/move/resize/rename/"
+        "recolor): it MUST be one of the card_id values listed below. "
+        "Resolve pronouns ('it', 'this', 'that', 'this chart') to whichever "
+        "chart the conversation was most recently about. Resolve 'the bar "
+        "chart'/'the pie chart'/'the sales chart' by matching type or "
+        "title. If you cannot confidently resolve which chart is meant "
+        "(e.g. 'change the chart' with several charts on screen and no "
+        "clear referent), do NOT guess - instead return an EMPTY actions "
+        "array and put a short clarifying question in 'answer' (e.g. "
+        "'Which chart do you mean - the bar chart or the pie chart?').\n\n"
+        "Rules for layout ('beside'/'alongside'/'to the right' -> "
+        "placement=\"right\"; 'below'/'underneath' -> \"below\"; 'above' -> "
+        "\"above\"; 'to the left' -> \"left\"): relative_to should be the "
+        "card_id the placement is relative to - usually the most recently "
+        "discussed chart. Omit/null layout when no position was specified.\n\n"
+        "If the user is only asking a question about the dashboard's "
+        "current state (e.g. 'what's this chart called?') and nothing "
+        "needs to change, return an empty actions array with the answer.\n"
+        "Always fill 'answer' with a short, natural confirmation of what "
+        "you did (or the answer to their question, or the clarifying "
+        "question if ambiguous).\n\n"
         f"Charts currently on the dashboard:\n{cards_block}\n\n"
         f"{history_block}"
         f"Message: {prompt}\n\n"
@@ -329,12 +383,12 @@ def plan_edit(prompt, cards_summary, history=None):
     except PromptToSqlError:
         return {
             "actions": [],
-            "answer": "Couldn't reach the model to plan that edit - try again in a moment.",
+            "answer": "Couldn't reach the model to plan that - try again in a moment.",
         }
 
     parsed = _extract_json(raw_text)
     if not isinstance(parsed, dict) or "actions" not in parsed:
-        return {"actions": [], "answer": raw_text.strip() or "Sorry, I couldn't figure out that edit."}
+        return {"actions": [], "answer": raw_text.strip() or "Sorry, I couldn't figure that out."}
 
     actions = parsed.get("actions") or []
     if not isinstance(actions, list):
