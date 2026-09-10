@@ -93,7 +93,8 @@ export class SidebarComponent {
     { label: 'Grafana', icon: 'monitoring', route: '', external: true, url: environment.grafanaUrl },
     { label: 'Metabase', icon: 'dashboard', route: '', external: true, url: environment.metabaseUrl },
     { label: 'Jupyter Notebook', icon: 'book', route: '', external: true, url: environment.jupyterUrl },
-    { label: 'Ranger', icon: 'shield', route: '', external: true, url: environment.rangerUrl }
+    { label: 'Ranger', icon: 'shield', route: '', external: true, url: environment.rangerUrl },
+    { label: 'Airflow', icon: 'schedule', route: '', external: true, url: environment.airflowUrl }
   ];
 
   documentationItems: NavItem[] = [

@@ -67,6 +67,13 @@
   stroke-dasharray: 4 4;
 }
 
+.trigger-line {
+  stroke: #f0b429;
+  stroke-width: 1.5;
+  stroke-dasharray: 3 4;
+  opacity: 0.7;
+}
+
 /* Particles - the moving "data" */
 .particle {
   filter: drop-shadow(0 0 4px currentColor);
@@ -80,6 +87,11 @@
 .particle-branch {
   fill: #4ade80;
   color: #4ade80;
+}
+
+.particle-trigger {
+  fill: #f0b429;
+  color: #f0b429;
 }
 
 /* Nodes */

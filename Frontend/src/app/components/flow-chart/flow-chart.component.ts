@@ -65,6 +65,10 @@ export class FlowChartComponent {
   // exactly with the node boxes.
   // ---------------------------------------------------------------
 
+  // Orchestrator - sits above the pipeline and triggers it on a schedule,
+  // rather than being part of the data path itself.
+  orchestratorNode: DiagramNode = { x: 320, y: -40, w: 150, h: 104, icon: 'schedule', title: 'Apache Airflow', subtitle: 'Hourly orchestration', accent: 'amber' };
+
   pipelineNodes: DiagramNode[] = [
     { x: 100, y: 90, w: 150, h: 104, icon: 'dataset', title: 'Data Sources', subtitle: 'Postgres · Mongo · Kafka', accent: 'blue' },
     { x: 320, y: 90, w: 150, h: 104, icon: 'alt_route', title: 'Apache NiFi', subtitle: 'Extract & stage', accent: 'blue' },
@@ -91,6 +95,20 @@ export class FlowChartComponent {
       dotDuration: 1.8,
     };
   });
+
+  // Dashed trigger line: Airflow calls the ingestion API, which is what
+  // actually kicks off NiFi - drawn dashed to read as "triggers", not "flows".
+  orchestratorConnector: DiagramPath = (() => {
+    const from = this.orchestratorNode;
+    const to = this.pipelineNodes[1]; // Apache NiFi
+    const startY = from.y + from.h / 2;
+    const endY = to.y - to.h / 2;
+    return {
+      d: `M${from.x},${startY} L${to.x},${endY}`,
+      dotDelay: 0,
+      dotDuration: 1.6,
+    };
+  })();
 
   // Curved branches from the warehouse down to each consumer.
   branchConnectors: DiagramPath[] = this.consumerNodes.map((consumer, i) => {
@@ -147,6 +165,12 @@ export class FlowChartComponent {
   // ---------------------------------------------------------------
 
   stages: FlowStage[] = [
+    {
+      icon: 'schedule',
+      title: 'Apache Airflow',
+      subtitle: 'Orchestration',
+      description: 'Runs on an @hourly schedule and calls the Django ingestion API for every pipeline - the same call the "Data Ingestion" page makes by hand. It sits above the pipeline, not inside it: it triggers NiFi, it doesn\'t move data itself.'
+    },
     {
       icon: 'dataset',
       title: 'Data Sources',

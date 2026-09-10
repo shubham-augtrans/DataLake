@@ -10,5 +10,6 @@ export const environment = {
   trinoUrl: 'http://localhost:8082',
   sparkUrl: 'http://localhost:8080',
   rangerUrl: 'http://localhost:6080',
+  airflowUrl: 'http://localhost:8085',
   version: '1.0.0'
 };

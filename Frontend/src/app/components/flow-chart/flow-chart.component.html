@@ -8,22 +8,48 @@
 
   <!-- Animated diagram -->
   <div class="diagram-scroll">
-    <svg class="diagram" viewBox="0 0 1320 440" preserveAspectRatio="xMinYMin meet">
+    <svg class="diagram" viewBox="0 -110 1320 550" preserveAspectRatio="xMinYMin meet">
 
       <!-- Connectors (drawn first, under the nodes) -->
       <g class="connectors">
+        <path [attr.d]="orchestratorConnector.d" class="connector-line trigger-line"></path>
         <path *ngFor="let c of pipelineConnectors" [attr.d]="c.d" class="connector-line"></path>
         <path *ngFor="let c of branchConnectors" [attr.d]="c.d" class="connector-line branch-line"></path>
       </g>
 
       <!-- Moving particles: one per connector, looping along its path -->
       <g class="particles">
+        <circle r="3.5" class="particle particle-trigger">
+          <animateMotion [attr.path]="orchestratorConnector.d" [attr.dur]="orchestratorConnector.dotDuration + 's'" [attr.begin]="orchestratorConnector.dotDelay + 's'" repeatCount="indefinite" rotate="auto"></animateMotion>
+        </circle>
         <circle *ngFor="let c of pipelineConnectors" r="4" class="particle particle-main">
           <animateMotion [attr.path]="c.d" [attr.dur]="c.dotDuration + 's'" [attr.begin]="c.dotDelay + 's'" repeatCount="indefinite" rotate="auto"></animateMotion>
         </circle>
         <circle *ngFor="let c of branchConnectors" r="3.5" class="particle particle-branch">
           <animateMotion [attr.path]="c.d" [attr.dur]="c.dotDuration + 's'" [attr.begin]="c.dotDelay + 's'" repeatCount="indefinite" rotate="auto"></animateMotion>
         </circle>
+      </g>
+
+      <!-- Orchestrator node: triggers the pipeline on a schedule, isn't part of the data path -->
+      <g class="node accent-amber orchestrator-node">
+        <rect
+          [attr.x]="orchestratorNode.x - orchestratorNode.w / 2"
+          [attr.y]="orchestratorNode.y - orchestratorNode.h / 2"
+          [attr.width]="orchestratorNode.w"
+          [attr.height]="orchestratorNode.h"
+          rx="14"
+          class="node-card">
+        </rect>
+        <circle [attr.cx]="orchestratorNode.x" [attr.cy]="orchestratorNode.y - 22" r="18" class="node-icon-ring"></circle>
+        <foreignObject [attr.x]="orchestratorNode.x - 12" [attr.y]="orchestratorNode.y - 34" width="24" height="24">
+          <span xmlns="http://www.w3.org/1999/xhtml" class="material-symbols-outlined node-icon">{{ orchestratorNode.icon }}</span>
+        </foreignObject>
+        <foreignObject [attr.x]="orchestratorNode.x - orchestratorNode.w / 2 + 8" [attr.y]="orchestratorNode.y + 2" [attr.width]="orchestratorNode.w - 16" height="44">
+          <div xmlns="http://www.w3.org/1999/xhtml" class="node-text">
+            <div class="node-title">{{ orchestratorNode.title }}</div>
+            <div class="node-subtitle">{{ orchestratorNode.subtitle }}</div>
+          </div>
+        </foreignObject>
       </g>
 
       <!-- Pipeline nodes -->

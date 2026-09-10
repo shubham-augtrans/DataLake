@@ -42,6 +42,10 @@ ALLOWED_HOSTS = [
     "datalake.augtrans.com",
     "localhost",
     "127.0.0.1",
+    # The Airflow containers (Docker/docker-compose.yml) reach this host's
+    # runserver via Docker Desktop's host.docker.internal, since Django
+    # itself isn't containerized in this project.
+    "host.docker.internal",
 ]
 
 
