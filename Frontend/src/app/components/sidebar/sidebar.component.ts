@@ -56,7 +56,6 @@ export class SidebarComponent {
   sqlItems: NavItem[] = [
     { label: 'SQL Editor', icon: 'terminal', route: '/sql-editor' },
     { label: 'Trino Editor', icon: 'query_stats', route: '/trino-editor' },
-    { label: 'Queries', icon: 'description', route: '/queries' },
     { label: 'Dashboards', icon: 'dashboard', route: '/dashboards', external: true, url: environment.metabaseUrl },
     { label: 'Orbitto', icon: 'smart_toy', route: '/orbitto', comingSoon: true },
     { label: 'Alerts', icon: 'notifications_none', route: '/alerts', comingSoon: true },
