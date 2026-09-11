@@ -3453,3 +3453,427 @@ File Path                                       PID  Runtime      # DAGs    # Er
 --------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
 /opt/airflow/dags/ingestion_pipelines_dag.py    428  5.68s             0          -1  43.27s          2026-09-10T11:56:19                       0
 ================================================================================
+[2026-09-11T04:51:51.925+0000] {manager.py:483} INFO - Processing files using up to 2 processes at a time 
+[2026-09-11T04:51:51.935+0000] {manager.py:484} INFO - Process each file at most once every 30 seconds
+[2026-09-11T04:51:51.944+0000] {manager.py:485} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2026-09-11T04:51:51.945+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2026-09-11T04:51:52.106+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2026-09-11T04:51:53.808+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                       PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run      Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  ----------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py    202  0.10s             0           0                                                   0
+================================================================================
+[2026-09-11T04:52:24.134+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  1.91s           2026-09-11T04:51:55                      34
+================================================================================
+[2026-09-11T04:52:54.442+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  2.13s           2026-09-11T04:52:28                      12
+================================================================================
+[2026-09-11T04:53:24.778+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  0.19s           2026-09-11T04:52:58                      12
+================================================================================
+[2026-09-11T04:53:55.351+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  0.19s           2026-09-11T04:53:29                      12
+================================================================================
+[2026-09-11T04:54:25.645+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  0.22s           2026-09-11T04:53:59                      12
+================================================================================
+[2026-09-11T04:54:56.177+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  0.22s           2026-09-11T04:54:29                      12
+================================================================================
+[2026-09-11T04:55:26.487+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  0.15s           2026-09-11T04:55:00                      12
+================================================================================
+[2026-09-11T04:55:56.873+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  0.21s           2026-09-11T04:55:30                      12
+================================================================================
+[2026-09-11T04:56:27.164+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  0.12s           2026-09-11T04:56:01                      12
+================================================================================
+[2026-09-11T04:56:52.489+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2026-09-11T04:56:52.518+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2026-09-11T04:56:57.585+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  0.11s           2026-09-11T04:56:31                      12
+================================================================================
+[2026-09-11T04:57:27.893+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  0.14s           2026-09-11T04:57:01                      12
+================================================================================
+[2026-09-11T04:57:58.237+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  0.24s           2026-09-11T04:57:32                      12
+================================================================================
+[2026-09-11T04:58:28.802+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  4.24s           2026-09-11T04:58:06                      12
+================================================================================
+[2026-09-11T04:58:59.396+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                       PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py    385  21.88s            1           0  4.24s           2026-09-11T04:58:06                      12
+================================================================================
+[2026-09-11T04:59:11.573+0000] {manager.py:1146} ERROR - Processor for /opt/airflow/dags/ingestion_pipelines_dag.py exited with return code 1.
+[2026-09-11T04:59:31.370+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           0          -1  34.16s          2026-09-11T04:59:11                       0
+================================================================================
+[2026-09-11T05:00:19.576+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                       PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py    390  24.94s            0          -1  34.16s          2026-09-11T04:59:11                       0
+================================================================================
+[2026-09-11T05:04:04.168+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2026-09-11T05:04:04.357+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2026-09-11T05:04:04.497+0000] {manager.py:1366} ERROR - Processor for /opt/airflow/dags/ingestion_pipelines_dag.py with PID 390 started at 2026-09-11T04:59:42.502118+00:00 has timed out, killing it.
+[2026-09-11T05:04:04.563+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           0           1  262.00s         2026-09-11T05:04:04                       0
+================================================================================
+[2026-09-11T05:04:35.553+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  10.32s          2026-09-11T05:04:15                      45
+================================================================================
+[2026-09-11T05:05:06.203+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                       PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py    405  20.25s            1           0  10.32s          2026-09-11T05:04:15                      45
+================================================================================
+[2026-09-11T05:05:43.955+0000] {manager.py:1366} ERROR - Processor for /opt/airflow/dags/ingestion_pipelines_dag.py with PID 405 started at 2026-09-11T05:04:45.942018+00:00 has timed out, killing it.
+[2026-09-11T05:05:47.498+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           0           1  57.71s          2026-09-11T05:05:43                       0
+================================================================================
+[2026-09-11T05:06:21.088+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                       PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py    408  0.31s             0           1  57.71s          2026-09-11T05:05:43                       0
+================================================================================
+[2026-09-11T05:07:15.397+0000] {manager.py:1366} ERROR - Processor for /opt/airflow/dags/ingestion_pipelines_dag.py with PID 408 started at 2026-09-11T05:06:20.425275+00:00 has timed out, killing it.
+[2026-09-11T05:07:45.436+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           0           1  52.29s          2026-09-11T05:07:12                       0
+================================================================================
+[2026-09-11T05:23:02.545+0000] {manager.py:483} INFO - Processing files using up to 2 processes at a time 
+[2026-09-11T05:23:02.550+0000] {manager.py:484} INFO - Process each file at most once every 30 seconds
+[2026-09-11T05:23:02.554+0000] {manager.py:485} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2026-09-11T05:23:02.555+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2026-09-11T05:23:02.587+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2026-09-11T05:23:03.407+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                       PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run      Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  ----------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py    211  0.08s             0           0                                                   0
+================================================================================
+[2026-09-11T05:23:33.994+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  2.82s           2026-09-11T05:23:05                      34
+================================================================================
+[2026-09-11T05:24:04.648+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  2.53s           2026-09-11T05:23:38                      12
+================================================================================
+[2026-09-11T05:24:34.902+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  0.45s           2026-09-11T05:24:09                      12
+================================================================================
+[2026-09-11T05:25:04.972+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  0.60s           2026-09-11T05:24:40                      12
+================================================================================
+[2026-09-11T05:25:37.428+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                       PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py    273  26.59s            1           0  0.60s           2026-09-11T05:24:40                      12
+================================================================================
+[2026-09-11T05:26:03.556+0000] {manager.py:1366} ERROR - Processor for /opt/airflow/dags/ingestion_pipelines_dag.py with PID 273 started at 2026-09-11T05:25:10.763308+00:00 has timed out, killing it.
+[2026-09-11T05:26:08.135+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           0           1  52.76s          2026-09-11T05:26:03                       0
+================================================================================
+[2026-09-11T05:26:38.394+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  0.92s           2026-09-11T05:26:35                      34
+================================================================================
+[2026-09-11T05:27:17.120+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                       PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py    291  11.72s            1           0  0.92s           2026-09-11T05:26:35                      34
+================================================================================
+[2026-09-11T05:27:51.098+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                       PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py    291  45.74s            1           0  0.92s           2026-09-11T05:26:35                      34
+================================================================================
+[2026-09-11T05:27:56.067+0000] {manager.py:1366} ERROR - Processor for /opt/airflow/dags/ingestion_pipelines_dag.py with PID 291 started at 2026-09-11T05:27:05.283586+00:00 has timed out, killing it.
+[2026-09-11T05:28:03.568+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2026-09-11T05:28:03.988+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2026-09-11T05:28:22.459+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           0           1  50.65s          2026-09-11T05:27:55                       0
+================================================================================
+[2026-09-11T05:29:05.902+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                       PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py    294  29.22s            0           1  50.65s          2026-09-11T05:27:55                       0
+================================================================================
+[2026-09-11T05:29:36.281+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  45.00s          2026-09-11T05:29:13                      34
+================================================================================
+[2026-09-11T05:30:06.396+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                       PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py    316  22.35s            1           0  45.00s          2026-09-11T05:29:13                      34
+================================================================================
+[2026-09-11T05:30:20.931+0000] {manager.py:1146} ERROR - Processor for /opt/airflow/dags/ingestion_pipelines_dag.py exited with return code 1.
+[2026-09-11T05:30:36.731+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           0          -1  36.90s          2026-09-11T05:30:20                       0
+================================================================================
+[2026-09-11T05:31:13.088+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                       PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py    322  20.68s            0          -1  36.90s          2026-09-11T05:30:20                       0
+================================================================================
+[2026-09-11T05:31:47.746+0000] {manager.py:1366} ERROR - Processor for /opt/airflow/dags/ingestion_pipelines_dag.py with PID 322 started at 2026-09-11T05:30:51.856682+00:00 has timed out, killing it.
+[2026-09-11T05:31:53.628+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           0           1  55.23s          2026-09-11T05:31:47                       0
+================================================================================
+[2026-09-11T05:32:37.943+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                       PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py    326  15.16s            0           1  55.23s          2026-09-11T05:31:47                       0
+================================================================================
+[2026-09-11T05:33:58.011+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2026-09-11T05:33:58.186+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2026-09-11T05:33:58.496+0000] {manager.py:1366} ERROR - Processor for /opt/airflow/dags/ingestion_pipelines_dag.py with PID 326 started at 2026-09-11T05:32:19.393505+00:00 has timed out, killing it.
+[2026-09-11T05:33:58.622+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           0           1  99.10s          2026-09-11T05:33:58                       0
+================================================================================
+[2026-09-11T05:34:28.760+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                       PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py    337  0.02s             0           1  99.10s          2026-09-11T05:33:58                       0
+================================================================================
+[2026-09-11T05:36:29.027+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                       PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py    337  88.37s            0           1  99.10s          2026-09-11T05:33:58                       0
+================================================================================
+[2026-09-11T05:37:33.904+0000] {manager.py:1366} ERROR - Processor for /opt/airflow/dags/ingestion_pipelines_dag.py with PID 337 started at 2026-09-11T05:34:28.741600+00:00 has timed out, killing it.
+[2026-09-11T05:37:46.129+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           0           1  184.62s         2026-09-11T05:37:33                       0
+================================================================================
+[2026-09-11T05:38:16.692+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           1           0  6.92s           2026-09-11T05:38:13                      34
+================================================================================
+[2026-09-11T05:38:54.618+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                       PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py    345  7.16s             1           0  6.92s           2026-09-11T05:38:13                      34
+================================================================================
+[2026-09-11T05:39:16.188+0000] {manager.py:821} INFO - Searching for files in /opt/airflow/dags
+[2026-09-11T05:39:22.961+0000] {manager.py:824} INFO - There are 1 files in /opt/airflow/dags
+[2026-09-11T05:40:21.826+0000] {manager.py:1366} ERROR - Processor for /opt/airflow/dags/ingestion_pipelines_dag.py with PID 345 started at 2026-09-11T05:38:43.923065+00:00 has timed out, killing it.
+[2026-09-11T05:40:33.534+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                     PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py                           0           1  96.87s          2026-09-11T05:40:20                       0
+================================================================================
+[2026-09-11T05:41:28.632+0000] {manager.py:997} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                       PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run               Last # of DB Queries
+--------------------------------------------  -----  ---------  --------  ----------  --------------  -------------------  ----------------------
+/opt/airflow/dags/ingestion_pipelines_dag.py    348  25.94s            0           1  96.87s          2026-09-11T05:40:20                       0
+================================================================================
+[2026-09-11T05:42:15.008+0000] {manager.py:1366} ERROR - Processor for /opt/airflow/dags/ingestion_pipelines_dag.py with PID 348 started at 2026-09-11T05:40:52.969477+00:00 has timed out, killing it.
