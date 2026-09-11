@@ -28,31 +28,11 @@ export interface NavGroup {
   styleUrl: './sidebar.component.css'
 })
 export class SidebarComponent {
-  isNewMenuOpen = false;
-  isMoreOpen = false;
   collapsed = false;
   metabaseUrl = environment.metabaseUrl;
 
   toggleCollapse(): void {
     this.collapsed = !this.collapsed;
-    if (this.collapsed) {
-      this.closeDropdown();
-    }
-  }
-
-  toggleNewMenu(): void {
-    this.isNewMenuOpen = !this.isNewMenuOpen;
-    if (!this.isNewMenuOpen) this.isMoreOpen = false;
-  }
-
-  toggleMore(event: MouseEvent): void {
-    event.stopPropagation();
-    this.isMoreOpen = !this.isMoreOpen;
-  }
-
-  closeDropdown(): void {
-    this.isNewMenuOpen = false;
-    this.isMoreOpen = false;
   }
 
   blockIfComingSoon(event: MouseEvent, item: NavItem): void {
