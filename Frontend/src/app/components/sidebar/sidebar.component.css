@@ -344,3 +344,35 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.nav-link.coming-soon {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.nav-link.coming-soon:hover {
+  background-color: transparent;
+  color: var(--app-on-surface-variant);
+}
+
+.nav-link.coming-soon .nav-label {
+  flex-shrink: 1;
+}
+
+.coming-soon-badge {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--app-outline);
+  background-color: var(--app-surface-container-high);
+  border-radius: 4px;
+  padding: 2px 5px;
+  white-space: nowrap;
+}
+
+.sidebar-container.collapsed .coming-soon-badge {
+  display: none;
+}

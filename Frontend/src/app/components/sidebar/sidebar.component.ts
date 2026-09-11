@@ -12,6 +12,7 @@ export interface NavItem {
   route: string;
   external?: boolean;
   url?: string;
+  comingSoon?: boolean;
 }
 
 export interface NavGroup {
@@ -54,16 +55,23 @@ export class SidebarComponent {
     this.isMoreOpen = false;
   }
 
+  blockIfComingSoon(event: MouseEvent, item: NavItem): void {
+    if (item.comingSoon) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }
+
   mainItems: NavItem[] = [
     { label: 'Home', icon: 'home', route: '/dashboard' },
     // { label: 'Learn', icon: 'school', route: '/learn' },
-    { label: 'Workspace', icon: 'book', route: '/workspace' },
-    { label: 'Recents', icon: 'schedule', route: '/recents' },
+    { label: 'Workspace', icon: 'book', route: '/workspace', comingSoon: true },
+    { label: 'Recents', icon: 'schedule', route: '/recents', comingSoon: true },
     { label: 'Catalog', icon: 'change_history', route: '/data-sources' },
     { label: 'Jobs & Pipelines', icon: 'alt_route', route: '/jobs' },
-    { label: 'Compute', icon: 'cloud', route: '/compute' },
-    { label: 'Discover', icon: 'explore', route: '/discover' },
-    { label: 'Marketplace', icon: 'storefront', route: '/marketplace' }
+    { label: 'Compute', icon: 'cloud', route: '/compute', comingSoon: true },
+    { label: 'Discover', icon: 'explore', route: '/discover', comingSoon: true },
+    { label: 'Marketplace', icon: 'storefront', route: '/marketplace', comingSoon: true }
   ];
 
   sqlItems: NavItem[] = [
@@ -71,14 +79,14 @@ export class SidebarComponent {
     { label: 'Trino Editor', icon: 'query_stats', route: '/trino-editor' },
     { label: 'Queries', icon: 'description', route: '/queries' },
     { label: 'Dashboards', icon: 'dashboard', route: '/dashboards', external: true, url: environment.metabaseUrl },
-    { label: 'Orbitto', icon: 'smart_toy', route: '/orbitto' },
-    { label: 'Alerts', icon: 'notifications_none', route: '/alerts' },
-    { label: 'Query History', icon: 'history', route: '/query-history' },
+    { label: 'Orbitto', icon: 'smart_toy', route: '/orbitto', comingSoon: true },
+    { label: 'Alerts', icon: 'notifications_none', route: '/alerts', comingSoon: true },
+    { label: 'Query History', icon: 'history', route: '/query-history', comingSoon: true },
     { label: 'SQL Warehouses', icon: 'cloud_queue', route: '/data-destinations' }
   ];
 
   dataEngineeringItems: NavItem[] = [
-    { label: 'Runs', icon: 'playlist_play', route: '/runs' },
+    { label: 'Runs', icon: 'playlist_play', route: '/runs', comingSoon: true },
     { label: 'Data Ingestion', icon: 'dataset', route: '/ingestion-pipelines' },
     { label: 'Visual Data Prep', icon: 'dataset_linked', route: '/data-sources' },
     { label: 'Iceberg Catalog', icon: 'inventory_2', route: '/iceberg-catalog' },
@@ -105,12 +113,12 @@ export class SidebarComponent {
 
   aiMlItems: NavItem[] = [
     { label: 'Playground', icon: 'auto_awesome', route: '/playground' },
-    { label: 'Agents', icon: 'support_agent', route: '/agents' },
-    { label: 'AI Gateway', icon: 'hub', route: '/ai-gateway' },
-    { label: 'Experiments', icon: 'science', route: '/experiments' },
-    { label: 'Features', icon: 'dynamic_feed', route: '/features' },
+    { label: 'Agents', icon: 'support_agent', route: '/agents', comingSoon: true },
+    { label: 'AI Gateway', icon: 'hub', route: '/ai-gateway', comingSoon: true },
+    { label: 'Experiments', icon: 'science', route: '/experiments', comingSoon: true },
+    { label: 'Features', icon: 'dynamic_feed', route: '/features', comingSoon: true },
     { label: 'Models', icon: 'bubble_chart', route: '/models' },
-    { label: 'Serving', icon: 'cloud_sync', route: '/serving' }
+    { label: 'Serving', icon: 'cloud_sync', route: '/serving', comingSoon: true }
   ];
 
   // Visualization Tools is a personal preference, open to every user;
