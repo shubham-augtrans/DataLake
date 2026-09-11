@@ -255,6 +255,10 @@ METABASE_URL = os.getenv(
 
 METABASE_API_KEY = os.getenv("METABASE_API_KEY", "")
 
+SUPERSET_URL = os.getenv("SUPERSET_URL", "http://localhost:8088")
+SUPERSET_USERNAME = os.getenv("SUPERSET_USERNAME", "shubham")
+SUPERSET_PASSWORD = os.getenv("SUPERSET_PASSWORD", "Shubham@123456")
+
 TRINO_HOST = os.getenv("TRINO_HOST", "localhost")
 TRINO_PORT = int(os.getenv("TRINO_PORT", "8082"))
 TRINO_CATALOG = os.getenv("TRINO_CATALOG", "iceberg")

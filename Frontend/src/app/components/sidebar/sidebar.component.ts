@@ -92,6 +92,7 @@ export class SidebarComponent {
     { label: 'MinIO Console', icon: 'inventory_2', route: '', external: true, url: environment.minioConsoleUrl },
     { label: 'Grafana', icon: 'monitoring', route: '', external: true, url: environment.grafanaUrl },
     { label: 'Metabase', icon: 'dashboard', route: '', external: true, url: environment.metabaseUrl },
+    { label: 'Superset', icon: 'insights', route: '', external: true, url: environment.supersetUrl },
     { label: 'Jupyter Notebook', icon: 'book', route: '', external: true, url: environment.jupyterUrl },
     { label: 'Ranger', icon: 'shield', route: '', external: true, url: environment.rangerUrl },
     { label: 'Airflow', icon: 'schedule', route: '', external: true, url: environment.airflowUrl }

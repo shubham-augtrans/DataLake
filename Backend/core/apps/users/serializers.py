@@ -1,6 +1,14 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 
+from .models import User
+
+
+class UserPreferencesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["active_bi_tool"]
+
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()

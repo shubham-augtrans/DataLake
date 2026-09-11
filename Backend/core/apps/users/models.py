@@ -30,6 +30,10 @@ class User(AbstractUser):
         ADMIN = "ADMIN", "Admin"
         USER = "USER", "User"
 
+    class BiTool(models.TextChoices):
+        METABASE = "METABASE", "Metabase"
+        SUPERSET = "SUPERSET", "Superset"
+
     username = None
 
     first_name = models.CharField(max_length=100)
@@ -52,6 +56,12 @@ class User(AbstractUser):
         max_length=20,
         choices=Role.choices,
         default=Role.USER,
+    )
+
+    active_bi_tool = models.CharField(
+        max_length=20,
+        choices=BiTool.choices,
+        default=BiTool.METABASE,
     )
 
     created_at = models.DateTimeField(auto_now_add=True)

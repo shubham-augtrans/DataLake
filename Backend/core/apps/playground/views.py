@@ -7,6 +7,7 @@ from apps.query.models import QueryHistory
 from apps.query.services import QueryExecutionError
 
 from .metabase_client import MetabaseClient, MetabaseError
+from .superset_client import SupersetClient, SupersetError
 from .services import (
     COLOR_NAME_TO_HEX,
     build_chat_reply,
@@ -22,9 +23,27 @@ from .services import (
 MIN_SIZE_X, MAX_SIZE_X = 4, 24
 MIN_SIZE_Y, MAX_SIZE_Y = 2, 16
 
+# Both client classes raise their own exception type - callers that don't
+# care which backend is active just catch this tuple, same as they'd catch
+# MetabaseError alone before Superset existed.
+BiError = (MetabaseError, SupersetError)
+
 
 def _clamp(value, low, high):
     return max(low, min(high, value))
+
+
+def _get_bi_client(user):
+    """
+    Picks the visualization backend for this request based on the user's
+    saved preference (apps.users.models.User.active_bi_tool, set from the
+    Settings page). Both clients expose the same public method surface -
+    see superset_client.py's module docstring - so every call site below
+    works unmodified regardless of which one comes back.
+    """
+    if getattr(user, "active_bi_tool", "METABASE") == "SUPERSET":
+        return SupersetClient()
+    return MetabaseClient()
 
 
 class PlaygroundChatView(APIView):
@@ -63,6 +82,18 @@ class PlaygroundChatView(APIView):
         previous_card_id = request.data.get("previous_card_id")
         previous_dashboard_id = request.data.get("previous_dashboard_id")
         previous_embed_url = request.data.get("previous_embed_url")
+        previous_bi_tool = request.data.get("previous_bi_tool")
+        active_bi_tool = request.user.active_bi_tool
+
+        # A dashboard/card id from one BI tool means nothing to the other -
+        # if the user switched tools (Settings page) since this dashboard
+        # was built, treat it as if there were no previous dashboard at all
+        # rather than trying to operate on ids the new tool doesn't own.
+        if previous_bi_tool and previous_bi_tool != active_bi_tool:
+            previous_card_id = None
+            previous_dashboard_id = None
+            previous_embed_url = None
+
         has_previous_dashboard = bool(previous_card_id and previous_dashboard_id)
 
         trino_user = request.user.email.split("@")[0]
@@ -108,7 +139,7 @@ class PlaygroundChatView(APIView):
         multi_count = wants_multi_chart(prompt)
         if multi_count and multi_count > 1:
             return self._handle_multi_chart(
-                trino_user, prompt, schema_summary, multi_count, history,
+                request.user, trino_user, prompt, schema_summary, multi_count, history,
                 has_previous_dashboard, previous_dashboard_id, previous_embed_url,
             )
 
@@ -116,7 +147,7 @@ class PlaygroundChatView(APIView):
             # Nothing on screen yet - trivially a create. No dashboard state
             # to plan against, so this bootstraps via the plain chart
             # pipeline (semantics only: SQL + chart type).
-            return self._create_first_chart(trino_user, prompt, schema_summary, history)
+            return self._create_first_chart(request.user, trino_user, prompt, schema_summary, history)
 
         # A dashboard already exists - every turn that could touch it
         # (create, update, delete, duplicate, move, resize, rename, recolor,
@@ -125,11 +156,11 @@ class PlaygroundChatView(APIView):
         # chart" - which share no distinguishing keyword - are told apart by
         # something that can actually see what's on the dashboard.
         return self._handle_dashboard_operation(
-            prompt, history, trino_user, schema_summary,
+            request.user, prompt, history, trino_user, schema_summary,
             previous_card_id, previous_dashboard_id, previous_embed_url,
         )
 
-    def _create_first_chart(self, trino_user, prompt, schema_summary, history):
+    def _create_first_chart(self, user, trino_user, prompt, schema_summary, history):
         widget = build_widget(trino_user, prompt, schema_summary, history=history)
 
         if "error" in widget:
@@ -142,7 +173,7 @@ class PlaygroundChatView(APIView):
             return Response({"error": widget["error"]}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            metabase = MetabaseClient()
+            metabase = _get_bi_client(user)
             database_id = metabase.find_or_create_lakehouse_database_id()
 
             card = metabase.create_card(
@@ -158,13 +189,13 @@ class PlaygroundChatView(APIView):
 
             try:
                 embed_url = metabase.create_public_link(dashboard_id)
-            except MetabaseError:
-                # Public sharing may not be turned on in Metabase yet - the
-                # dashboard still exists and is reachable via dashboard_url,
-                # it just can't be embedded in an iframe until an admin enables it.
+            except BiError:
+                # Public sharing may not be turned on yet - the dashboard
+                # still exists and is reachable via dashboard_url, it just
+                # can't be embedded in an iframe until an admin enables it.
                 embed_url = None
 
-        except MetabaseError as ex:
+        except BiError as ex:
             QueryHistory.objects.create(
                 trino_user=trino_user,
                 sql_text=f"-- prompt: {prompt}\n{widget['sql']}",
@@ -172,7 +203,7 @@ class PlaygroundChatView(APIView):
                 error_message=str(ex),
             )
             return Response(
-                {"error": f"Query ran but Metabase card creation failed: {ex}"},
+                {"error": f"Query ran but dashboard card creation failed: {ex}"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -195,12 +226,13 @@ class PlaygroundChatView(APIView):
             "embed_url": embed_url,
             "card_id": card["id"],
             "dashboard_id": dashboard_id,
+            "bi_tool": user.active_bi_tool,
             "updated_existing": False,
             "is_chat_only": False,
         })
 
     def _handle_dashboard_operation(
-        self, prompt, history, trino_user, schema_summary,
+        self, user, prompt, history, trino_user, schema_summary,
         previous_card_id, previous_dashboard_id, previous_embed_url,
     ):
         """
@@ -218,9 +250,9 @@ class PlaygroundChatView(APIView):
         instruction in the same turn.
         """
         try:
-            metabase = MetabaseClient()
+            metabase = _get_bi_client(user)
             cards_summary = metabase.get_dashboard_cards_summary(previous_dashboard_id)
-        except MetabaseError as ex:
+        except BiError as ex:
             return Response(
                 {"error": f"Couldn't read the dashboard's current cards: {ex}"},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -387,7 +419,7 @@ class PlaygroundChatView(APIView):
             if layout_by_card_id:
                 metabase.update_dashcard_layout(previous_dashboard_id, layout_by_card_id)
 
-        except MetabaseError as ex:
+        except BiError as ex:
             return Response(
                 {"error": f"Dashboard operation failed: {ex}"},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -431,12 +463,13 @@ class PlaygroundChatView(APIView):
             "updated_existing": True,
             "card_id": touched_card_id,
             "dashboard_id": previous_dashboard_id,
+            "bi_tool": user.active_bi_tool,
             "dashboard_url": metabase.dashboard_url(previous_dashboard_id),
             "embed_url": previous_embed_url,
         })
 
     def _handle_multi_chart(
-        self, trino_user, prompt, schema_summary, count, history,
+        self, user, trino_user, prompt, schema_summary, count, history,
         add_to_dashboard, previous_dashboard_id, previous_embed_url,
     ):
         """
@@ -460,7 +493,7 @@ class PlaygroundChatView(APIView):
             )
 
         try:
-            metabase = MetabaseClient()
+            metabase = _get_bi_client(user)
             database_id = metabase.find_or_create_lakehouse_database_id()
 
             card_ids = [
@@ -485,10 +518,10 @@ class PlaygroundChatView(APIView):
 
                 try:
                     embed_url = metabase.create_public_link(dashboard_id)
-                except MetabaseError:
+                except BiError:
                     embed_url = None
 
-        except MetabaseError as ex:
+        except BiError as ex:
             QueryHistory.objects.create(
                 trino_user=trino_user,
                 sql_text=f"-- prompt: {prompt}",
@@ -496,7 +529,7 @@ class PlaygroundChatView(APIView):
                 error_message=str(ex),
             )
             return Response(
-                {"error": f"Charts ran but Metabase card creation failed: {ex}"},
+                {"error": f"Charts ran but dashboard card creation failed: {ex}"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -529,6 +562,7 @@ class PlaygroundChatView(APIView):
             "embed_url": embed_url,
             "card_id": card_ids[-1],
             "dashboard_id": dashboard_id,
+            "bi_tool": user.active_bi_tool,
             "updated_existing": bool(add_to_dashboard and previous_dashboard_id),
             "is_chat_only": False,
         })

@@ -29,6 +29,7 @@ export interface ChatResponse {
   embed_url?: string | null;
   card_id?: number;
   dashboard_id?: number;
+  bi_tool?: 'METABASE' | 'SUPERSET';
   updated_existing?: boolean;
 }
 
@@ -46,6 +47,11 @@ export interface ChartTile {
   durationMs: number;
   cardId: number;
   dashboardId: number;
+  // Which BI backend this dashboard actually lives in (whatever the
+  // user's Settings preference was at creation time) - a dashboard/card id
+  // from one tool means nothing to the other, so follow-up edits must keep
+  // targeting the same one even if the user later switches tools.
+  biTool: 'METABASE' | 'SUPERSET';
 }
 
 export interface Conversation {
@@ -223,7 +229,8 @@ export class PlaygroundComponent implements OnInit {
       history: this.history,
       previous_card_id: lastTile?.cardId ?? null,
       previous_dashboard_id: lastTile?.dashboardId ?? null,
-      previous_embed_url: lastTile?.embedUrl ?? null
+      previous_embed_url: lastTile?.embedUrl ?? null,
+      previous_bi_tool: lastTile?.biTool ?? null
     }).subscribe({
       next: (response: ChatResponse) => {
         this.sending = false;
@@ -265,7 +272,8 @@ export class PlaygroundComponent implements OnInit {
               rowCount: response.row_count!,
               durationMs: response.duration_ms!,
               cardId: response.card_id!,
-              dashboardId: response.dashboard_id!
+              dashboardId: response.dashboard_id!,
+              biTool: response.bi_tool ?? 'METABASE'
             };
 
             // First chart of the conversation - every one after this replaces it.
@@ -293,6 +301,10 @@ export class PlaygroundComponent implements OnInit {
         this.persist();
       }
     });
+  }
+
+  toolLabel(biTool: 'METABASE' | 'SUPERSET' | undefined): string {
+    return biTool === 'SUPERSET' ? 'Superset' : 'Metabase';
   }
 
   openModal(tile: ChartTile): void {

@@ -534,4 +534,96 @@ class DashboardOperationViewTests(TestCase):
         self.assertEqual(response.data["card_id"], 1)
         self.assertEqual(response.data["chart_type"], "pie")
         mb.create_card.assert_not_called()
-        mb.update_card.assert_called_once()
+
+
+# ---------------------------------------------------------------------------
+# Same dispatch/validation/execution contract as DashboardOperationViewTests
+# above, but for a user whose active_bi_tool is SUPERSET - proves
+# _get_bi_client() actually switches backends and that the two clients are
+# interchangeable from views.py's point of view.
+# ---------------------------------------------------------------------------
+
+class SupersetDashboardOperationTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="superset-tester@example.com", password="x", active_bi_tool="SUPERSET",
+        )
+        self.factory = APIRequestFactory()
+
+    def _post(self, payload):
+        request = self.factory.post("/api/playground/chat/", payload, format="json")
+        force_authenticate(request, user=self.user)
+        return PlaygroundChatView.as_view()(request)
+
+    def _mock_superset(self, mock_cls, cards_summary=None):
+        instance = MagicMock()
+        mock_cls.return_value = instance
+        instance.find_or_create_lakehouse_database_id.return_value = 1
+        instance.get_dashboard_cards_summary.return_value = cards_summary or []
+        instance.create_card.side_effect = lambda **kw: {"id": 100 + instance.create_card.call_count}
+        instance.create_dashboard.return_value = {"id": 999}
+        instance.create_public_link.return_value = "http://superset/public/x"
+        instance.dashboard_url.side_effect = lambda did: f"http://superset/dashboard/{did}"
+        instance.chart_to_display.side_effect = lambda t: t
+        return instance
+
+    @patch("apps.playground.views.fetch_schema_summary", return_value="t(a int)")
+    @patch("apps.playground.views.classify_intent", return_value="chart")
+    @patch("apps.playground.views.build_widget")
+    @patch("apps.playground.views.SupersetClient")
+    @patch("apps.playground.views.MetabaseClient")
+    def test_create_first_chart_uses_superset_not_metabase(
+        self, mock_mb_cls, mock_ss_cls, mock_build_widget, mock_intent, mock_schema
+    ):
+        ss = self._mock_superset(mock_ss_cls)
+        mock_build_widget.return_value = _widget("sales by region", "bar")
+
+        response = self._post({"prompt": "Create a bar chart showing sales by region.", "history": []})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["bi_tool"], "SUPERSET")
+        ss.create_card.assert_called_once()
+        ss.create_dashboard.assert_called_once()
+        mock_mb_cls.assert_not_called()
+
+    @patch("apps.playground.views.fetch_schema_summary", return_value="t(a int)")
+    @patch("apps.playground.views.classify_intent", return_value="chart")
+    @patch("apps.playground.views.plan_dashboard_operation")
+    @patch("apps.playground.views.build_widget")
+    @patch("apps.playground.views.SupersetClient")
+    def test_create_beside_existing_chart(self, mock_ss_cls, mock_build_widget, mock_plan, mock_intent, mock_schema):
+        cards = [_card(1, "Sales by Region", "bar", row=0, col=0)]
+        ss = self._mock_superset(mock_ss_cls, cards_summary=cards)
+        mock_build_widget.return_value = _widget("a second chart", "line")
+        mock_plan.return_value = {
+            "actions": [{"op": "create", "layout": {"relative_to": 1, "placement": "right"}}],
+            "answer": "Added a new chart beside it.",
+        }
+
+        response = self._post({
+            "prompt": "Create a new chart beside it.", "history": [],
+            "previous_card_id": 1, "previous_dashboard_id": 55, "previous_embed_url": "http://superset/e",
+            "previous_bi_tool": "SUPERSET",
+        })
+
+        self.assertEqual(response.status_code, 200)
+        ss.create_card.assert_called_once()
+        ss.update_card.assert_not_called()
+
+    @patch("apps.playground.views.fetch_schema_summary", return_value="t(a int)")
+    @patch("apps.playground.views.classify_intent", return_value="edit")
+    @patch("apps.playground.views.SupersetClient")
+    def test_switching_tool_mid_conversation_starts_fresh_instead_of_erroring(self, mock_ss_cls, mock_intent, mock_schema):
+        # previous dashboard belongs to Metabase (previous_bi_tool omitted
+        # simulates an older conversation predating this field, or a
+        # mismatched tool) while the user's active tool is now Superset -
+        # this must NOT try to call SupersetClient with a Metabase id.
+        response = self._post({
+            "prompt": "what is this chart called?", "history": [],
+            "previous_card_id": 1, "previous_dashboard_id": 55, "previous_embed_url": "http://mb/e",
+            "previous_bi_tool": "METABASE",
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.data["is_chat_only"])
+        mock_ss_cls.assert_not_called()

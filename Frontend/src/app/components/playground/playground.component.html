@@ -99,9 +99,9 @@
               <button type="button" class="icon-btn" title="Expand" (click)="openModal(tile)">
                 <i class="pi pi-window-maximize"></i>
               </button>
-              <a [href]="tile.dashboardUrl" target="_blank" rel="noopener" class="edit-layout-link" title="Opens the real Metabase dashboard, where you can drag charts to rearrange/resize them">
+              <a [href]="tile.dashboardUrl" target="_blank" rel="noopener" class="edit-layout-link" [title]="'Opens the real ' + toolLabel(tile.biTool) + ' dashboard, where you can drag charts to rearrange/resize them'">
                 <i class="pi pi-arrows-alt"></i>
-                Rearrange in Metabase
+                Rearrange in {{ toolLabel(tile.biTool) }}
               </a>
             </div>
           </div>
@@ -115,7 +115,7 @@
 
           <div class="chart-tile-placeholder" *ngIf="!tile.embedUrl">
             <i class="pi pi-info-circle"></i>
-            <span>Can't be embedded here yet — ask an admin to turn on "Public Sharing" in Metabase.</span>
+            <span>Can't be embedded here yet — ask an admin to turn on public sharing in {{ toolLabel(tile.biTool) }}.</span>
           </div>
 
           <div class="chart-tile-meta">
@@ -137,9 +137,9 @@
       <div class="modal-header">
         <span>{{ modalTile.prompt }}</span>
         <div class="modal-header-actions">
-          <a [href]="modalTile.dashboardUrl" target="_blank" rel="noopener" class="edit-layout-link" title="Opens the real Metabase dashboard, where you can drag charts to rearrange/resize them">
+          <a [href]="modalTile.dashboardUrl" target="_blank" rel="noopener" class="edit-layout-link" [title]="'Opens the real ' + toolLabel(modalTile.biTool) + ' dashboard, where you can drag charts to rearrange/resize them'">
             <i class="pi pi-arrows-alt"></i>
-            Rearrange in Metabase
+            Rearrange in {{ toolLabel(modalTile.biTool) }}
           </a>
           <button type="button" class="icon-btn" title="Close" (click)="closeModal()">
             <i class="pi pi-times"></i>

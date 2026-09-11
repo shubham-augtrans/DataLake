@@ -48,6 +48,63 @@ services:
       retries: 10
       start_period: 90s
 
+  superset-init:
+    build:
+      context: ./superset
+    container_name: superset-init
+    restart: "no"
+    networks:
+      - iceberg_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SUPERSET_CONFIG_PATH: /app/pythonpath/superset_config.py
+      SUPERSET_SECRET_KEY: datalake-superset-dev-secret-change-me
+    volumes:
+      - ./superset/superset_config.py:/app/pythonpath/superset_config.py:ro
+      - ./superset/grant_public_access.py:/app/pythonpath/grant_public_access.py:ro
+    entrypoint: /bin/sh
+    # One-shot: migrate Superset's own metadata DB, seed roles/permissions,
+    # create the admin account SupersetClient logs in as (same purpose as
+    # the airflow-init service does for Airflow), and grant the Public
+    # role the blanket access published dashboards need to actually be
+    # viewable unauthenticated (see grant_public_access.py).
+    command:
+      - -c
+      - |
+        superset db upgrade &&
+        superset fab create-admin --username shubham --firstname Shubham --lastname Sapkal --email shubham@datalake.local --password Shubham@123456 || true &&
+        superset init &&
+        superset shell < /app/pythonpath/grant_public_access.py
+
+  superset:
+    build:
+      context: ./superset
+    container_name: superset
+    restart: unless-stopped
+    networks:
+      - iceberg_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+      superset-init:
+        condition: service_completed_successfully
+    environment:
+      SUPERSET_CONFIG_PATH: /app/pythonpath/superset_config.py
+      SUPERSET_SECRET_KEY: datalake-superset-dev-secret-change-me
+    ports:
+      - "8088:8088"
+    volumes:
+      - ./superset/superset_config.py:/app/pythonpath/superset_config.py:ro
+      - superset_data:/app/superset_home
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8088/health >/dev/null || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 90s
+
   kafka:
     image: apache/kafka:3.9.0
     container_name: kafka
@@ -702,6 +759,7 @@ services:
 volumes:
   postgres_data:
   metabase_data:
+  superset_data:
   kafka_data:
   grafana_data:
   influxdb_data:

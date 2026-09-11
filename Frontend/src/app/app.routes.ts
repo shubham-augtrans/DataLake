@@ -14,6 +14,7 @@ import { PlaygroundComponent } from './components/playground/playground.componen
 import { FlowChartComponent } from './components/flow-chart/flow-chart.component';
 import { ApiDocsComponent } from './components/api-docs/api-docs.component';
 import { ModelsComponent } from './components/models/models.component';
+import { SettingsComponent } from './components/settings/settings.component';
 
 export const routes: Routes = [
   {
@@ -122,6 +123,10 @@ export const routes: Routes = [
       {
         path: 'data-flow',
         component: FlowChartComponent
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent
       },
       // Documentation Group
       {

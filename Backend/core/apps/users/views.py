@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import LoginSerializer
+from .serializers import LoginSerializer, UserPreferencesSerializer
 
 
 class LoginView(APIView):
@@ -32,10 +32,26 @@ class LoginView(APIView):
                     "last_name": user.last_name,
                     "email": user.email,
                     "role": user.role,
+                    "active_bi_tool": user.active_bi_tool,
                 },
             },
             status=status.HTTP_200_OK,
         )
+
+
+class UserPreferencesView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserPreferencesSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request):
+        serializer = UserPreferencesSerializer(request.user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class LogoutView(APIView):
