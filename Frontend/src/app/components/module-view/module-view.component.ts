@@ -51,8 +51,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
     :host {
       display: block;
       height: 100%;
-      background-color: #11131c;
-      color: #e1e1ef;
+      background-color: var(--app-bg);
+      color: var(--app-on-surface);
       font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     }
     .module-page {
@@ -67,8 +67,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #1d1f29;
-      border: 1px solid #424655;
+      background-color: var(--app-surface-container);
+      border: 1px solid var(--app-outline-variant);
       padding: 20px 24px;
       border-radius: 14px;
     }
@@ -81,8 +81,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
       width: 48px;
       height: 48px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #b4c5ff 0%, #8ca6ff 100%);
-      color: #002a78;
+      background: linear-gradient(135deg, var(--app-primary) 0%, #8ca6ff 100%);
+      color: var(--app-on-primary);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -94,12 +94,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
       margin: 0;
       font-size: 19px;
       font-weight: 600;
-      color: #e1e1ef;
+      color: var(--app-on-surface);
     }
     .subtitle {
       margin: 4px 0 0;
       font-size: 11px;
-      color: #c3c6d8;
+      color: var(--app-on-surface-variant);
     }
     .btn {
       display: inline-flex;
@@ -114,16 +114,16 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
       transition: all 0.2s ease;
     }
     .btn-primary {
-      background-color: #b4c5ff;
-      color: #002a78;
+      background-color: var(--app-primary);
+      color: var(--app-on-primary);
     }
     .btn-primary:hover {
-      background-color: #dbe1ff;
-      box-shadow: 0 4px 14px rgba(180, 197, 255, 0.3);
+      background-color: var(--app-primary);
+      box-shadow: 0 4px 14px color-mix(in srgb, var(--app-primary) 30%, transparent);
     }
     .placeholder-card {
-      background-color: #1d1f29;
-      border: 1px dashed #424655;
+      background-color: var(--app-surface-container);
+      border: 1px dashed var(--app-outline-variant);
       border-radius: 14px;
       padding: 60px 20px;
       text-align: center;
@@ -134,8 +134,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
       width: 64px;
       height: 64px;
       border-radius: 50%;
-      background: rgba(180, 197, 255, 0.1);
-      color: #b4c5ff;
+      background: color-mix(in srgb, var(--app-primary) 10%, transparent);
+      color: var(--app-primary);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -147,11 +147,11 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
     .placeholder-card h2 {
       margin: 0 0 8px;
       font-size: 17px;
-      color: #e1e1ef;
+      color: var(--app-on-surface);
     }
     .placeholder-card p {
       margin: 0 0 24px;
-      color: #c3c6d8;
+      color: var(--app-on-surface-variant);
       font-size: 12px;
       line-height: 1.5;
     }
@@ -169,13 +169,13 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
       font-size: 11px;
       font-weight: 500;
       text-decoration: none;
-      background-color: #1b66ff;
-      color: #ffffff;
+      background-color: var(--app-primary);
+      color: var(--app-on-primary);
       transition: background 0.2s;
     }
     .quick-btn.secondary {
-      background-color: #32343e;
-      color: #e1e1ef;
+      background-color: var(--app-surface-container-highest);
+      color: var(--app-on-surface);
     }
     .quick-btn:hover {
       opacity: 0.9;

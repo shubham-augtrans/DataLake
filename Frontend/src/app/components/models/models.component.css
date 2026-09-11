@@ -1,8 +1,8 @@
 :host {
   display: block;
   min-height: 100%;
-  background-color: #11131c;
-  color: #e1e1ef;
+  background-color: var(--app-bg);
+  color: var(--app-on-surface);
   font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
 }
 
@@ -29,7 +29,7 @@
 
 .page-header p {
   margin: 6px 0 0;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
   font-size: 12px;
   max-width: 560px;
 }
@@ -42,7 +42,7 @@
   border-radius: 10px;
   background-color: rgba(239, 68, 68, 0.12);
   border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #fca5a5;
+  color: var(--app-danger);
   font-size: 11px;
   margin-bottom: 16px;
 }
@@ -55,15 +55,15 @@
   gap: 12px;
   height: 240px;
   border-radius: 12px;
-  border: 1px dashed #424655;
-  background-color: #1d1f29;
-  color: #8d90a1;
+  border: 1px dashed var(--app-outline-variant);
+  background-color: var(--app-surface-container);
+  color: var(--app-outline);
   font-size: 12px;
 }
 
 .empty-state i {
   font-size: 26px;
-  color: #b4c5ff;
+  color: var(--app-primary);
 }
 
 .model-list {
@@ -74,13 +74,13 @@
 
 .model-card {
   border-radius: 14px;
-  border: 1px solid #424655;
-  background-color: #1d1f29;
+  border: 1px solid var(--app-outline-variant);
+  background-color: var(--app-surface-container);
   padding: 16px 18px;
 }
 
 .model-card.is-default {
-  border-color: #6d5ef8;
+  border-color: var(--app-accent-violet);
 }
 
 .model-card-header {
@@ -100,7 +100,7 @@
 .model-name {
   font-size: 13px;
   font-weight: 600;
-  color: #e1e1ef;
+  color: var(--app-on-surface);
 }
 
 .default-badge {
@@ -111,7 +111,7 @@
   border-radius: 999px;
   background-color: rgba(109, 94, 248, 0.15);
   border: 1px solid rgba(109, 94, 248, 0.4);
-  color: #b4c5ff;
+  color: var(--app-primary);
   font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
@@ -128,7 +128,7 @@
 .text-btn {
   border: none;
   background: transparent;
-  color: #b4c5ff;
+  color: var(--app-primary);
   font-size: 11px;
   font-family: inherit;
   cursor: pointer;
@@ -148,17 +148,17 @@
   border-radius: 7px;
   border: none;
   background: transparent;
-  color: #8d90a1;
+  color: var(--app-outline);
   cursor: pointer;
 }
 
 .icon-btn:hover {
-  background-color: #14161f;
-  color: #b4c5ff;
+  background-color: var(--app-surface-alt);
+  color: var(--app-primary);
 }
 
 .icon-btn-danger:hover {
-  color: #fca5a5;
+  color: var(--app-danger);
 }
 
 .model-card-body {
@@ -185,13 +185,13 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #8d90a1;
+  color: var(--app-outline);
 }
 
 .field-value {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -207,7 +207,7 @@
   padding: 8px 16px;
   border-radius: 9px;
   border: none;
-  background-color: #6d5ef8;
+  background-color: var(--app-accent-violet);
   color: #ffffff;
   font-size: 12px;
   font-weight: 500;
@@ -221,25 +221,25 @@
 }
 
 .primary-btn:disabled {
-  background-color: #424655;
-  color: #8d90a1;
+  background-color: var(--app-outline-variant);
+  color: var(--app-outline);
   cursor: not-allowed;
 }
 
 .secondary-btn {
   padding: 8px 16px;
   border-radius: 9px;
-  border: 1px solid #424655;
+  border: 1px solid var(--app-outline-variant);
   background-color: transparent;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
   font-size: 12px;
   font-family: inherit;
   cursor: pointer;
 }
 
 .secondary-btn:hover {
-  border-color: #b4c5ff;
-  color: #e1e1ef;
+  border-color: var(--app-primary);
+  color: var(--app-on-surface);
 }
 
 .file-upload-row {
@@ -258,7 +258,7 @@
 
 .file-upload-name {
   font-size: 11px;
-  color: #8d90a1;
+  color: var(--app-outline);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -285,8 +285,8 @@
   display: flex;
   flex-direction: column;
   border-radius: 14px;
-  border: 1px solid #424655;
-  background-color: #1d1f29;
+  border: 1px solid var(--app-outline-variant);
+  background-color: var(--app-surface-container);
   overflow: hidden;
 }
 
@@ -295,10 +295,10 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 18px;
-  border-bottom: 1px solid #424655;
+  border-bottom: 1px solid var(--app-outline-variant);
   font-size: 13px;
   font-weight: 600;
-  background-color: #191b24;
+  background-color: var(--app-surface-container-low);
 }
 
 .modal-body {
@@ -319,11 +319,11 @@
 .field label {
   font-size: 11px;
   font-weight: 500;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
 }
 
 .optional-tag {
-  color: #8d90a1;
+  color: var(--app-outline);
   font-weight: 400;
   font-size: 10px;
 }
@@ -331,9 +331,9 @@
 .field input,
 .field textarea {
   border-radius: 8px;
-  border: 1px solid #424655;
-  background-color: #14161f;
-  color: #e1e1ef;
+  border: 1px solid var(--app-outline-variant);
+  background-color: var(--app-surface-alt);
+  color: var(--app-on-surface);
   font-family: inherit;
   font-size: 12px;
   padding: 8px 10px;
@@ -349,7 +349,7 @@
 
 .field input:focus,
 .field textarea:focus {
-  border-color: #b4c5ff;
+  border-color: var(--app-primary);
 }
 
 .field-checkbox {
@@ -360,7 +360,7 @@
 
 .field-checkbox label {
   font-size: 11px;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
 }
 
 .dialog-error {
@@ -371,7 +371,7 @@
   border-radius: 8px;
   background-color: rgba(239, 68, 68, 0.12);
   border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #fca5a5;
+  color: var(--app-danger);
   font-size: 11px;
 }
 
@@ -380,6 +380,6 @@
   justify-content: flex-end;
   gap: 10px;
   padding: 14px 18px;
-  border-top: 1px solid #424655;
-  background-color: #191b24;
+  border-top: 1px solid var(--app-outline-variant);
+  background-color: var(--app-surface-container-low);
 }

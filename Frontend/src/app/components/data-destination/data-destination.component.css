@@ -1,8 +1,8 @@
 :host {
   display: block;
   min-height: 100%;
-  background-color: #11131c;
-  color: #e1e1ef;
+  background-color: var(--app-bg);
+  color: var(--app-on-surface);
   font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
 }
 
@@ -28,18 +28,18 @@
   font-size: 22px;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #e1e1ef;
+  color: var(--app-on-surface);
 }
 
 .page-header p {
   margin: 6px 0 0;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
   font-size: 12px;
 }
 
 :host ::ng-deep .page-header .p-button {
-  background: #b4c5ff;
-  color: #002a78;
+  background: var(--app-primary);
+  color: var(--app-on-primary);
   border: none;
   font-weight: 600;
   border-radius: 8px;
@@ -47,8 +47,8 @@
 }
 
 :host ::ng-deep .page-header .p-button:hover {
-  background: #dbe1ff;
-  box-shadow: 0 4px 14px rgba(180, 197, 255, 0.3);
+  background: var(--app-primary);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--app-primary) 30%, transparent);
 }
 
 /* ===========================
@@ -67,11 +67,11 @@
 :host ::ng-deep .source-card {
   height: 100%;
   border-radius: 14px;
-  border: 1px solid #424655;
+  border: 1px solid var(--app-outline-variant);
   overflow: hidden;
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-  background-color: #1d1f29 !important;
-  color: #e1e1ef;
+  background-color: var(--app-surface-container) !important;
+  color: var(--app-on-surface);
   display: flex;
   flex-direction: column;
 }
@@ -90,7 +90,7 @@
 
 :host ::ng-deep .source-card:hover {
   transform: translateY(-3px);
-  border-color: #8d90a1;
+  border-color: var(--app-outline);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
 }
 
@@ -99,8 +99,8 @@
   justify-content: space-between;
   align-items: flex-start;
   padding: 18px 20px 14px;
-  background-color: #191b24;
-  border-bottom: 1px solid #424655;
+  background-color: var(--app-surface-container-low);
+  border-bottom: 1px solid var(--app-outline-variant);
 }
 
 .source-meta {
@@ -114,8 +114,8 @@
   width: 44px;
   height: 44px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #b4c5ff 0%, #8ca6ff 100%);
-  color: #002a78;
+  background: linear-gradient(135deg, var(--app-primary) 0%, #8ca6ff 100%);
+  color: var(--app-on-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -128,7 +128,7 @@
   margin: 0;
   font-size: 14px;
   font-weight: 600;
-  color: #e1e1ef;
+  color: var(--app-on-surface);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -136,7 +136,7 @@
 
 .source-meta p {
   margin: 3px 0 0;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
   font-size: 10px;
   font-family: 'JetBrains Mono', monospace;
   word-break: break-all;
@@ -163,7 +163,7 @@
 }
 
 .info-row span:first-child {
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
   font-size: 10px;
   font-weight: 500;
   flex: 0 0 40%;
@@ -173,7 +173,7 @@
   font-size: 10px;
   text-align: right;
   word-break: break-word;
-  color: #e1e1ef;
+  color: var(--app-on-surface);
   font-family: 'JetBrains Mono', monospace;
   flex: 1;
 }
@@ -185,8 +185,8 @@
   display: flex;
   gap: 8px;
   padding: 14px 20px 18px;
-  background-color: #191b24;
-  border-top: 1px solid #424655;
+  background-color: var(--app-surface-container-low);
+  border-top: 1px solid var(--app-outline-variant);
   margin-top: auto;
 }
 
@@ -198,13 +198,13 @@
 }
 
 :host ::ng-deep .action-tertiary.p-button {
-  background: #32343e;
-  border-color: #424655;
-  color: #b4c5ff;
+  background: var(--app-surface-container-highest);
+  border-color: var(--app-outline-variant);
+  color: var(--app-primary);
 }
 
 :host ::ng-deep .action-tertiary.p-button:hover {
-  background: #282933;
+  background: var(--app-surface-container-high);
 }
 
 /* ===========================
@@ -214,23 +214,23 @@
   grid-column: 1 / -1;
   padding: 4rem 2rem;
   text-align: center;
-  background: #1d1f29;
-  border: 1px dashed #424655;
+  background: var(--app-surface-container);
+  border: 1px dashed var(--app-outline-variant);
   border-radius: 14px;
 }
 
 .empty-state i {
-  color: #b4c5ff;
+  color: var(--app-primary);
   margin-bottom: 1rem;
 }
 
 .empty-state h3 {
   margin: 0.75rem 0;
-  color: #e1e1ef;
+  color: var(--app-on-surface);
 }
 
 .empty-state p {
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
   margin-bottom: 1.5rem;
 }
 
@@ -247,7 +247,7 @@
   font-size: 10px;
   font-weight: 500;
   margin-bottom: 6px;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
 }
 
 .w-full {

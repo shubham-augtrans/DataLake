@@ -1,6 +1,9 @@
 @import "primeng/resources/primeng.min.css";
-@import "primeng/resources/themes/aura-dark-indigo/theme.css";
 @import "primeicons/primeicons.css";
+/* The PrimeNG theme itself (color tokens) is NOT imported here - it's
+   loaded via the swappable <link id="app-theme"> in index.html so
+   ThemeService can switch between aura-dark-indigo and aura-light-blue at
+   runtime (PrimeNG 17 ships themes as plain CSS, no v18 JS token API). */
 
 /* Roboto - self-hosted (not the Google Fonts CDN), variable font covering
    weights 100-900 in a single file. Google's own OFL-licensed source:
@@ -14,9 +17,19 @@
   font-display: swap;
 }
 
+/* ==========================================================================
+   Theme tokens - single source of color for the whole app. Every
+   component's CSS reads these instead of hardcoding hex, so ThemeService
+   flipping [data-theme] on <html> reskins everything at once. Dark (the
+   original look) is the default in :root; the light block below overrides
+   every token with PrimeNG's own aura-light-blue palette (--app-primary
+   below is that theme's actual --primary-color, so the app's own styled
+   elements match PrimeNG's buttons/inputs exactly, not an eyeballed blue).
+   ========================================================================== */
 :root {
   --app-bg: #11131c;
   --app-surface: #11131c;
+  --app-surface-alt: #14161f;
   --app-surface-container: #1d1f29;
   --app-surface-container-high: #282933;
   --app-surface-container-highest: #32343e;
@@ -25,18 +38,54 @@
   --app-outline: #8d90a1;
   --app-outline-variant: #424655;
   --app-primary: #b4c5ff;
-  --app-primary-container: #1b66ff;
   --app-on-primary: #002a78;
   --app-on-surface: #e1e1ef;
   --app-on-surface-variant: #c3c6d8;
   --app-error: #ffb4ab;
   --app-error-container: #93000a;
+  --app-success: #4ade80;
+  --app-success-bg: rgba(74, 222, 128, 0.12);
+  --app-danger: #f87171;
+  --app-danger-bg: rgba(248, 113, 113, 0.12);
+  --app-warning: #f0b429;
+  --app-warning-bg: rgba(240, 180, 41, 0.12);
+  --app-accent-violet: #6d5ef8;
+  --app-accent-teal: #5eead4;
+  --app-shadow: rgba(0, 0, 0, 0.6);
+}
+
+:root[data-theme="light"] {
+  --app-bg: #ffffff;
+  --app-surface: #ffffff;
+  --app-surface-alt: #f4f7ff;
+  --app-surface-container: #f4f7ff;
+  --app-surface-container-high: #e8eeff;
+  --app-surface-container-highest: #dce6ff;
+  --app-surface-container-low: #f9fbff;
+  --app-surface-container-lowest: #ffffff;
+  --app-outline: #6b7280;
+  --app-outline-variant: #d6dceb;
+  --app-primary: #3b82f6;
+  --app-on-primary: #ffffff;
+  --app-on-surface: #1e2430;
+  --app-on-surface-variant: #4b5566;
+  --app-error: #dc2626;
+  --app-error-container: #fee2e2;
+  --app-success: #16a34a;
+  --app-success-bg: rgba(22, 163, 74, 0.1);
+  --app-danger: #dc2626;
+  --app-danger-bg: rgba(220, 38, 38, 0.1);
+  --app-warning: #b45309;
+  --app-warning-bg: rgba(180, 83, 9, 0.12);
+  --app-accent-violet: #6d5ef8;
+  --app-accent-teal: #0d9488;
+  --app-shadow: rgba(15, 23, 42, 0.12);
 }
 
 html {
   font-size: 12px;
-  background-color: #11131c;
-  color: #e1e1ef;
+  background-color: var(--app-bg);
+  color: var(--app-on-surface);
 }
 
 html,
@@ -44,8 +93,8 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
-  background-color: #11131c;
-  color: #e1e1ef;
+  background-color: var(--app-bg);
+  color: var(--app-on-surface);
   font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
   overflow-x: hidden;
   /* Standard rendering hints for Roboto/system-UI stacks - matches how
@@ -73,56 +122,59 @@ html, body, app-root {
 }
 
 ::-webkit-scrollbar-track {
-  background: #11131c;
+  background: var(--app-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #32343e;
+  background: var(--app-surface-container-highest);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #424655;
+  background: var(--app-outline-variant);
 }
 
-/* PrimeNG Dark Theme Global Overrides */
+/* PrimeNG theme-aware overrides - layered on top of whichever PrimeNG
+   theme file is currently linked (see index.html), using the same tokens
+   as the rest of the app so PrimeNG's chrome and this app's custom
+   surfaces always match. */
 .p-component {
   font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
 }
 
 .p-dialog {
-  background-color: #1d1f29 !important;
-  border: 1px solid #424655 !important;
+  background-color: var(--app-surface-container) !important;
+  border: 1px solid var(--app-outline-variant) !important;
   border-radius: 14px !important;
-  color: #e1e1ef !important;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6) !important;
+  color: var(--app-on-surface) !important;
+  box-shadow: 0 16px 40px var(--app-shadow) !important;
 }
 
 .p-dialog .p-dialog-header {
-  background-color: #191b24 !important;
-  border-bottom: 1px solid #424655 !important;
-  color: #e1e1ef !important;
+  background-color: var(--app-surface-container-low) !important;
+  border-bottom: 1px solid var(--app-outline-variant) !important;
+  color: var(--app-on-surface) !important;
   padding: 1.2rem 1.5rem !important;
 }
 
 .p-dialog .p-dialog-content {
-  background-color: #1d1f29 !important;
-  color: #e1e1ef !important;
+  background-color: var(--app-surface-container) !important;
+  color: var(--app-on-surface) !important;
   padding: 1.5rem !important;
 }
 
 .p-dialog .p-dialog-footer {
-  background-color: #191b24 !important;
-  border-top: 1px solid #424655 !important;
+  background-color: var(--app-surface-container-low) !important;
+  border-top: 1px solid var(--app-outline-variant) !important;
   padding: 1rem 1.5rem !important;
 }
 
-.p-inputtext, 
+.p-inputtext,
 .p-dropdown,
 .p-inputnumber-input {
-  background-color: #11131c !important;
-  border: 1px solid #424655 !important;
-  color: #e1e1ef !important;
+  background-color: var(--app-bg) !important;
+  border: 1px solid var(--app-outline-variant) !important;
+  color: var(--app-on-surface) !important;
   border-radius: 8px !important;
 }
 
@@ -130,51 +182,51 @@ html, body, app-root {
 .p-dropdown:focus,
 .p-dropdown.p-focus,
 .p-inputnumber-input:focus {
-  border-color: #b4c5ff !important;
-  box-shadow: 0 0 0 2px rgba(180, 197, 255, 0.2) !important;
+  border-color: var(--app-primary) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--app-primary) 20%, transparent) !important;
 }
 
 .p-dropdown-panel {
-  background-color: #1d1f29 !important;
-  border: 1px solid #424655 !important;
-  color: #e1e1ef !important;
+  background-color: var(--app-surface-container) !important;
+  border: 1px solid var(--app-outline-variant) !important;
+  color: var(--app-on-surface) !important;
   border-radius: 8px !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 8px 24px var(--app-shadow) !important;
 }
 
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
-  color: #c3c6d8 !important;
+  color: var(--app-on-surface-variant) !important;
 }
 
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item:hover,
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
-  background-color: #282933 !important;
-  color: #e1e1ef !important;
+  background-color: var(--app-surface-container-high) !important;
+  color: var(--app-on-surface) !important;
 }
 
 .p-datatable .p-datatable-header,
 .p-datatable .p-datatable-thead > tr > th {
-  background-color: #191b24 !important;
-  color: #c3c6d8 !important;
-  border-color: #424655 !important;
+  background-color: var(--app-surface-container-low) !important;
+  color: var(--app-on-surface-variant) !important;
+  border-color: var(--app-outline-variant) !important;
   font-family: 'Roboto', sans-serif !important;
   font-size: 10px !important;
 }
 
 .p-datatable .p-datatable-tbody > tr {
-  background-color: #1d1f29 !important;
-  color: #e1e1ef !important;
-  border-color: #424655 !important;
+  background-color: var(--app-surface-container) !important;
+  color: var(--app-on-surface) !important;
+  border-color: var(--app-outline-variant) !important;
 }
 
 .p-datatable .p-datatable-tbody > tr:hover {
-  background-color: #282933 !important;
+  background-color: var(--app-surface-container-high) !important;
 }
 
 .p-paginator {
-  background-color: #191b24 !important;
-  border-color: #424655 !important;
-  color: #c3c6d8 !important;
+  background-color: var(--app-surface-container-low) !important;
+  border-color: var(--app-outline-variant) !important;
+  color: var(--app-on-surface-variant) !important;
 }
 
 

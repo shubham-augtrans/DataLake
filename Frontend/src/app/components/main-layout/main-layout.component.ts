@@ -6,6 +6,7 @@ import { MenuItem } from 'primeng/api';
 
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { AuthenticationService } from '../../services/authentication.service';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -21,8 +22,17 @@ export class MainLayoutComponent implements OnInit {
 
   constructor(
     private authService: AuthenticationService,
-    private router: Router
+    private router: Router,
+    public themeService: ThemeService
   ) {}
+
+  get isDark(): boolean {
+    return this.themeService.theme() === 'dark';
+  }
+
+  toggleTheme(): void {
+    this.themeService.toggle();
+  }
 
   ngOnInit(): void {
     this.currentUser = this.authService.getUser();

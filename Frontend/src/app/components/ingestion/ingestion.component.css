@@ -1,8 +1,8 @@
 :host {
   display: block;
   min-height: 100%;
-  background-color: #11131c;
-  color: #e1e1ef;
+  background-color: var(--app-bg);
+  color: var(--app-on-surface);
   font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
 }
 
@@ -28,17 +28,17 @@
   align-items: center;
   gap: 8px;
   font-size: 11px;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
   margin-bottom: 8px;
 }
 
 .breadcrumb .current {
-  color: #b4c5ff;
+  color: var(--app-primary);
   font-weight: 600;
 }
 
 .separator {
-  color: #424655;
+  color: var(--app-outline-variant);
 }
 
 .page-header h1 {
@@ -46,18 +46,18 @@
   font-size: 22px;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #e1e1ef;
+  color: var(--app-on-surface);
 }
 
 .page-header p {
   margin: 6px 0 0;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
   font-size: 12px;
 }
 
 :host ::ng-deep .page-header .p-button {
-  background: #b4c5ff;
-  color: #002a78;
+  background: var(--app-primary);
+  color: var(--app-on-primary);
   border: none;
   font-weight: 600;
   border-radius: 8px;
@@ -65,8 +65,8 @@
 }
 
 :host ::ng-deep .page-header .p-button:hover {
-  background: #dbe1ff;
-  box-shadow: 0 4px 14px rgba(180, 197, 255, 0.3);
+  background: var(--app-primary);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--app-primary) 30%, transparent);
 }
 
 /* ===========================
@@ -85,11 +85,11 @@
 :host ::ng-deep .source-card {
   height: 100%;
   border-radius: 14px;
-  border: 1px solid #424655;
+  border: 1px solid var(--app-outline-variant);
   overflow: hidden;
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-  background-color: #1d1f29 !important;
-  color: #e1e1ef;
+  background-color: var(--app-surface-container) !important;
+  color: var(--app-on-surface);
   display: flex;
   flex-direction: column;
 }
@@ -108,7 +108,7 @@
 
 :host ::ng-deep .source-card:hover {
   transform: translateY(-3px);
-  border-color: #8d90a1;
+  border-color: var(--app-outline);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
 }
 
@@ -117,8 +117,8 @@
   justify-content: space-between;
   align-items: flex-start;
   padding: 18px 20px 14px;
-  background-color: #191b24;
-  border-bottom: 1px solid #424655;
+  background-color: var(--app-surface-container-low);
+  border-bottom: 1px solid var(--app-outline-variant);
 }
 
 .source-meta {
@@ -132,8 +132,8 @@
   width: 44px;
   height: 44px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #b4c5ff 0%, #8ca6ff 100%);
-  color: #002a78;
+  background: linear-gradient(135deg, var(--app-primary) 0%, #8ca6ff 100%);
+  color: var(--app-on-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -146,7 +146,7 @@
   margin: 0;
   font-size: 14px;
   font-weight: 600;
-  color: #e1e1ef;
+  color: var(--app-on-surface);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -154,7 +154,7 @@
 
 .source-meta p {
   margin: 3px 0 0;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
   font-size: 10px;
   font-family: 'JetBrains Mono', monospace;
   word-break: break-all;
@@ -181,7 +181,7 @@
 }
 
 .info-row span:first-child {
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
   font-size: 10px;
   font-weight: 500;
 }
@@ -190,7 +190,7 @@
   font-size: 10px;
   text-align: right;
   word-break: break-word;
-  color: #e1e1ef;
+  color: var(--app-on-surface);
   font-family: 'JetBrains Mono', monospace;
   font-weight: 500;
 }
@@ -202,8 +202,8 @@
   display: flex;
   gap: 8px;
   padding: 14px 20px 18px;
-  background-color: #191b24;
-  border-top: 1px solid #424655;
+  background-color: var(--app-surface-container-low);
+  border-top: 1px solid var(--app-outline-variant);
   margin-top: auto;
 }
 
@@ -222,23 +222,23 @@
   grid-column: 1 / -1;
   padding: 4rem 2rem;
   text-align: center;
-  background: #1d1f29;
-  border: 1px dashed #424655;
+  background: var(--app-surface-container);
+  border: 1px dashed var(--app-outline-variant);
   border-radius: 14px;
 }
 
 .empty-state i {
-  color: #b4c5ff;
+  color: var(--app-primary);
   margin-bottom: 1rem;
 }
 
 .empty-state h3 {
   margin: 0.75rem 0;
-  color: #e1e1ef;
+  color: var(--app-on-surface);
 }
 
 .empty-state p {
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
   margin-bottom: 1.5rem;
 }
 
@@ -255,7 +255,7 @@
   font-size: 10px;
   font-weight: 500;
   margin-bottom: 6px;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
 }
 
 .w-full {
@@ -289,13 +289,13 @@
   margin: 0 0 4px;
   font-size: 15px;
   font-weight: 600;
-  color: #e1e1ef;
+  color: var(--app-on-surface);
 }
 
 .section-subheading {
   margin: 0 0 16px;
   font-size: 11px;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
 }
 
 /* ===========================
@@ -313,15 +313,15 @@
   gap: 14px;
   padding: 18px;
   border-radius: 12px;
-  border: 1px solid #424655;
-  background-color: #1d1f29;
+  border: 1px solid var(--app-outline-variant);
+  background-color: var(--app-surface-container);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .connector-card:hover:not(.disabled) {
   transform: translateY(-2px);
-  border-color: #8d90a1;
+  border-color: var(--app-outline);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
 }
 
@@ -335,8 +335,8 @@
   height: 40px;
   flex-shrink: 0;
   border-radius: 10px;
-  background: linear-gradient(135deg, #b4c5ff 0%, #8ca6ff 100%);
-  color: #002a78;
+  background: linear-gradient(135deg, var(--app-primary) 0%, #8ca6ff 100%);
+  color: var(--app-on-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -356,13 +356,13 @@
   margin: 0;
   font-size: 12px;
   font-weight: 600;
-  color: #e1e1ef;
+  color: var(--app-on-surface);
 }
 
 .connector-info p {
   margin: 4px 0 0;
   font-size: 10px;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
   line-height: 1.4;
 }
 
@@ -382,34 +382,34 @@
    Wizard (p-stepper)
 =========================== */
 :host ::ng-deep .p-dialog .p-dialog-content {
-  background-color: #11131c;
+  background-color: var(--app-bg);
 }
 
 :host ::ng-deep .p-stepper .p-stepper-header .p-stepper-title {
-  color: #e1e1ef;
+  color: var(--app-on-surface);
   font-weight: 600;
 }
 
 :host ::ng-deep .p-stepper .p-stepper-header .p-stepper-number {
-  background-color: #1d1f29;
-  border: 1px solid #424655;
-  color: #c3c6d8;
+  background-color: var(--app-surface-container);
+  border: 1px solid var(--app-outline-variant);
+  color: var(--app-on-surface-variant);
 }
 
 :host ::ng-deep .p-stepper .p-highlight .p-stepper-number {
-  background-color: #b4c5ff;
-  color: #002a78;
-  border-color: #b4c5ff;
+  background-color: var(--app-primary);
+  color: var(--app-on-primary);
+  border-color: var(--app-primary);
 }
 
 :host ::ng-deep .p-stepper .p-stepper-separator {
-  background-color: #424655;
+  background-color: var(--app-outline-variant);
 }
 
 .step-description {
   margin: 0 0 16px;
   font-size: 11px;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
 }
 
 .field-row {
@@ -431,7 +431,7 @@
 
 .mode-toggle label {
   font-size: 11px;
-  color: #e1e1ef;
+  color: var(--app-on-surface);
 }
 
 .step-actions {
@@ -448,9 +448,9 @@
 .wizard-summary {
   margin-top: 10px;
   padding: 14px 16px;
-  border: 1px solid #424655;
+  border: 1px solid var(--app-outline-variant);
   border-radius: 10px;
-  background-color: #1d1f29;
+  background-color: var(--app-surface-container);
 }
 
 .summary-row {
@@ -466,11 +466,11 @@
 }
 
 .summary-row span:first-child {
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
 }
 
 .summary-row span:last-child {
-  color: #e1e1ef;
+  color: var(--app-on-surface);
   font-weight: 500;
 }
 
@@ -480,6 +480,6 @@
   border-radius: 8px;
   background-color: rgba(239, 68, 68, 0.12);
   border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #fca5a5;
+  color: var(--app-danger);
   font-size: 10px;
 }

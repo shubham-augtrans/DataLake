@@ -24,6 +24,16 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/primeng/resources/themes/aura-dark-indigo",
+                "output": "assets/themes/aura-dark-indigo"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/primeng/resources/themes/aura-light-blue",
+                "output": "assets/themes/aura-light-blue"
               }
             ],
             "styles": [
@@ -82,6 +92,16 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/primeng/resources/themes/aura-dark-indigo",
+                "output": "assets/themes/aura-dark-indigo"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/primeng/resources/themes/aura-light-blue",
+                "output": "assets/themes/aura-light-blue"
               }
             ],
             "styles": [

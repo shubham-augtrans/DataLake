@@ -1,8 +1,8 @@
 :host {
   display: block;
   min-height: 100%;
-  background-color: #11131c;
-  color: #e1e1ef;
+  background-color: var(--app-bg);
+  color: var(--app-on-surface);
   font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
 }
 
@@ -28,12 +28,12 @@
   font-size: 22px;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #e1e1ef;
+  color: var(--app-on-surface);
 }
 
 .page-header p {
   margin: 6px 0 0;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
   font-size: 12px;
 }
 
@@ -53,7 +53,7 @@
 .connection-picker label {
   font-size: 10px;
   font-weight: 500;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
 }
 
 .w-full {
@@ -69,15 +69,15 @@
   gap: 10px;
   padding: 10px 14px;
   border-radius: 10px;
-  background-color: rgba(180, 197, 255, 0.08);
-  border: 1px solid rgba(180, 197, 255, 0.3);
-  color: #c3c6d8;
+  background-color: color-mix(in srgb, var(--app-primary) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--app-primary) 30%, transparent);
+  color: var(--app-on-surface-variant);
   font-size: 11px;
   margin-bottom: 16px;
 }
 
 .no-connection-banner i {
-  color: #b4c5ff;
+  color: var(--app-primary);
 }
 
 .no-connection-banner span {
@@ -97,7 +97,7 @@
   font-size: 10px;
   font-weight: 500;
   margin-bottom: 6px;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
 }
 
 .field-row {
@@ -114,8 +114,8 @@
 =========================== */
 .editor-panel {
   border-radius: 12px;
-  border: 1px solid #424655;
-  background-color: #1d1f29;
+  border: 1px solid var(--app-outline-variant);
+  background-color: var(--app-surface-container);
   overflow: hidden;
   margin-bottom: 16px;
 }
@@ -126,8 +126,8 @@
   resize: vertical;
   border: none;
   outline: none;
-  background-color: #14161f;
-  color: #e1e1ef;
+  background-color: var(--app-surface-alt);
+  color: var(--app-on-surface);
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   line-height: 1.5;
@@ -140,13 +140,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 16px;
-  border-top: 1px solid #424655;
-  background-color: #191b24;
+  border-top: 1px solid var(--app-outline-variant);
+  background-color: var(--app-surface-container-low);
 }
 
 .hint {
   font-size: 10px;
-  color: #8d90a1;
+  color: var(--app-outline);
 }
 
 /* ===========================
@@ -160,7 +160,7 @@
   border-radius: 10px;
   background-color: rgba(239, 68, 68, 0.12);
   border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #fca5a5;
+  color: var(--app-danger);
   font-size: 11px;
   font-family: 'JetBrains Mono', monospace;
   margin-bottom: 16px;
@@ -179,50 +179,50 @@
   align-items: center;
   gap: 8px;
   font-size: 10px;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
   margin-bottom: 10px;
 }
 
 .dot {
-  color: #424655;
+  color: var(--app-outline-variant);
 }
 
 .truncated-note {
   margin-left: auto;
-  color: #f0b429;
+  color: var(--app-warning);
 }
 
 .no-columns {
   padding: 20px;
   border-radius: 10px;
-  border: 1px solid #424655;
-  background-color: #1d1f29;
-  color: #c3c6d8;
+  border: 1px solid var(--app-outline-variant);
+  background-color: var(--app-surface-container);
+  color: var(--app-on-surface-variant);
   font-size: 11px;
 }
 
 :host ::ng-deep .results-table {
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid #424655;
+  border: 1px solid var(--app-outline-variant);
 }
 
 :host ::ng-deep .results-table .p-datatable-thead > tr > th {
-  background-color: #191b24;
-  color: #c3c6d8;
+  background-color: var(--app-surface-container-low);
+  color: var(--app-on-surface-variant);
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  border-color: #424655;
+  border-color: var(--app-outline-variant);
 }
 
 :host ::ng-deep .results-table .p-datatable-tbody > tr {
-  background-color: #1d1f29;
-  color: #e1e1ef;
+  background-color: var(--app-surface-container);
+  color: var(--app-on-surface);
 }
 
 :host ::ng-deep .results-table .p-datatable-tbody > tr > td {
-  border-color: #2a2d3a;
+  border-color: var(--app-outline-variant);
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
 }
@@ -234,7 +234,7 @@
   margin: 0 0 10px;
   font-size: 13px;
   font-weight: 600;
-  color: #e1e1ef;
+  color: var(--app-on-surface);
 }
 
 .history-list {
@@ -250,14 +250,14 @@
   gap: 12px;
   padding: 10px 14px;
   border-radius: 8px;
-  border: 1px solid #424655;
-  background-color: #1d1f29;
+  border: 1px solid var(--app-outline-variant);
+  background-color: var(--app-surface-container);
   cursor: pointer;
   transition: border-color 0.2s ease;
 }
 
 .history-row:hover {
-  border-color: #8d90a1;
+  border-color: var(--app-outline);
 }
 
 .history-status {
@@ -267,17 +267,17 @@
 }
 
 .history-status.status-success {
-  background-color: #4ade80;
+  background-color: var(--app-success);
 }
 
 .history-status.status-error {
-  background-color: #f87171;
+  background-color: var(--app-danger);
 }
 
 .history-sql {
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
-  color: #e1e1ef;
+  color: var(--app-on-surface);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -285,10 +285,10 @@
 
 .history-source {
   font-size: 9px;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
 }
 
 .history-time {
   font-size: 9px;
-  color: #8d90a1;
+  color: var(--app-outline);
 }

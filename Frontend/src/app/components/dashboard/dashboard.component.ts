@@ -13,6 +13,28 @@ export interface IngestionPipelineSummary {
   nifi_process_group_id: string | null;
 }
 
+export interface RecentQuery {
+  id: number;
+  data_source_name: string;
+  trino_user: string | null;
+  sql_text: string;
+  status: 'success' | 'error' | 'denied';
+  row_count: number | null;
+  duration_ms: number | null;
+  error_message: string | null;
+  created_at: string;
+}
+
+interface Activity {
+  type: string;
+  icon: string;
+  title: string;
+  time: string;
+  description: string;
+  tag: string;
+  statusText: string;
+}
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -32,35 +54,7 @@ export class DashboardComponent implements OnInit {
   pipelinesCount: number = 0;
   runningPipelinesCount: number = 0;
 
-  activities = [
-    {
-      type: 'success',
-      icon: 'terminal',
-      title: 'Query executed successfully',
-      time: '10:42 AM',
-      description: "SELECT user_id, sum(revenue) FROM core.transactions WHERE date >= '2023-10-01' GROUP BY 1",
-      tag: 'Cluster-A',
-      statusText: 'Success'
-    },
-    {
-      type: 'error',
-      icon: 'error',
-      title: "Job 'Nightly_ETL' failed",
-      time: '03:15 AM',
-      description: 'OutOfMemoryError: Java heap space during join operation',
-      tag: 'Pipeline-04',
-      statusText: 'Failed'
-    },
-    {
-      type: 'info',
-      icon: 'description',
-      title: 'New Notebook Created',
-      time: 'Yesterday',
-      description: 'Customer_Segmentation_Q3_Analysis.ipynb',
-      tag: 'Workspace/Marketing',
-      statusText: 'Active'
-    }
-  ];
+  activities: Activity[] = [];
 
   constructor(
     private configService: ConfigService,
@@ -71,6 +65,39 @@ export class DashboardComponent implements OnInit {
     this.loadDataSources();
     this.loadDataDestinations();
     this.loadPipelines();
+    this.loadRecentActivities();
+  }
+
+  loadRecentActivities(): void {
+    this.configService.get('/query/history/recent/').subscribe({
+      next: (response: RecentQuery[]) => {
+        const queries = Array.isArray(response) ? response : [];
+        this.activities = queries.map((q) => this.toActivity(q));
+      },
+      error: (error) => {
+        console.error('Failed to load recent activities:', error);
+        this.activities = [];
+      }
+    });
+  }
+
+  private toActivity(q: RecentQuery): Activity {
+    const statusMap: Record<RecentQuery['status'], { type: string; title: string; statusText: string }> = {
+      success: { type: 'success', title: 'Query executed successfully', statusText: 'Success' },
+      error: { type: 'error', title: 'Query execution failed', statusText: 'Failed' },
+      denied: { type: 'error', title: 'Query access denied', statusText: 'Denied' }
+    };
+    const meta = statusMap[q.status];
+
+    return {
+      type: meta.type,
+      icon: 'terminal',
+      title: meta.title,
+      time: new Date(q.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      description: q.error_message || q.sql_text,
+      tag: q.trino_user || q.data_source_name,
+      statusText: meta.statusText
+    };
   }
 
   loadDataSources(): void {

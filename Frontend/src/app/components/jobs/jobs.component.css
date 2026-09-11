@@ -1,8 +1,8 @@
 :host {
   display: block;
   min-height: 100%;
-  background-color: #11131c;
-  color: #e1e1ef;
+  background-color: var(--app-bg);
+  color: var(--app-on-surface);
   font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
 }
 
@@ -21,12 +21,12 @@
   font-size: 22px;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #e1e1ef;
+  color: var(--app-on-surface);
 }
 
 .page-header p {
   margin: 6px 0 0;
-  color: #c3c6d8;
+  color: var(--app-on-surface-variant);
   font-size: 12px;
 }
 
@@ -34,12 +34,12 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #8d90a1;
+  color: var(--app-outline);
   font-size: 12px;
 }
 
 .error-note {
-  color: #f87171;
+  color: var(--app-danger);
   font-size: 12px;
   margin-bottom: 12px;
 }
@@ -50,15 +50,15 @@
   gap: 8px;
   padding: 16px;
   border-radius: 10px;
-  background-color: rgba(180, 197, 255, 0.06);
-  border: 1px solid rgba(180, 197, 255, 0.2);
-  color: #c3c6d8;
+  background-color: color-mix(in srgb, var(--app-primary) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--app-primary) 20%, transparent);
+  color: var(--app-on-surface-variant);
   font-size: 12px;
   margin-bottom: 24px;
 }
 
 .empty-icon {
-  color: #4ade80;
+  color: var(--app-success);
   font-size: 18px;
 }
 
@@ -71,14 +71,14 @@
 
 .run-card {
   border-radius: 12px;
-  border: 1px solid #424655;
-  background-color: #1d1f29;
+  border: 1px solid var(--app-outline-variant);
+  background-color: var(--app-surface-container);
   padding: 16px;
 }
 
 .run-card.running {
-  border-color: rgba(96, 165, 250, 0.5);
-  background-color: rgba(96, 165, 250, 0.06);
+  border-color: color-mix(in srgb, var(--app-primary) 50%, transparent);
+  background-color: color-mix(in srgb, var(--app-primary) 6%, transparent);
 }
 
 .run-card-header {
@@ -91,7 +91,7 @@
 .run-title {
   font-size: 14px;
   font-weight: 600;
-  color: #e1e1ef;
+  color: var(--app-on-surface);
   flex: 1;
 }
 
@@ -99,7 +99,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #60a5fa;
+  background-color: var(--app-primary);
   animation: pulse 1.4s ease-in-out infinite;
   flex-shrink: 0;
 }
@@ -111,7 +111,7 @@
 
 .run-meta {
   font-size: 11px;
-  color: #8d90a1;
+  color: var(--app-outline);
 }
 
 .dot {
@@ -122,7 +122,7 @@
   margin: 24px 0 14px;
   font-size: 13px;
   font-weight: 600;
-  color: #e1e1ef;
+  color: var(--app-on-surface);
 }
 
 .recent-table {
@@ -134,16 +134,16 @@
 .recent-table th {
   text-align: left;
   padding: 8px 12px;
-  background-color: #1d1f29;
-  color: #8d90a1;
+  background-color: var(--app-surface-container);
+  color: var(--app-outline);
   font-weight: 600;
-  border-bottom: 1px solid #424655;
+  border-bottom: 1px solid var(--app-outline-variant);
 }
 
 .recent-table td {
   padding: 8px 12px;
-  border-bottom: 1px solid #2a2d3a;
-  color: #e1e1ef;
+  border-bottom: 1px solid var(--app-outline-variant);
+  color: var(--app-on-surface);
 }
 
 :host ::ng-deep .spinner-sm {

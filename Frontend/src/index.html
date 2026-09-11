@@ -10,6 +10,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <script>
+    // Applied before first paint (and before Angular/ThemeService boot) to
+    // avoid a flash of the wrong theme - reads the same localStorage key
+    // ThemeService uses, defaulting to dark since that's this app's
+    // original look for anyone with no saved preference yet. The PrimeNG
+    // theme <link> itself is written here (not static markup below) so
+    // the browser never even requests the wrong theme file.
+    (function () {
+      var theme = localStorage.getItem('theme') === 'light' ? 'light' : 'dark';
+      var folder = theme === 'light' ? 'aura-light-blue' : 'aura-dark-indigo';
+      document.documentElement.setAttribute('data-theme', theme);
+      document.write('<link id="app-theme" rel="stylesheet" href="assets/themes/' + folder + '/theme.css">');
+    })();
+  </script>
 </head>
 <body>
   <app-root></app-root>
