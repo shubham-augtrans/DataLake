@@ -2,34 +2,23 @@ import io
 import os
 import re
 
+import gdown
 import pandas as pd
-import requests
-from django.conf import settings
 
 from connectors.source.base import BaseConnector
-
-DRIVE_API_BASE = "https://www.googleapis.com/drive/v3"
-REQUEST_TIMEOUT = 30
 
 # Matches both drive.google.com/drive/folders/<id> and the older
 # ?id=<id> style link, with or without a trailing query string.
 FOLDER_ID_PATTERN = re.compile(r"/folders/([a-zA-Z0-9_-]+)|[?&]id=([a-zA-Z0-9_-]+)")
 
-FOLDER_MIME_TYPE = "application/vnd.google-apps.folder"
-
-# Google-native formats (Sheets/Docs/Slides) have no raw file bytes - Drive
-# must export them to a concrete format first. Anything not listed here
-# (Forms, Sites, Drawings, ...) isn't supported.
-GOOGLE_EXPORT_MIME_TYPES = {
-    "application/vnd.google-apps.spreadsheet": "text/csv",
-    "application/vnd.google-apps.document": "application/pdf",
-    "application/vnd.google-apps.presentation": "application/pdf",
-}
-
 # Extensions this connector can parse into rows for the Iceberg table
 # ingestion path (see GoogleDriveToMinioJobBuilder). Everything else in the
 # folder - images, video, PDFs, zips, etc. - is copied through as a raw
-# object instead of being parsed.
+# object instead of being parsed. A file with NO extension is also treated
+# as tabular: that's how a native Google Sheet/Doc/Slide shows up in a
+# folder listing (no raw bytes of their own), and gdown auto-exports those
+# to .xlsx/.docx/.pptx on download - read_asset() then parses whatever
+# came back.
 TABULAR_EXTENSIONS = {".csv", ".xlsx", ".xls"}
 
 
@@ -39,24 +28,27 @@ class GoogleDriveError(Exception):
 
 def is_tabular_filename(filename):
     ext = os.path.splitext(filename)[1].lower()
-    return ext in TABULAR_EXTENSIONS
+    return ext in TABULAR_EXTENSIONS or ext == ""
 
 
 class GoogleDriveConnector(BaseConnector):
     """
     Connector for a public Google Drive folder ("Anyone with the link" -
-    no OAuth, since this project has no per-user Google identity to
-    authenticate as). A folder can hold anything - CSVs, spreadsheets,
-    images, video, PDFs - so this connector offers two ways to pull a file
-    out, and GoogleDriveToMinioJobBuilder picks between them per-file:
+    no OAuth, and no Google Cloud API key either: this scrapes the
+    folder's public HTML listing via gdown (https://github.com/wkentaro/gdown),
+    the same approach tools like `gdown --folder` use, rather than the
+    Drive REST API - which Google requires a registered API key/OAuth
+    identity for even on fully public content. A folder can hold
+    anything, so this connector offers two ways to pull a file out, and
+    GoogleDriveToMinioJobBuilder picks between them per-file:
 
-    - read_asset(): parses a tabular file (CSV/XLSX/XLS, or a Google Sheet
-      exported to CSV) into a DataFrame, for the row-based Iceberg
-      ingestion path.
-    - download_raw(): returns the raw bytes (and content type) of ANY
-      file unmodified, for landing it as an object in MinIO as-is - the
-      right path for images, video, PDFs, archives, and anything else
-      that isn't tabular data.
+    - read_asset(): parses a tabular file (CSV/XLSX/XLS, or a Google
+      Sheet - gdown auto-exports those to .xlsx) into a DataFrame, for
+      the row-based Iceberg ingestion path.
+    - download_raw(): returns the raw bytes of ANY file unmodified, for
+      landing it as an object in MinIO as-is - the right path for
+      images, video, PDFs, archives, and anything else that isn't
+      tabular data.
 
     Subfolders are not recursed into - only files directly inside the
     given folder are listed/fetched.
@@ -65,15 +57,9 @@ class GoogleDriveConnector(BaseConnector):
     def __init__(self, datasource):
         self.datasource = datasource
 
-        if not settings.GOOGLE_DRIVE_API_KEY:
-            raise GoogleDriveError(
-                "GOOGLE_DRIVE_API_KEY is not configured on the backend - "
-                "set it in the .env file to enable Google Drive sources."
-            )
-
         config = datasource.configuration or {}
-        folder_url = config.get("folder_url", "")
-        self.folder_id = self._extract_folder_id(folder_url)
+        self.folder_url = config.get("folder_url", "")
+        self.folder_id = self._extract_folder_id(self.folder_url)
 
     @staticmethod
     def _extract_folder_id(folder_url):
@@ -91,42 +77,32 @@ class GoogleDriveConnector(BaseConnector):
         return match.group(1) or match.group(2)
 
     def _list_files(self):
-        response = requests.get(
-            f"{DRIVE_API_BASE}/files",
-            params={
-                "q": f"'{self.folder_id}' in parents and trashed = false",
-                "key": settings.GOOGLE_DRIVE_API_KEY,
-                "fields": "files(id,name,mimeType,size,modifiedTime)",
-                "pageSize": 200,
-            },
-            timeout=REQUEST_TIMEOUT,
-        )
-
-        if response.status_code != 200:
+        try:
+            entries = gdown.download_folder(
+                url=self.folder_url,
+                skip_download=True,
+                quiet=True,
+                use_cookies=False,
+            )
+        except Exception as ex:
             raise GoogleDriveError(
-                f"Google Drive API error ({response.status_code}): {response.text[:300]}. "
-                f"Make sure the folder is shared as 'Anyone with the link'."
+                f"Could not read this Drive folder: {str(ex)} "
+                f"Make sure it's shared as 'Anyone with the link'."
             )
 
-        files = response.json().get("files", [])
+        if entries is None:
+            raise GoogleDriveError(
+                "Could not read this Drive folder - it may not be shared as "
+                "'Anyone with the link', or the folder link is invalid."
+            )
 
-        # Subfolders aren't recursed into - listing/ingesting one would
-        # need its own folder ID anyway, so just skip them here.
-        return [f for f in files if f.get("mimeType") != FOLDER_MIME_TYPE]
-
-    def is_tabular(self, filename):
-        """
-        Whether this file should go through the row-based Iceberg
-        ingestion path (read_asset()) rather than the raw object copy
-        path (download_raw()) - by extension, or Drive's own spreadsheet
-        type for a Google Sheet with no tabular file extension.
-        """
-        file_meta = self._find_file(filename)
-        return is_tabular_filename(filename) or file_meta.get("mimeType") == "application/vnd.google-apps.spreadsheet"
+        # entries carry `path` relative to the folder, e.g. "orders.csv" for
+        # a top-level file or "subdir/orders.csv" for a nested one - only
+        # keep top-level files, subfolders aren't recursed into.
+        return [e for e in entries if "/" not in e.path]
 
     def _find_file(self, filename):
-        files = self._list_files()
-        match = next((f for f in files if f["name"] == filename), None)
+        match = next((f for f in self._list_files() if f.path == filename), None)
 
         if match is None:
             raise GoogleDriveError(f"File '{filename}' was not found in this Drive folder.")
@@ -144,7 +120,7 @@ class GoogleDriveConnector(BaseConnector):
 
         return {
             "Buckets": [
-                {"Name": f["name"]}
+                {"Name": f.path}
                 for f in files
             ]
         }
@@ -154,72 +130,49 @@ class GoogleDriveConnector(BaseConnector):
         List files in the folder. `bucket` is accepted (and ignored) only
         to match the generic list-assets view's call signature - a Drive
         folder has no bucket concept, the folder itself is the source.
+        Size/last-modified aren't available from the folder listing
+        without an extra per-file request, so they're left blank.
         """
         files = self._list_files()
 
         return [
             {
-                "Key": f["name"],
-                "id": f["id"],
-                "mimeType": f.get("mimeType"),
-                "Size": int(f["size"]) if f.get("size") else 0,
-                "LastModified": f.get("modifiedTime"),
-                "isTabular": is_tabular_filename(f["name"]) or f.get("mimeType") in GOOGLE_EXPORT_MIME_TYPES,
+                "Key": f.path,
+                "id": f.id,
+                "Size": 0,
+                "LastModified": None,
+                "isTabular": is_tabular_filename(f.path),
             }
             for f in files
         ]
 
-    def _download(self, file_meta):
-        """
-        Raw bytes for one file - exported first if it's a Google-native
-        format (no raw bytes of its own), downloaded as-is otherwise.
-        Shared by read_asset() and download_raw() so there's one place
-        that knows how Drive's export vs. media endpoints differ.
-        """
-        mime_type = file_meta.get("mimeType")
+    def _download(self, file_id, filename):
+        buffer = io.BytesIO()
 
-        if mime_type in GOOGLE_EXPORT_MIME_TYPES:
-            url = f"{DRIVE_API_BASE}/files/{file_meta['id']}/export"
-            params = {"mimeType": GOOGLE_EXPORT_MIME_TYPES[mime_type], "key": settings.GOOGLE_DRIVE_API_KEY}
-            content_type = GOOGLE_EXPORT_MIME_TYPES[mime_type]
+        try:
+            gdown.download(id=file_id, output=buffer, quiet=True, use_cookies=False)
+        except Exception as ex:
+            raise GoogleDriveError(f"Failed to download '{filename}': {str(ex)}")
 
-        elif mime_type and mime_type.startswith("application/vnd.google-apps."):
-            raise GoogleDriveError(
-                f"'{file_meta['name']}' is a Google {mime_type.rsplit('.', 1)[-1]} file, "
-                f"which this connector can't export. Supported Google-native types: "
-                f"Sheets, Docs, Slides."
-            )
-
-        else:
-            url = f"{DRIVE_API_BASE}/files/{file_meta['id']}"
-            params = {"alt": "media", "key": settings.GOOGLE_DRIVE_API_KEY}
-            content_type = mime_type or "application/octet-stream"
-
-        response = requests.get(url, params=params, timeout=REQUEST_TIMEOUT)
-
-        if response.status_code != 200:
-            raise GoogleDriveError(
-                f"Failed to download '{file_meta['name']}' ({response.status_code}): {response.text[:300]}"
-            )
-
-        return response.content, content_type
+        return buffer.getvalue()
 
     def read_asset(self, filename):
         """
         Download one file by name and parse it into a DataFrame - CSV and
-        Excel (.xlsx/.xls) directly, Google Sheets after being exported to
-        CSV. Only call this for a file is_tabular_filename() (or Drive's
-        own spreadsheet type) says is tabular.
+        Excel (.xlsx/.xls) directly. A file with no extension is assumed
+        to be a native Google Sheet/Doc, which gdown auto-exports to
+        .xlsx/.docx on download - only the Sheet case actually parses.
+        Only call this for a file is_tabular_filename() says is tabular.
         """
         file_meta = self._find_file(filename)
-        content, content_type = self._download(file_meta)
+        content = self._download(file_meta.id, filename)
 
         ext = os.path.splitext(filename)[1].lower()
 
         try:
-            if ext in (".xlsx", ".xls"):
-                return pd.read_excel(io.BytesIO(content))
-            return pd.read_csv(io.BytesIO(content))
+            if ext == ".csv":
+                return pd.read_csv(io.BytesIO(content))
+            return pd.read_excel(io.BytesIO(content))
         except Exception as ex:
             raise GoogleDriveError(
                 f"'{filename}' could not be parsed as tabular data: {str(ex)}. "
@@ -233,4 +186,18 @@ class GoogleDriveConnector(BaseConnector):
         (content_bytes, content_type).
         """
         file_meta = self._find_file(filename)
-        return self._download(file_meta)
+        content = self._download(file_meta.id, filename)
+
+        ext = os.path.splitext(filename)[1].lower()
+        content_type = {
+            ".pdf": "application/pdf",
+            ".png": "image/png",
+            ".jpg": "image/jpeg",
+            ".jpeg": "image/jpeg",
+            ".gif": "image/gif",
+            ".mp4": "video/mp4",
+            ".mov": "video/quicktime",
+            ".zip": "application/zip",
+        }.get(ext, "application/octet-stream")
+
+        return content, content_type

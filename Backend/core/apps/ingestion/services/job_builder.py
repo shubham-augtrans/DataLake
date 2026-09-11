@@ -2,7 +2,7 @@ import boto3
 from django.conf import settings
 
 from apps.ingestion.services.nifi_client import NiFiClient
-from connectors.source.google_drive.connector import GoogleDriveConnector
+from connectors.source.google_drive.connector import GoogleDriveConnector, is_tabular_filename
 
 
 class PostgresToMinioJobBuilder:
@@ -503,7 +503,7 @@ class GoogleDriveToMinioJobBuilder:
         connector = GoogleDriveConnector(self.pipeline.source)
         client = self._minio_client()
 
-        if connector.is_tabular(filename):
+        if is_tabular_filename(filename):
             return self._stage_tabular(connector, filename, client)
 
         return self._land_raw(connector, filename, client)
