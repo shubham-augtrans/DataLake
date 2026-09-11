@@ -44,7 +44,7 @@ export class SidebarComponent {
 
   mainItems: NavItem[] = [
     { label: 'Home', icon: 'home', route: '/dashboard' },
-    { label: 'Jobs & Pipelines', icon: 'alt_route', route: '/jobs' },
+    { label: 'Pipelines', icon: 'alt_route', route: '/jobs' },
     // { label: 'Learn', icon: 'school', route: '/learn' },
     { label: 'Workspace', icon: 'book', route: '/workspace', comingSoon: true },
     { label: 'Recents', icon: 'schedule', route: '/recents', comingSoon: true },

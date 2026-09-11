@@ -6,7 +6,7 @@
       <!-- Hero / Welcome Banner -->
       <section class="welcome-card">
         <div class="welcome-info">
-          <h1 class="welcome-title">Welcome back, Data Scientist</h1>
+          <h1 class="welcome-title">Welcome back, {{ roleLabel }}</h1>
           <p class="welcome-subtitle">Your workspace is active. 3 clusters are running normally.</p>
           
           <div class="welcome-actions">
@@ -48,7 +48,7 @@
         </div>
 
         <!-- Metric 3: Running Pipelines -->
-        <div class="kpi-card kpi-clickable" (click)="navigateTo('/ingestion-pipelines')">
+        <div class="kpi-card kpi-clickable" (click)="navigateTo('/jobs')">
           <div class="kpi-header">
             <span class="kpi-label">RUNNING PIPELINES</span>
             <span class="material-symbols-outlined kpi-icon">alt_route</span>

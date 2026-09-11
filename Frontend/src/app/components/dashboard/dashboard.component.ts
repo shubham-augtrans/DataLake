@@ -6,7 +6,12 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { Router } from '@angular/router';
 
 import { ConfigService } from '../../services/config.service';
+import { AuthenticationService } from '../../services/authentication.service';
 import { environment } from '../../../environments/environment';
+
+const ROLE_LABELS: Record<string, string> = {
+  ADMIN: 'Admin',
+};
 
 export interface IngestionPipelineSummary {
   id: number;
@@ -55,10 +60,12 @@ export class DashboardComponent implements OnInit {
   runningPipelinesCount: number = 0;
 
   activities: Activity[] = [];
+  roleLabel = 'User';
 
   constructor(
     private configService: ConfigService,
-    private router: Router
+    private router: Router,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
@@ -66,6 +73,14 @@ export class DashboardComponent implements OnInit {
     this.loadDataDestinations();
     this.loadPipelines();
     this.loadRecentActivities();
+    this.loadRoleLabel();
+  }
+
+  private loadRoleLabel(): void {
+    const role: string | undefined = this.authService.getUser()?.role;
+    if (role) {
+      this.roleLabel = ROLE_LABELS[role] || role;
+    }
   }
 
   loadRecentActivities(): void {
