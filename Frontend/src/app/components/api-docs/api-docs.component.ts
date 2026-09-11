@@ -503,11 +503,11 @@ const CATEGORIES: ApiCategory[] = [
         method: 'POST',
         path: '/ingestion-pipelines/{id}/run/',
         title: 'Run a pipeline',
-        description: 'Builds (or reuses) the NiFi flow, starts it, waits for the batch to drain, stops it, then hands off the staged files to Spark to write them into Iceberg on MinIO as Parquet.',
+        description: 'Builds (or reuses) the NiFi flow, starts it, waits for the batch to drain, stops it, then hands off the staged files to Spark to write them into Iceberg on MinIO as Parquet. For a google_drive source, pulls and lands the file directly instead (see "Create ingestion pipeline" note) - tabular files still go through the Spark/Iceberg step, non-tabular files (PDFs, images, ...) land as a raw MinIO object and skip it.',
         auth: 'None',
         request: 'Path param: id (integer). No body.',
         payload: 'None (POST with empty body).',
-        response: '{success, message, result} where result includes the NiFi process-group/processor ids, the MinIO staging path, and (on success) the resulting Iceberg table name.',
+        response: '{success, message, result} where result includes the NiFi process-group/processor ids, the MinIO staging path, and (on success) the resulting Iceberg table name - or, for a raw-landed file, ingest_mode: "file" and object_path instead of table.',
         sampleResult: `{
   "success": true,
   "message": "Pipeline submitted successfully.",
@@ -519,6 +519,65 @@ const CATEGORIES: ApiCategory[] = [
     "table": "lakehouse.ingested.orders_event"
   }
 }`
+      },
+      {
+        method: 'GET',
+        path: '/ingestion-pipelines/running/',
+        title: 'List currently running pipelines',
+        description: 'Pipelines with an in-flight PipelineRun row right now. A run is synchronous (the /run/ request blocks until it finishes), so a row only stays RUNNING for that request\'s lifetime. Backs the "Jobs & Pipelines" page and the homepage\'s Running Pipelines tile.',
+        auth: 'None',
+        request: 'No parameters.',
+        payload: 'None (GET request).',
+        response: 'Array of PipelineRun objects with status RUNNING, newest first.',
+        sampleResult: `[
+  {
+    "id": 58,
+    "pipeline": 12,
+    "pipeline_name": "Mongo_to_Minio",
+    "status": "RUNNING",
+    "triggered_by": "airflow",
+    "message": null,
+    "started_at": "2026-09-11T10:06:55Z",
+    "finished_at": null,
+    "duration_seconds": 983.8
+  }
+]`
+      },
+      {
+        method: 'GET',
+        path: '/ingestion-pipelines/runs/',
+        title: 'List recent pipeline runs',
+        description: 'Most recent 50 PipelineRun rows (any status), newest first - gives the "Jobs & Pipelines" page run history even when nothing is currently running.',
+        auth: 'None',
+        request: 'No parameters.',
+        payload: 'None (GET request).',
+        response: 'Array of PipelineRun objects.',
+        sampleResult: `[
+  {
+    "id": 61,
+    "pipeline": 16,
+    "pipeline_name": "Google Drive Sample - report.pdf",
+    "status": "SUCCESS",
+    "triggered_by": "manual",
+    "message": null,
+    "started_at": "2026-09-11T10:04:27Z",
+    "finished_at": "2026-09-11T10:04:30Z",
+    "duration_seconds": 2.9
+  }
+]`
+      },
+      {
+        method: 'GET',
+        path: '/ingestion-pipelines/{id}/raw-file/',
+        title: 'Preview / download a raw landed file',
+        description: 'Streams the raw file a google_drive-source pipeline landed in MinIO straight through - inline (for previewing, e.g. in an <iframe>) by default, or ?download=1 to force a save-as download. Only pipelines with ingest_mode "file" (a non-tabular source file, e.g. a PDF) have anything to stream - table-mode pipelines 404 here.',
+        auth: 'None',
+        request: 'Path param: id (integer). Optional query param: download=1.',
+        payload: 'None (GET request).',
+        response: 'The raw file bytes, streamed with the original Content-Type and a Content-Disposition of inline or attachment. 404 with {detail} if the pipeline has no raw file.',
+        sampleResult: `// Content-Type: application/pdf
+// Content-Disposition: inline; filename="BQ_Requirement.pdf"
+<binary PDF bytes>`
       }
     ]
   },
@@ -610,6 +669,30 @@ const CATEGORIES: ApiCategory[] = [
       },
       {
         method: 'GET',
+        path: '/query/history/recent/',
+        title: 'List 5 most recent queries',
+        description: 'The 5 most recently executed queries across both editors, newest first - backs the homepage\'s Recent Activities feed.',
+        auth: 'None',
+        request: 'No parameters.',
+        payload: 'None (GET request).',
+        response: 'Array of up to 5 QueryHistory objects.',
+        sampleResult: `[
+  {
+    "id": 142,
+    "data_source": null,
+    "data_source_name": "Trino",
+    "trino_user": "admin",
+    "sql_text": "SELECT machine_name, pressure FROM power_plant_readings LIMIT 3",
+    "status": "success",
+    "row_count": 3,
+    "duration_ms": 375,
+    "error_message": null,
+    "created_at": "2026-09-08T10:26:00Z"
+  }
+]`
+      },
+      {
+        method: 'GET',
         path: '/query/history/{id}/',
         title: 'Retrieve one query history entry',
         description: 'Fetches a single past query execution by id.',
@@ -680,6 +763,40 @@ const CATEGORIES: ApiCategory[] = [
     "location": "s3://warehouse/ingested/orders_event"
   }
 }`
+      },
+      {
+        method: 'PUT',
+        path: '/catalog/dictionary/',
+        title: 'Set a description (table or column)',
+        description: 'Upserts a data-dictionary entry for a table (omit column) or one of its columns - backs the inline description editing on the Iceberg Catalog page. TableDetailView.get() above merges these back into "description" fields automatically.',
+        auth: 'JWT Bearer (IsAuthenticated + CanEditDataDictionary)',
+        request: 'Header: Authorization: Bearer <access_token>. No query params.',
+        payload: `{
+  "namespace": "ingested",
+  "table": "orders_event",
+  "column": "amount",
+  "description": "Order total in USD, tax excluded."
+}`,
+        response: 'The upserted DataDictionaryEntry object.',
+        sampleResult: `{
+  "namespace": "ingested",
+  "table_name": "orders_event",
+  "column_name": "amount",
+  "description": "Order total in USD, tax excluded.",
+  "updated_by": "admin",
+  "updated_at": "2026-09-11T10:00:00Z"
+}`
+      },
+      {
+        method: 'DELETE',
+        path: '/catalog/dictionary/',
+        title: 'Clear a description',
+        description: 'Removes a data-dictionary entry for a table or column.',
+        auth: 'JWT Bearer (IsAuthenticated + CanEditDataDictionary)',
+        request: 'Query params: namespace, table (required), column (optional - omit to clear the table-level description).',
+        payload: 'None (DELETE request).',
+        response: '204 No Content.',
+        sampleResult: `// 204 No Content`
       }
     ]
   },
