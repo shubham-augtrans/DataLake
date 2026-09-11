@@ -67,7 +67,6 @@ export class SidebarComponent {
     // { label: 'Learn', icon: 'school', route: '/learn' },
     { label: 'Workspace', icon: 'book', route: '/workspace', comingSoon: true },
     { label: 'Recents', icon: 'schedule', route: '/recents', comingSoon: true },
-    { label: 'Catalog', icon: 'change_history', route: '/data-sources' },
     { label: 'Jobs & Pipelines', icon: 'alt_route', route: '/jobs' },
     { label: 'Compute', icon: 'cloud', route: '/compute', comingSoon: true },
     { label: 'Discover', icon: 'explore', route: '/discover', comingSoon: true },
@@ -81,14 +80,20 @@ export class SidebarComponent {
     { label: 'Dashboards', icon: 'dashboard', route: '/dashboards', external: true, url: environment.metabaseUrl },
     { label: 'Orbitto', icon: 'smart_toy', route: '/orbitto', comingSoon: true },
     { label: 'Alerts', icon: 'notifications_none', route: '/alerts', comingSoon: true },
-    { label: 'Query History', icon: 'history', route: '/query-history', comingSoon: true },
-    { label: 'SQL Warehouses', icon: 'cloud_queue', route: '/data-destinations' }
+    { label: 'Query History', icon: 'history', route: '/query-history', comingSoon: true }
+  ];
+
+  dataSourcesItems: NavItem[] = [
+    { label: 'Data Sources', icon: 'change_history', route: '/data-sources' }
+  ];
+
+  dataDestinationItems: NavItem[] = [
+    { label: 'Warehouse', icon: 'cloud_queue', route: '/data-destinations' }
   ];
 
   dataEngineeringItems: NavItem[] = [
     { label: 'Runs', icon: 'playlist_play', route: '/runs', comingSoon: true },
     { label: 'Data Ingestion', icon: 'dataset', route: '/ingestion-pipelines' },
-    { label: 'Visual Data Prep', icon: 'dataset_linked', route: '/data-sources' },
     { label: 'Iceberg Catalog', icon: 'inventory_2', route: '/iceberg-catalog' },
     { label: 'Data Flow', icon: 'schema', route: '/data-flow' }
   ];
