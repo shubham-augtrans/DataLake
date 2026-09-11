@@ -26,3 +26,6 @@ Apache-Spark/ivy-cache/
 
 .claude/
 .kimchi/
+
+# Airflow runtime logs (regenerated every DAG run)
+Docker/airflow/logs/
