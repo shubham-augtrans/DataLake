@@ -37,7 +37,8 @@ tap(response => {
     const user = {
       username: response.user.first_name || credentials.email, // Use actual username
       id: response.user.id || response.user.first_name || credentials.email, // Store proper ID
-      email: response.user.email || `${response.user.first_name || credentials.email}@example.com`
+      email: response.user.email || `${response.user.first_name || credentials.email}@example.com`,
+      role: response.user.role
     };
     
     localStorage.setItem('user', JSON.stringify(user));

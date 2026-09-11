@@ -28,7 +28,8 @@ class User(AbstractUser):
 
     class Role(models.TextChoices):
         ADMIN = "ADMIN", "Admin"
-        USER = "USER", "User"
+        DATA_ENGINEER = "DATA_ENGINEER", "Data Engineer"
+        DATA_ANALYST = "DATA_ANALYST", "Data Analyst"
 
     class BiTool(models.TextChoices):
         METABASE = "METABASE", "Metabase"
@@ -55,7 +56,7 @@ class User(AbstractUser):
     role = models.CharField(
         max_length=20,
         choices=Role.choices,
-        default=Role.USER,
+        default=Role.DATA_ANALYST,
     )
 
     active_bi_tool = models.CharField(

@@ -4,6 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { AuthenticationService } from '../../services/authentication.service';
 
 export interface NavItem {
   label: string;
@@ -59,7 +60,7 @@ export class SidebarComponent {
     { label: 'Workspace', icon: 'book', route: '/workspace' },
     { label: 'Recents', icon: 'schedule', route: '/recents' },
     { label: 'Catalog', icon: 'change_history', route: '/data-sources' },
-    { label: 'Jobs & Pipelines', icon: 'alt_route', route: '/ingestion-pipelines' },
+    { label: 'Jobs & Pipelines', icon: 'alt_route', route: '/jobs' },
     { label: 'Compute', icon: 'cloud', route: '/compute' },
     { label: 'Discover', icon: 'explore', route: '/discover' },
     { label: 'Marketplace', icon: 'storefront', route: '/marketplace' }
@@ -112,7 +113,24 @@ export class SidebarComponent {
     { label: 'Serving', icon: 'cloud_sync', route: '/serving' }
   ];
 
-  constructor(public router: Router) {}
+  // Visualization Tools is a personal preference, open to every user;
+  // Users/Access Roles are admin-only both here and on the backend
+  // (apps.users.permissions.IsAdmin), so they're hidden rather than
+  // shown-then-403'd for anyone else.
+  settingsItems: NavItem[] = [
+    { label: 'Visualization Tools', icon: 'palette', route: '/settings/visualization-tools' }
+  ];
+
+  adminSettingsItems: NavItem[] = [
+    { label: 'Users', icon: 'group', route: '/settings/users' },
+    { label: 'Access Roles', icon: 'admin_panel_settings', route: '/settings/access-roles' }
+  ];
+
+  get isAdmin(): boolean {
+    return this.authService.getUser()?.role === 'ADMIN';
+  }
+
+  constructor(public router: Router, private authService: AuthenticationService) {}
 }
 
 

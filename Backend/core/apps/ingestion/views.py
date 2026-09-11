@@ -3,8 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import IngestionPipeline
-from .serializers import IngestionPipelineSerializer
+from .models import IngestionPipeline, PipelineRun
+from .serializers import IngestionPipelineSerializer, PipelineRunSerializer
 from .services.pipeline_service import PipelineService
 
 
@@ -29,6 +29,36 @@ class IngestionPipelineViewSet(viewsets.ModelViewSet):
         })
 
     @action(
+        detail=False,
+        methods=["get"],
+        url_path="running",
+    )
+    def running(self, request):
+        """
+        Pipelines with an in-flight run right now - a run() call is
+        synchronous (blocks the /run/ request until it finishes), so a row
+        only stays RUNNING for that request's lifetime. Backs the "Jobs &
+        Pipelines" sidebar page, which should show live activity, not the
+        full pipeline configuration list.
+        """
+        runs = PipelineRun.objects.filter(
+            status=PipelineRun.Status.RUNNING
+        ).select_related("pipeline").order_by("-started_at")
+        return Response(PipelineRunSerializer(runs, many=True).data)
+
+    @action(
+        detail=False,
+        methods=["get"],
+        url_path="runs",
+    )
+    def runs(self, request):
+        """Recent run history (any status), most recent first - gives the
+        "Jobs & Pipelines" page something to show even when nothing is
+        currently running."""
+        runs = PipelineRun.objects.select_related("pipeline").order_by("-started_at")[:50]
+        return Response(PipelineRunSerializer(runs, many=True).data)
+
+    @action(
         detail=True,
         methods=["post"],
         url_path="run",
@@ -36,12 +66,13 @@ class IngestionPipelineViewSet(viewsets.ModelViewSet):
     def run(self, request, pk=None):
 
         pipeline = self.get_object()
+        triggered_by = str(request.data.get("triggered_by") or "manual")[:50]
 
         try:
 
             result = PipelineService(
                 pipeline
-            ).run()
+            ).run(triggered_by=triggered_by)
 
             return Response(
                 {

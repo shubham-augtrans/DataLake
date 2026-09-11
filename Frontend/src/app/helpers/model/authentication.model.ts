@@ -14,7 +14,7 @@ export interface UserInfo {
   first_name: string;
   last_name: string;
   email: string;
-  role: 'ADMIN' | 'USER' | string;
+  role: 'ADMIN' | 'DATA_ENGINEER' | 'DATA_ANALYST' | string;
 }
 
 export interface LoginResponse {

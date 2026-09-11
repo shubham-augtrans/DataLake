@@ -213,6 +213,29 @@
       </a>
     </div>
 
+    <!-- Settings Group -->
+    <div class="nav-group">
+      <div class="group-heading">Settings</div>
+      <a
+        *ngFor="let item of settingsItems"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        class="nav-link">
+        <span class="material-symbols-outlined nav-icon">{{ item.icon }}</span>
+        <span class="nav-label">{{ item.label }}</span>
+      </a>
+      <ng-container *ngIf="isAdmin">
+        <a
+          *ngFor="let item of adminSettingsItems"
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          class="nav-link">
+          <span class="material-symbols-outlined nav-icon">{{ item.icon }}</span>
+          <span class="nav-label">{{ item.label }}</span>
+        </a>
+      </ng-container>
+    </div>
+
     <!-- Documentation Group -->
     <div class="nav-group">
       <div class="group-heading">Documentation</div>

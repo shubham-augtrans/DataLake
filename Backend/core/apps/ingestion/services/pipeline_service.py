@@ -1,5 +1,8 @@
 import time
 
+from django.utils import timezone
+
+from apps.ingestion.models import PipelineRun
 from apps.ingestion.services.job_builder import (
     PostgresToMinioJobBuilder,
     MongoToMinioJobBuilder,
@@ -22,7 +25,34 @@ class PipelineService:
     def __init__(self, pipeline):
         self.pipeline = pipeline
 
-    def run(self):
+    def run(self, triggered_by="manual"):
+        """
+        Wraps the actual dispatch with a PipelineRun row so the "currently
+        running pipelines" view (GET /api/ingestion-pipelines/running/) has
+        something real to show - the row is RUNNING for exactly the
+        lifetime of this call (run() is synchronous, see module docstring
+        note below), then SUCCESS/FAILED. Wrapping here - rather than
+        inside each of the three _*_to_minio branches - also means every
+        pipeline type gets tracked uniformly, including mongo's path, which
+        previously updated no status at all on completion.
+        """
+        pipeline_run = PipelineRun.objects.create(
+            pipeline=self.pipeline, triggered_by=triggered_by,
+        )
+
+        try:
+            result = self._dispatch()
+            pipeline_run.status = PipelineRun.Status.SUCCESS
+            return result
+        except Exception as ex:
+            pipeline_run.status = PipelineRun.Status.FAILED
+            pipeline_run.message = str(ex)
+            raise
+        finally:
+            pipeline_run.finished_at = timezone.now()
+            pipeline_run.save(update_fields=["status", "message", "finished_at"])
+
+    def _dispatch(self):
 
         source_type = (
             self.pipeline.source.source_type
@@ -182,6 +212,28 @@ class PipelineService:
                 "nifi_destination_processor_id",
             ]
         )
+
+        try:
+            builder.start(result)
+            self._wait_for_drain(result["process_group_id"], result["source_processor_id"])
+            builder.stop(result)
+
+            spark_result = run_spark_ingest(self.pipeline, result["staging_path"])
+
+            self.pipeline.nifi_status = "success"
+            self.pipeline.nifi_last_error = None
+            result["table"] = spark_result["table"]
+
+        except SparkIngestError as ex:
+            builder.stop(result)
+            self.pipeline.nifi_status = "error"
+            self.pipeline.nifi_last_error = str(ex)
+            raise
+
+        finally:
+            self.pipeline.save(
+                update_fields=["nifi_status", "nifi_last_error"]
+            )
 
         return result
 

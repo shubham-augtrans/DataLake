@@ -44,13 +44,6 @@ export class MainLayoutComponent implements OnInit {
             command: () => {
               console.log('Open profile');
             }
-          },
-          {
-            label: 'Settings',
-            icon: 'pi pi-cog',
-            command: () => {
-              this.router.navigate(['/settings']);
-            }
           }
         ]
       },

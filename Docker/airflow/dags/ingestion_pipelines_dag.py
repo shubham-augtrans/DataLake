@@ -86,6 +86,7 @@ def datalake_ingestion_pipelines():
         response = requests.post(
             f"{BACKEND_BASE_URL}/ingestion-pipelines/{pipeline_id}/run/",
             headers={"Authorization": f"Bearer {token}"},
+            json={"triggered_by": "airflow"},
             timeout=RUN_TIMEOUT,
         )
 

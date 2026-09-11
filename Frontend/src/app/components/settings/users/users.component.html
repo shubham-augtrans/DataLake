@@ -1,0 +1,99 @@
+<div class="settings-page">
+
+  <div class="page-header">
+    <div>
+      <h1>Users</h1>
+      <p>Manage who can sign in and what role they have.</p>
+    </div>
+    <button type="button" pButton label="Add User" icon="pi pi-plus" (click)="openCreate()"></button>
+  </div>
+
+  <div class="loading-row" *ngIf="loading">
+    <p-progressSpinner styleClass="spinner-sm"></p-progressSpinner>
+    <span>Loading users...</span>
+  </div>
+
+  <div class="error-note" *ngIf="error">{{ error }}</div>
+
+  <p-table [value]="users" *ngIf="!loading" styleClass="users-table" [rows]="10" [paginator]="users.length > 10">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Role</th>
+        <th>Created</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user>
+      <tr>
+        <td>{{ user.first_name }} {{ user.last_name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.phone }}</td>
+        <td><p-tag [value]="roleLabel(user.role)"></p-tag></td>
+        <td>{{ user.created_at | date:'mediumDate' }}</td>
+        <td class="row-actions">
+          <button type="button" pButton icon="pi pi-pencil" class="p-button-text p-button-sm" (click)="openEdit(user)"></button>
+          <button type="button" pButton icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger" (click)="confirmDelete(user)"></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr><td colspan="6">No users yet.</td></tr>
+    </ng-template>
+  </p-table>
+
+  <!-- Add / edit dialog -->
+  <p-dialog
+    [(visible)]="dialogVisible"
+    [modal]="true"
+    [style]="{ width: '420px' }"
+    [header]="editingUser ? 'Edit User' : 'Add User'"
+    (onHide)="closeDialog()">
+
+    <div class="form-grid">
+      <label>First name</label>
+      <input type="text" pInputText [(ngModel)]="form.first_name" />
+
+      <label>Last name</label>
+      <input type="text" pInputText [(ngModel)]="form.last_name" />
+
+      <label>Email</label>
+      <input type="email" pInputText [(ngModel)]="form.email" />
+
+      <label>Phone</label>
+      <input type="text" pInputText [(ngModel)]="form.phone" maxlength="10" />
+
+      <label>Role</label>
+      <p-dropdown [options]="roleOptions" optionLabel="label" optionValue="value" [(ngModel)]="form.role"></p-dropdown>
+
+      <label>{{ editingUser ? 'New password (optional)' : 'Password' }}</label>
+      <input type="password" pInputText [(ngModel)]="form.password" />
+    </div>
+
+    <div class="form-error" *ngIf="formError">{{ formError }}</div>
+
+    <ng-template pTemplate="footer">
+      <button type="button" pButton label="Cancel" class="p-button-text" (click)="closeDialog()"></button>
+      <button type="button" pButton label="Save" [loading]="saving" (click)="save()"></button>
+    </ng-template>
+  </p-dialog>
+
+  <!-- Delete confirm dialog -->
+  <p-dialog
+    [visible]="!!deleteTarget"
+    [modal]="true"
+    [style]="{ width: '380px' }"
+    header="Delete user"
+    (onHide)="cancelDelete()">
+    <p *ngIf="deleteTarget">
+      Delete {{ deleteTarget.first_name }} {{ deleteTarget.last_name }} ({{ deleteTarget.email }})? This cannot be undone.
+    </p>
+    <ng-template pTemplate="footer">
+      <button type="button" pButton label="Cancel" class="p-button-text" (click)="cancelDelete()"></button>
+      <button type="button" pButton label="Delete" class="p-button-danger" (click)="deleteUser()"></button>
+    </ng-template>
+  </p-dialog>
+
+</div>

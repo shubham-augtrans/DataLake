@@ -14,7 +14,10 @@ import { PlaygroundComponent } from './components/playground/playground.componen
 import { FlowChartComponent } from './components/flow-chart/flow-chart.component';
 import { ApiDocsComponent } from './components/api-docs/api-docs.component';
 import { ModelsComponent } from './components/models/models.component';
-import { SettingsComponent } from './components/settings/settings.component';
+import { VisualizationToolsComponent } from './components/settings/visualization-tools/visualization-tools.component';
+import { UsersComponent } from './components/settings/users/users.component';
+import { AccessRolesComponent } from './components/settings/access-roles/access-roles.component';
+import { JobsComponent } from './components/jobs/jobs.component';
 
 export const routes: Routes = [
   {
@@ -33,6 +36,10 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: DashboardComponent
+      },
+      {
+        path: 'jobs',
+        component: JobsComponent
       },
       {
         path: 'data-sources',
@@ -125,8 +132,16 @@ export const routes: Routes = [
         component: FlowChartComponent
       },
       {
-        path: 'settings',
-        component: SettingsComponent
+        path: 'settings/visualization-tools',
+        component: VisualizationToolsComponent
+      },
+      {
+        path: 'settings/users',
+        component: UsersComponent
+      },
+      {
+        path: 'settings/access-roles',
+        component: AccessRolesComponent
       },
       // Documentation Group
       {

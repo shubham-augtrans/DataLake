@@ -464,6 +464,31 @@ class KafkaToMinioJobBuilder:
 
 
 class MongoToMinioJobBuilder:
+    """
+    Reads a MongoDB collection via NiFi and lands it as raw JSON in a MinIO
+    staging bucket - same shape as PostgresToMinioJobBuilder (source -> S3,
+    JSON, cleansing/Parquet conversion left to Spark downstream), so the
+    same pipeline_ingest.py Spark script handles it unmodified.
+
+    Every property key/shape below was verified against a live NiFi 1.28.1
+    instance (create -> read back descriptors -> confirm), the same method
+    used for the Postgres/Kafka builders - GetMongoRecord's and
+    MongoDBControllerService's actual property keys ("mongo-uri",
+    "mongo-client-service", "get-mongo-record-writer-factory", etc.) don't
+    match their display names ("Mongo URI", "Client Service", "Record
+    Writer"), same pattern as QueryDatabaseTableRecord's "qdbtr-record-writer".
+    """
+
+    MONGO_PROCESSOR_TYPE = "org.apache.nifi.processors.mongodb.GetMongoRecord"
+    S3_PROCESSOR_TYPE = "org.apache.nifi.processors.aws.s3.PutS3Object"
+    MONGO_SERVICE_TYPE = "org.apache.nifi.mongodb.MongoDBControllerService"
+    JSON_WRITER_SERVICE_TYPE = "org.apache.nifi.json.JsonRecordSetWriter"
+    AWS_CREDS_SERVICE_TYPE = (
+        "org.apache.nifi.processors.aws.credentials.provider.service."
+        "AWSCredentialsProviderControllerService"
+    )
+
+    STAGING_BUCKET = "staging"
 
     def __init__(self, pipeline):
         self.pipeline = pipeline
@@ -472,38 +497,43 @@ class MongoToMinioJobBuilder:
     def build(self):
 
         group = self._create_process_group()
-
         group_id = group["id"]
 
-        mongo = self._create_mongo_processor(
-            group_id
-        )
+        mongo_service = self._create_mongo_service(group_id)
+        json_writer = self._create_json_writer_service(group_id)
+        aws_creds = self._create_aws_credentials_service(group_id)
 
-        convert = self._create_convert_record(
-            group_id
-        )
+        mongo = self._create_mongo_processor(group_id)
+        s3 = self._create_s3_processor(group_id)
 
-        minio = self._create_minio_processor(
-            group_id
-        )
+        self._configure_mongo_processor(mongo, mongo_service["id"], json_writer["id"])
+        self._configure_s3_processor(s3, aws_creds["id"])
 
-        self.nifi.create_connection(
-            group_id,
-            mongo["id"],
-            convert["id"],
-        )
+        self.nifi.create_connection(group_id, mongo["id"], s3["id"])
 
-        self.nifi.create_connection(
-            group_id,
-            convert["id"],
-            minio["id"],
-        )
+        for service in (mongo_service, json_writer, aws_creds):
+            self._enable_controller_service(service["id"])
 
         return {
             "process_group_id": group_id,
             "source_processor_id": mongo["id"],
-            "destination_processor_id": minio["id"],
+            "destination_processor_id": s3["id"],
+            "staging_path": f"s3a://{self.STAGING_BUCKET}/{self.pipeline.id}/data.json",
         }
+
+    def start(self, result):
+        # Destination first, so nothing produced by the source is ever
+        # routed to a processor that isn't ready to receive it yet.
+        self._start_processor(result["destination_processor_id"])
+        self._start_processor(result["source_processor_id"])
+
+    def stop(self, result):
+        self._stop_processor(result["source_processor_id"])
+        self._stop_processor(result["destination_processor_id"])
+
+    # --------------------------------------------------
+    # Process group / controller services
+    # --------------------------------------------------
 
     def _create_process_group(self):
 
@@ -516,50 +546,175 @@ class MongoToMinioJobBuilder:
             name=self.pipeline.name,
         )
 
-    def _create_mongo_processor(
-        self,
-        group_id,
-    ):
+    def _create_mongo_service(self, group_id):
+
+        service = self.nifi.create_controller_service(
+            process_group_id=group_id,
+            service_type=self.MONGO_SERVICE_TYPE,
+            name="MongoDB Connection",
+        )
+
+        config = self.pipeline.source.configuration
+        auth_source = config.get("authSource", "admin")
+        uri = f"mongodb://{config['host']}:{config['port']}/?authSource={auth_source}"
+
+        self.nifi.update_controller_service(
+            service_id=service["id"],
+            revision_version=service["revision"]["version"],
+            properties={
+                "mongo-uri": uri,
+                "Database User": config["username"],
+                "Password": config["password"],
+            },
+        )
+
+        return service
+
+    def _create_json_writer_service(self, group_id):
+
+        # Same override as Postgres's JSON Record Writer service, for the
+        # same reason - without an explicit Timestamp Format, a Mongo Date
+        # field would render as raw epoch-millis instead of parsing as a
+        # real timestamp downstream in Spark.
+        service = self.nifi.create_controller_service(
+            process_group_id=group_id,
+            service_type=self.JSON_WRITER_SERVICE_TYPE,
+            name="JSON Record Writer",
+        )
+
+        self.nifi.update_controller_service(
+            service_id=service["id"],
+            revision_version=service["revision"]["version"],
+            properties={
+                "Timestamp Format": "yyyy-MM-dd'T'HH:mm:ss.SSS",
+            },
+        )
+
+        return service
+
+    def _create_aws_credentials_service(self, group_id):
+
+        service = self.nifi.create_controller_service(
+            process_group_id=group_id,
+            service_type=self.AWS_CREDS_SERVICE_TYPE,
+            name="MinIO Credentials",
+        )
+
+        config = self.pipeline.destination.configuration
+
+        self.nifi.update_controller_service(
+            service_id=service["id"],
+            revision_version=service["revision"]["version"],
+            properties={
+                "Access Key": config["access_key"],
+                "Secret Key": config["secret_key"],
+            },
+        )
+
+        return service
+
+    def _enable_controller_service(self, service_id):
+
+        current = self.nifi.get_controller_service(service_id)
+
+        self.nifi.update_controller_service_run_status(
+            service_id=service_id,
+            revision_version=current["revision"]["version"],
+            state="ENABLED",
+        )
+
+    # --------------------------------------------------
+    # Processors
+    # --------------------------------------------------
+
+    def _create_mongo_processor(self, group_id):
 
         return self.nifi.create_processor(
             process_group_id=group_id,
-            processor_type=(
-                "org.apache.nifi.processors.mongodb."
-                "GetMongoRecord"
-            ),
+            processor_type=self.MONGO_PROCESSOR_TYPE,
             name="MongoDB Source",
             x=0,
             y=0,
         )
 
-    def _create_convert_record(
-        self,
-        group_id,
-    ):
+    def _create_s3_processor(self, group_id):
 
         return self.nifi.create_processor(
             process_group_id=group_id,
-            processor_type=(
-                "org.apache.nifi.processors.standard."
-                "ConvertRecord"
-            ),
-            name="Convert to Parquet",
+            processor_type=self.S3_PROCESSOR_TYPE,
+            name="MinIO Staging Landing",
             x=400,
             y=0,
         )
 
-    def _create_minio_processor(
-        self,
-        group_id,
-    ):
+    def _configure_mongo_processor(self, processor, mongo_service_id, json_writer_service_id):
 
-        return self.nifi.create_processor(
-            process_group_id=group_id,
-            processor_type=(
-                "org.apache.nifi.processors.aws.s3."
-                "PutS3Object"
-            ),
-            name="MinIO Destination",
-            x=800,
-            y=0,
+        config = self.pipeline.source.configuration
+        current = self.nifi.get_processor(processor["id"])
+
+        self.nifi.update_processor(
+            processor_id=processor["id"],
+            revision_version=current["revision"]["version"],
+            properties={
+                "mongo-client-service": mongo_service_id,
+                "get-mongo-record-writer-factory": json_writer_service_id,
+                "Mongo Database Name": config["database"],
+                "Mongo Collection Name": self.pipeline.source_object,
+            },
+        )
+
+        current = self.nifi.get_processor(processor["id"])
+
+        # "original" isn't meaningful for a source-only processor (there's
+        # no incoming flowfile to pass through) and "failure" should just
+        # not queue up - only "success" (wired to the S3 processor) is left.
+        self.nifi.set_processor_auto_terminated_relationships(
+            processor_id=processor["id"],
+            revision_version=current["revision"]["version"],
+            relationships=["failure", "original"],
+        )
+
+    def _configure_s3_processor(self, processor, aws_credentials_service_id):
+
+        config = self.pipeline.destination.configuration
+        current = self.nifi.get_processor(processor["id"])
+
+        self.nifi.update_processor(
+            processor_id=processor["id"],
+            revision_version=current["revision"]["version"],
+            properties={
+                "Bucket": self.STAGING_BUCKET,
+                "Object Key": f"{self.pipeline.id}/data.json",
+                "Region": "us-east-1",
+                "Endpoint Override URL": config["endpoint"],
+                "AWS Credentials Provider service": aws_credentials_service_id,
+            },
+        )
+
+        current = self.nifi.get_processor(processor["id"])
+
+        self.nifi.set_processor_auto_terminated_relationships(
+            processor_id=processor["id"],
+            revision_version=current["revision"]["version"],
+            relationships=["failure", "success"],
+        )
+
+    def _start_processor(self, processor_id):
+
+        current = self.nifi.get_processor(processor_id)
+
+        self.nifi.update_processor_run_status(
+            processor_id=processor_id,
+            revision_version=current["revision"]["version"],
+            state="RUNNING",
+        )
+
+    def _stop_processor(self, processor_id):
+
+        current = self.nifi.get_processor(processor_id)
+
+        self.nifi.update_processor_run_status(
+            processor_id=processor_id,
+            revision_version=current["revision"]["version"],
+            state="STOPPED",
         )

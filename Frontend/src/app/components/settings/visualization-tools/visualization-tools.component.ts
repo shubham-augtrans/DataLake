@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 
 type BiTool = 'METABASE' | 'SUPERSET';
 
 @Component({
-  selector: 'app-settings',
+  selector: 'app-visualization-tools',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './settings.component.html',
-  styleUrl: './settings.component.css'
+  templateUrl: './visualization-tools.component.html',
+  styleUrl: './visualization-tools.component.css'
 })
-export class SettingsComponent implements OnInit {
+export class VisualizationToolsComponent implements OnInit {
 
   private readonly API_URL = environment.apiBaseUrl;
 

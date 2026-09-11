@@ -1,0 +1,66 @@
+<div class="jobs-page">
+
+  <div class="page-header">
+    <h1>Jobs &amp; Pipelines</h1>
+    <p>Pipelines currently running, refreshed every 5 seconds.</p>
+  </div>
+
+  <div class="loading-row" *ngIf="loading">
+    <p-progressSpinner styleClass="spinner-sm"></p-progressSpinner>
+    <span>Loading...</span>
+  </div>
+
+  <div class="error-note" *ngIf="error">{{ error }}</div>
+
+  <ng-container *ngIf="!loading">
+    <div class="empty-state" *ngIf="runningPipelines.length === 0">
+      <span class="material-symbols-outlined empty-icon">check_circle</span>
+      <span>No pipelines are running right now.</span>
+    </div>
+
+    <div class="run-grid" *ngIf="runningPipelines.length > 0">
+      <div class="run-card running" *ngFor="let run of runningPipelines">
+        <div class="run-card-header">
+          <span class="pulse-dot"></span>
+          <span class="run-title">{{ run.pipeline_name }}</span>
+          <p-tag [value]="run.status" [severity]="statusSeverity(run.status)"></p-tag>
+        </div>
+        <div class="run-meta">
+          <span>Started {{ run.started_at | date:'short' }}</span>
+          <span class="dot">·</span>
+          <span>{{ run.duration_seconds }}s elapsed</span>
+          <span class="dot">·</span>
+          <span>{{ run.triggered_by }}</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <h3 class="section-heading">Recent runs</h3>
+
+  <table class="recent-table" *ngIf="recentRuns.length > 0">
+    <thead>
+      <tr>
+        <th>Pipeline</th>
+        <th>Status</th>
+        <th>Started</th>
+        <th>Duration</th>
+        <th>Triggered by</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let run of recentRuns">
+        <td>{{ run.pipeline_name }}</td>
+        <td><p-tag [value]="run.status" [severity]="statusSeverity(run.status)"></p-tag></td>
+        <td>{{ run.started_at | date:'short' }}</td>
+        <td>{{ run.duration_seconds }}s</td>
+        <td>{{ run.triggered_by }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="empty-state" *ngIf="recentRuns.length === 0 && !loading">
+    <span>No pipeline runs yet.</span>
+  </div>
+
+</div>

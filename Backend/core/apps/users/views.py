@@ -1,11 +1,18 @@
+from rest_framework import status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import LoginSerializer, UserPreferencesSerializer
+from .models import User
+from .permissions import IsAdmin
+from .serializers import (
+    LoginSerializer,
+    UserPreferencesSerializer,
+    UserSerializer,
+    UserWriteSerializer,
+)
 
 
 class LoginView(APIView):
@@ -52,6 +59,17 @@ class UserPreferencesView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserViewSet(viewsets.ModelViewSet):
+
+    queryset = User.objects.all().order_by("-created_at")
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def get_serializer_class(self):
+        if self.action in ("create", "update", "partial_update"):
+            return UserWriteSerializer
+        return UserSerializer
 
 
 class LogoutView(APIView):

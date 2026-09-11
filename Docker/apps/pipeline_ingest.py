@@ -77,6 +77,26 @@ def preprocess(raw_df):
     return df.dropDuplicates()
 
 
+ROW_HASH_COLUMN = "_ingest_row_hash"
+
+
+def with_row_hash(df):
+    """
+    A stable identity for each row, independent of column order - lets the
+    write step (below) skip rows that are already in the target table
+    instead of blindly appending. This is what actually makes a re-run
+    safe: neither NiFi (QueryDatabaseTableRecord/GetMongoRecord) nor this
+    script track "what was already ingested", so restarting a pipeline
+    re-fetches the FULL source every time - without this, that full
+    re-fetch would duplicate every row already in Iceberg on every restart.
+    Columns are hashed in a fixed (sorted) order so the hash doesn't change
+    if the source ever returns columns in a different order.
+    """
+    columns = sorted(df.columns)
+    row_repr = F.concat_ws("||", *[F.coalesce(F.col(c).cast("string"), F.lit("NULL")) for c in columns])
+    return df.withColumn(ROW_HASH_COLUMN, F.sha2(row_repr, 256))
+
+
 def main():
     if len(sys.argv) != 3:
         print("Usage: pipeline_ingest.py <staging_path> <table>")
@@ -92,16 +112,41 @@ def main():
     spark.sql(f"CREATE NAMESPACE IF NOT EXISTS {namespace}")
 
     raw_df = promote_timestamp_columns(spark.read.json(staging_path))
-    clean_df = preprocess(raw_df)
+    clean_df = with_row_hash(preprocess(raw_df))
 
     print(f"Raw rows: {raw_df.count()} -> Clean rows after preprocessing: {clean_df.count()}")
 
     if spark.catalog.tableExists(table):
-        clean_df.writeTo(table).append()
+        # NiFi has no "only fetch what's new" state for Postgres/Mongo (see
+        # job_builder.py) - every run re-reads the FULL source, so this
+        # batch is very likely to contain rows already in the table. MERGE
+        # on the row hash instead of a blind append() so a restarted
+        # pipeline can't duplicate rows: matching rows are left alone,
+        # only genuinely new ones get inserted.
+        #
+        # A table created before this hash column existed won't have it -
+        # add it (nullable) rather than crashing. Its pre-existing rows get
+        # a NULL hash, so they won't match anything new by coincidence;
+        # they just won't be deduped against until re-ingested once.
+        if ROW_HASH_COLUMN not in [f.name for f in spark.table(table).schema.fields]:
+            spark.sql(f"ALTER TABLE {table} ADD COLUMNS ({ROW_HASH_COLUMN} STRING)")
+
+        clean_df.createOrReplaceTempView("_ingest_batch")
+        before = spark.table(table).count()
+
+        spark.sql(f"""
+            MERGE INTO {table} t
+            USING _ingest_batch s
+            ON t.{ROW_HASH_COLUMN} = s.{ROW_HASH_COLUMN}
+            WHEN NOT MATCHED THEN INSERT *
+        """)
+
+        after = spark.table(table).count()
+        print(f"Merged batch of {clean_df.count()} rows -> {after - before} new row(s) inserted "
+              f"({clean_df.count() - (after - before)} already present, skipped).")
     else:
         clean_df.writeTo(table).using("iceberg").createOrReplace()
-
-    print(f"Wrote {clean_df.count()} rows to {table}")
+        print(f"Created {table} with {clean_df.count()} rows.")
 
     spark.stop()
 

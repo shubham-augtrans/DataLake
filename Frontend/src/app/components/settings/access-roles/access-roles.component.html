@@ -1,0 +1,28 @@
+<div class="settings-page">
+
+  <div class="page-header">
+    <h1>Access Roles</h1>
+    <p>The roles available in this workspace. Assign them to users from the Users page.</p>
+  </div>
+
+  <div class="loading-note" *ngIf="loading">Loading role stats...</div>
+  <div class="error-note" *ngIf="error">{{ error }}</div>
+
+  <div class="role-grid" *ngIf="!loading">
+    <div class="role-card" *ngFor="let role of roles">
+      <span class="material-symbols-outlined role-icon">{{ role.icon }}</span>
+      <div class="role-label">{{ role.label }}</div>
+      <div class="role-description">{{ role.description }}</div>
+      <div class="role-count">{{ role.count }} user{{ role.count === 1 ? '' : 's' }}</div>
+    </div>
+  </div>
+
+  <div class="legend-item">
+    <span class="material-symbols-outlined legend-icon">info</span>
+    <span>
+      Roles are a label used to organize access today; fine-grained per-page
+      permission enforcement isn't wired up yet.
+    </span>
+  </div>
+
+</div>

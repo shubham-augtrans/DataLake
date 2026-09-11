@@ -74,3 +74,48 @@ class IngestionPipeline(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class PipelineRun(models.Model):
+    """
+    One execution of a pipeline's /run/ action - lets the frontend show
+    which pipelines are ACTUALLY running right now (RUNNING rows), rather
+    than just the pipeline's static config. Runs are synchronous (the /run/
+    request blocks until this finishes - see PipelineService.run()), so a
+    row only stays RUNNING for the lifetime of that one HTTP request.
+    """
+
+    class Status(models.TextChoices):
+        RUNNING = "RUNNING", "Running"
+        SUCCESS = "SUCCESS", "Success"
+        FAILED = "FAILED", "Failed"
+
+    pipeline = models.ForeignKey(
+        IngestionPipeline,
+        on_delete=models.CASCADE,
+        related_name="runs",
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.RUNNING,
+    )
+
+    triggered_by = models.CharField(
+        max_length=50,
+        default="manual",
+        help_text="e.g. 'manual' (UI/API) or 'airflow' (scheduled DAG).",
+    )
+
+    message = models.TextField(null=True, blank=True)
+
+    started_at = models.DateTimeField(auto_now_add=True)
+    finished_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        db_table = "pipeline_run"
+        ordering = ["-started_at"]
+
+    def __str__(self):
+        return f"{self.pipeline.name} [{self.status}]"
