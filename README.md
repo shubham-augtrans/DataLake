@@ -44,6 +44,12 @@ Querying the lakehouse:
 
 Visualization: Metabase, Grafana  (point at Postgres / Trino)
 AI: Ollama (local LLM) → "Playground" prompt-to-SQL-to-chart feature
+
+Orchestration (sits outside the above data path, drives it on a schedule):
+  Apache Airflow ──(hourly, via Django REST API)──▶ Ingestion pipelines
+                    (calls POST /api/ingestion-pipelines/{id}/run/,
+                     the same endpoint the "Data Ingestion" UI page calls,
+                     which is what triggers NiFi at the top of this diagram)
 ```
 
 The Angular frontend and Django backend are **not** containerized — they run
@@ -76,6 +82,7 @@ with a **single set of credentials everywhere** for this dev environment:
 | `trino` | `trinodb/trino:470` | 8082 | SQL engine over the Iceberg catalog (catalog name: `iceberg`), governed by Ranger |
 | `ranger-db` + `ranger` | `apache/ranger-db:2.8.0`, `apache/ranger:2.8.0` | 6080 | Access-control admin service for Trino |
 | `ollama` + `ollama-init` | `ollama/ollama:0.33.2` | 11434 | Local LLM host; `-init` pulls the model once |
+| `airflow-webserver` + `airflow-scheduler` (+ `airflow-db-init`, `airflow-init`) | `apache/airflow:2.10.4` | 8085 | Orchestrates the ingestion pipelines on an `@hourly` schedule by calling the Django API as a service account (`shubham@datalake.local`); `LocalExecutor`, own `airflow` Postgres DB. DAG: [Docker/airflow/dags/ingestion_pipelines_dag.py](Docker/airflow/dags/ingestion_pipelines_dag.py) |
 
 Bring the whole stack up:
 ```bash
@@ -226,7 +233,7 @@ Ranger admin UI: `http://localhost:6080` (`admin` / `Shubham@123456`).
 |---|---|---|
 | `login` | `/login` | Datalake-themed login page; JWT stored in localStorage |
 | `main-layout` | (wraps everything) | Persistent top header (brand, search, notifications, profile/logout menu) + sidebar, present on **every** page |
-| `sidebar` | — | Nav groups: Main, SQL, Data Engineering, **Tools** (external links to every infra UI — NiFi, Kafka UI, Spark, Trino, MinIO Console, Grafana, Metabase, Jupyter, Ranger), AI/ML. Collapsible (10% width expanded / 60px icon rail collapsed) |
+| `sidebar` | — | Nav groups: Main, SQL, Data Engineering, **Tools** (external links to every infra UI — NiFi, Kafka UI, Spark, Trino, MinIO Console, Grafana, Metabase, Jupyter, Ranger, Airflow), AI/ML. Collapsible (10% width expanded / 60px icon rail collapsed) |
 | `dashboard` | `/dashboard` (Home) | Real KPIs (data sources/destinations/pipeline counts, not fabricated), "New Notebook" opens Jupyter |
 | `data-sources` / `data-destination` | `/data-sources`, `/data-destinations` | CRUD UIs for connections |
 | `ingestion` | `/ingestion-pipelines` | "Add data" connector grid (Postgres/Mongo/Kafka cards) → 5-step wizard (Connection → Ingestion setup → Source → Destination → Schedule) → pipeline management |
@@ -237,7 +244,8 @@ Ranger admin UI: `http://localhost:6080` (`admin` / `Shubham@123456`).
 
 Environment config (`src/environments/environment*.ts`) holds every external
 tool's URL (`metabaseUrl`, `jupyterUrl`, `nifiUrl`, `kafkaUiUrl`, `grafanaUrl`,
-`minioConsoleUrl`, `trinoUrl`, `sparkUrl`, `rangerUrl`) plus `apiBaseUrl`.
+`minioConsoleUrl`, `trinoUrl`, `sparkUrl`, `rangerUrl`, `airflowUrl`) plus
+`apiBaseUrl`.
 
 Run it:
 ```bash
@@ -309,6 +317,7 @@ Docker/
   init-postgres.sh            # creates the "metabase" DB inside shared postgres
   trino/etc/                  # trino config incl. Ranger plugin XML/properties
   ranger/                     # (install.properties removed - see §2 note)
+  airflow/dags/ingestion_pipelines_dag.py  # hourly ingestion-pipeline orchestration
   apps/iceberg_demo.py        # Spark -> Iceberg REST -> MinIO example job
 
 Backend/core/

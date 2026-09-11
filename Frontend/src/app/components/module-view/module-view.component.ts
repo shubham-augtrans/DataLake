@@ -53,7 +53,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
       height: 100%;
       background-color: #11131c;
       color: #e1e1ef;
-      font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     }
     .module-page {
       padding: 24px;

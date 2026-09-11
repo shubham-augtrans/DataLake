@@ -1,5 +1,6 @@
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import IngestionPipeline
@@ -15,6 +16,7 @@ class IngestionPipelineViewSet(viewsets.ModelViewSet):
     )
 
     serializer_class = IngestionPipelineSerializer
+    permission_classes = [IsAuthenticated]
 
     @action(
         detail=False,

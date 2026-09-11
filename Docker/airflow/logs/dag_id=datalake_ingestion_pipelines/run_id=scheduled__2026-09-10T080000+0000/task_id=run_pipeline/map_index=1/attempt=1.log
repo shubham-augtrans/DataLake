@@ -1,0 +1,18 @@
+[2026-09-10T09:00:04.185+0000] {local_task_job_runner.py:123} INFO - ::group::Pre task execution logs
+[2026-09-10T09:00:04.224+0000] {taskinstance.py:2613} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: datalake_ingestion_pipelines.run_pipeline scheduled__2026-09-10T08:00:00+00:00 map_index=1 [queued]>
+[2026-09-10T09:00:04.240+0000] {taskinstance.py:2613} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: datalake_ingestion_pipelines.run_pipeline scheduled__2026-09-10T08:00:00+00:00 map_index=1 [queued]>
+[2026-09-10T09:00:04.241+0000] {taskinstance.py:2866} INFO - Starting attempt 1 of 3
+[2026-09-10T09:00:04.262+0000] {taskinstance.py:2889} INFO - Executing <Mapped(_PythonDecoratedOperator): run_pipeline> on 2026-09-10 08:00:00+00:00
+[2026-09-10T09:00:04.275+0000] {logging_mixin.py:190} WARNING - /home/airflow/.local/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py:70 DeprecationWarning: This process (pid=275) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2026-09-10T09:00:04.277+0000] {standard_task_runner.py:72} INFO - Started process 279 to run task
+[2026-09-10T09:00:04.277+0000] {standard_task_runner.py:104} INFO - Running: ['airflow', 'tasks', 'run', 'datalake_ingestion_pipelines', 'run_pipeline', 'scheduled__2026-09-10T08:00:00+00:00', '--job-id', '38', '--raw', '--subdir', 'DAGS_FOLDER/ingestion_pipelines_dag.py', '--cfg-path', '/tmp/tmpn59g46vb', '--map-index', '1']
+[2026-09-10T09:00:04.280+0000] {standard_task_runner.py:105} INFO - Job 38: Subtask run_pipeline
+[2026-09-10T09:00:04.359+0000] {task_command.py:467} INFO - Running <TaskInstance: datalake_ingestion_pipelines.run_pipeline scheduled__2026-09-10T08:00:00+00:00 map_index=1 [running]> on host 00365e89777a
+[2026-09-10T09:00:04.497+0000] {taskinstance.py:3132} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='datalake' AIRFLOW_CTX_DAG_ID='datalake_ingestion_pipelines' AIRFLOW_CTX_TASK_ID='run_pipeline' AIRFLOW_CTX_EXECUTION_DATE='2026-09-10T08:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-09-10T08:00:00+00:00'
+[2026-09-10T09:00:04.499+0000] {taskinstance.py:731} INFO - ::endgroup::
+[2026-09-10T09:02:02.592+0000] {python.py:240} INFO - Done. Returned value was: {'success': True, 'message': 'Pipeline submitted successfully.', 'result': {'process_group_id': '8a8bbc23-01a0-1000-2dc1-30a1c736bc46', 'source_processor_id': '8a8bbe20-01a0-1000-4549-ed4b7b29e76f', 'destination_processor_id': '8a8bbe64-01a0-1000-7c2d-39218f5c7d39', 'staging_path': 's3a://staging/6/data.json', 'table': 'lakehouse.ingested.power_plant_readings'}}
+[2026-09-10T09:02:02.767+0000] {taskinstance.py:340} INFO - ::group::Post task execution logs
+[2026-09-10T09:02:02.769+0000] {taskinstance.py:352} INFO - Marking task as SUCCESS. dag_id=datalake_ingestion_pipelines, task_id=run_pipeline, run_id=scheduled__2026-09-10T08:00:00+00:00, map_index=1, execution_date=20260910T080000, start_date=20260910T090004, end_date=20260910T090202
+[2026-09-10T09:02:02.883+0000] {local_task_job_runner.py:266} INFO - Task exited with return code 0
+[2026-09-10T09:02:02.950+0000] {taskinstance.py:3895} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2026-09-10T09:02:02.955+0000] {local_task_job_runner.py:245} INFO - ::endgroup::

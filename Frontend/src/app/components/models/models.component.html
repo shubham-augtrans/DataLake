@@ -1,0 +1,145 @@
+<div class="models-page">
+
+  <div class="page-header">
+    <div>
+      <h1>Models</h1>
+      <p>Configure LLM endpoints for prompt-to-SQL generation. The model marked default is used everywhere in the app (AI Playground, etc).</p>
+    </div>
+    <button type="button" class="primary-btn" (click)="openCreateDialog()">
+      <i class="pi pi-plus"></i>
+      Add model
+    </button>
+  </div>
+
+  <div class="page-error" *ngIf="errorMessage">
+    <i class="pi pi-exclamation-triangle"></i>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && models.length === 0">
+    <i class="pi pi-microchip-ai"></i>
+    <span>No models configured yet.</span>
+    <button type="button" class="primary-btn" (click)="openCreateDialog()">Add your first model</button>
+  </div>
+
+  <div class="model-list">
+    <div class="model-card" *ngFor="let model of models" [class.is-default]="model.is_default">
+
+      <div class="model-card-header">
+        <div class="model-card-title">
+          <span class="model-name">{{ model.name }}</span>
+          <span class="default-badge" *ngIf="model.is_default">
+            <i class="pi pi-star-fill"></i>
+            Default
+          </span>
+        </div>
+
+        <div class="model-card-actions">
+          <button type="button" class="text-btn" *ngIf="!model.is_default" (click)="setDefault(model)">
+            Set as default
+          </button>
+          <button type="button" class="icon-btn" title="Edit" (click)="openEditDialog(model)">
+            <i class="pi pi-pencil"></i>
+          </button>
+          <button type="button" class="icon-btn icon-btn-danger" title="Delete" (click)="deleteModel(model)">
+            <i class="pi pi-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="model-card-body">
+        <div class="model-field">
+          <span class="field-label">URL</span>
+          <code class="field-value">{{ model.api_base }}</code>
+        </div>
+        <div class="model-field">
+          <span class="field-label">Model name</span>
+          <code class="field-value">{{ model.model_name }}</code>
+        </div>
+        <div class="model-field">
+          <span class="field-label">API key / token</span>
+          <code class="field-value">{{ maskKey(model.api_key) }}</code>
+        </div>
+        <div class="model-field">
+          <span class="field-label">CA certificate</span>
+          <code class="field-value">{{ model.ca_cert ? 'Configured' : '—' }}</code>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Add / Edit dialog -->
+  <div class="modal-backdrop" *ngIf="dialogOpen" (click)="closeDialog()">
+    <div class="modal-panel" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <span>{{ isEditing ? 'Edit model' : 'Add model' }}</span>
+        <button type="button" class="icon-btn" (click)="closeDialog()">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="field">
+          <label>Name</label>
+          <input type="text" [(ngModel)]="form.name" placeholder="e.g. Qwen3.8-27B-FP8 (Org)">
+        </div>
+
+        <div class="field">
+          <label>URL</label>
+          <input type="text" [(ngModel)]="form.api_base" placeholder="https://your-llm-host/v1">
+        </div>
+
+        <div class="field">
+          <label>Model name</label>
+          <input type="text" [(ngModel)]="form.model_name" placeholder="e.g. Qwen/Qwen3.8-27B-FP8">
+        </div>
+
+        <div class="field">
+          <label>API key / token <span class="optional-tag">optional</span></label>
+          <input type="password" [(ngModel)]="form.api_key" placeholder="Bearer token">
+        </div>
+
+        <div class="field">
+          <label>CA certificate <span class="optional-tag">optional</span></label>
+          <div class="file-upload-row">
+            <button type="button" class="secondary-btn" (click)="certFileInput.click()">
+              <i class="pi pi-upload"></i>
+              Upload .crt / .pem
+            </button>
+            <span class="file-upload-name" *ngIf="certFileName">{{ certFileName }}</span>
+          </div>
+          <input
+            #certFileInput
+            type="file"
+            accept=".crt,.pem,.cer,.cert,.txt"
+            hidden
+            (change)="onCertFileSelected($event)">
+          <textarea [(ngModel)]="form.ca_cert" rows="5" placeholder="-----BEGIN CERTIFICATE-----"></textarea>
+        </div>
+
+        <div class="field-checkbox">
+          <input type="checkbox" id="is-default" [(ngModel)]="form.is_default">
+          <label for="is-default">Set as default model</label>
+        </div>
+
+        <div class="dialog-error" *ngIf="dialogError">
+          <i class="pi pi-exclamation-triangle"></i>
+          <span>{{ dialogError }}</span>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="secondary-btn" (click)="closeDialog()">Cancel</button>
+        <button type="button" class="primary-btn" [disabled]="!isFormValid || saving" (click)="save()">
+          {{ saving ? 'Saving...' : 'Save' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

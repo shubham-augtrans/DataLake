@@ -1,119 +1,158 @@
 <div class="playground-page">
 
-  <!-- Header -->
-  <div class="page-header">
-    <div>
-      <h1>AI Playground</h1>
-      <p>Describe the dashboard you want in plain English — a local Ollama model turns it into SQL and a chart.</p>
-    </div>
+  <div class="playground-layout">
 
-    <div class="connection-picker" *ngIf="postgresSources.length > 0">
-      <label>Connection</label>
-      <p-dropdown
-        [options]="postgresSources"
-        optionLabel="name"
-        optionValue="id"
-        placeholder="Select a connection"
-        appendTo="body"
-        [(ngModel)]="selectedSourceId"
-        styleClass="w-full">
-      </p-dropdown>
-    </div>
-  </div>
-
-  <!-- No connection yet -->
-  <div class="no-connection-banner" *ngIf="postgresSources.length === 0">
-    <i class="pi pi-info-circle"></i>
-    <span>No PostgreSQL connection yet — add one from the SQL Editor or Data Ingestion first.</span>
-    <a routerLink="/sql-editor" class="banner-link">Go to SQL Editor</a>
-  </div>
-
-  <!-- Prompt input -->
-  <div class="prompt-panel">
-    <textarea
-      class="prompt-textarea"
-      [(ngModel)]="prompt"
-      placeholder="e.g. Show average pressure per machine"
-      rows="3">
-    </textarea>
-
-    <div class="prompt-actions">
-      <div class="example-chips">
-        <button
-          type="button"
-          class="example-chip"
-          *ngFor="let example of examplePrompts"
-          (click)="useExample(example)">
-          {{ example }}
+    <!-- Column 1 (10%): AI Chat - the list of named conversations, ChatGPT-style -->
+    <div class="conversations-pane">
+      <div class="compose-header">
+        <span class="compose-title">AI Chat</span>
+        <button type="button" class="icon-btn" title="New chat" (click)="newConversation()">
+          <i class="pi pi-plus"></i>
         </button>
       </div>
 
-      <p-button
-        label="Generate"
-        icon="pi pi-sparkles"
-        [loading]="generating"
-        [disabled]="!canGenerate"
-        (onClick)="generate()">
-      </p-button>
+      <div class="conversations-list">
+        <div class="chat-history-empty" *ngIf="conversations.length === 0">
+          <span>No conversations yet.</span>
+        </div>
+        <button
+          type="button"
+          class="chat-history-item"
+          *ngFor="let conversation of conversations"
+          [class.active]="conversation.id === activeId"
+          (click)="activateConversation(conversation.id)">
+          <span class="chat-history-item-title">{{ conversation.title }}</span>
+          <i class="pi pi-times chat-history-item-delete" title="Delete" (click)="deleteConversation(conversation.id, $event)"></i>
+        </button>
+      </div>
     </div>
+
+    <!-- Column 2 (20%): the active conversation's transcript, with the composer at the bottom -->
+    <div class="transcript-pane">
+      <div class="history-pane-header">{{ activeTitle }}</div>
+
+      <div class="chat-messages">
+
+        <div class="chat-empty" *ngIf="messages.length === 0">
+          <span>Ask for a chart in plain English.</span>
+          <div class="example-chips">
+            <button type="button" class="example-chip" *ngFor="let example of examplePrompts" (click)="useExample(example)">
+              {{ example }}
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="chat-bubble"
+          *ngFor="let message of messages"
+          [class.chat-bubble-user]="message.role === 'user'"
+          [class.chat-bubble-assistant]="message.role === 'assistant'"
+          [class.chat-bubble-error]="message.isError">
+          {{ message.text }}
+        </div>
+
+        <div class="chat-bubble chat-bubble-assistant chat-bubble-typing" *ngIf="sending">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+
+      </div>
+
+      <div class="compose-input-row">
+        <textarea
+          class="chat-input"
+          [(ngModel)]="prompt"
+          placeholder="e.g. show temperature vs pressure for Siemens Turbine-1"
+          rows="2"
+          (keydown.enter)="$event.preventDefault(); send()">
+        </textarea>
+        <button type="button" class="chat-send-btn" [disabled]="!canSend" (click)="send()">
+          <i class="pi pi-send"></i>
+          Send
+        </button>
+      </div>
+    </div>
+
+    <!-- Column 3 (70%): the chart/dashboard canvas -->
+    <div class="dashboard-pane">
+
+      <div class="page-header">
+        <div>
+          <h1>AI Playground</h1>
+          <p>Chat with your data — a hosted LLM turns each message into SQL against the lakehouse (Iceberg tables in MinIO, via Trino) and renders it as a real Metabase chart.</p>
+        </div>
+      </div>
+
+      <div class="canvas-grid">
+
+        <div class="canvas-placeholder" *ngIf="tiles.length === 0">
+          <i class="pi pi-objects-column"></i>
+          <span>Ask for a chart on the left to get started.</span>
+        </div>
+
+        <div class="chart-tile" *ngFor="let tile of tiles">
+          <div class="chart-tile-header">
+            <span class="chart-tile-prompt" [title]="tile.prompt">{{ tile.prompt }}</span>
+            <div class="chart-tile-actions">
+              <span class="chart-type-badge">{{ tile.chartType }}</span>
+              <button type="button" class="icon-btn" title="Expand" (click)="openModal(tile)">
+                <i class="pi pi-window-maximize"></i>
+              </button>
+              <a [href]="tile.dashboardUrl" target="_blank" rel="noopener" class="edit-layout-link" [title]="'Opens the real ' + toolLabel(tile.biTool) + ' dashboard, where you can drag charts to rearrange/resize them'">
+                <i class="pi pi-arrows-alt"></i>
+                Rearrange in {{ toolLabel(tile.biTool) }}
+              </a>
+            </div>
+          </div>
+
+          <iframe
+            *ngIf="tile.embedSrc"
+            [src]="tile.embedSrc"
+            class="chart-tile-iframe"
+            frameborder="0">
+          </iframe>
+
+          <div class="chart-tile-placeholder" *ngIf="!tile.embedUrl">
+            <i class="pi pi-info-circle"></i>
+            <span>Can't be embedded here yet — ask an admin to turn on public sharing in {{ toolLabel(tile.biTool) }}.</span>
+          </div>
+
+          <div class="chart-tile-meta">
+            <span>{{ tile.rowCount }} row{{ tile.rowCount === 1 ? '' : 's' }}</span>
+            <span class="dot">·</span>
+            <span>{{ tile.durationMs }} ms</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
 
-  <!-- Error -->
-  <div class="playground-error" *ngIf="errorMessage">
-    <i class="pi pi-exclamation-triangle"></i>
-    <span>{{ errorMessage }}</span>
-  </div>
-
-  <!-- Generating -->
-  <div class="generating-state" *ngIf="generating">
-    <p-progressSpinner styleClass="spinner-sm"></p-progressSpinner>
-    <span>Asking the model, then running the generated query...</span>
-  </div>
-
-  <!-- Result -->
-  <div class="result-panel" *ngIf="result && !generating">
-
-    <div class="sql-preview">
-      <span class="sql-label">Generated SQL</span>
-      <code>{{ result.sql }}</code>
+  <!-- Modal: full-size view of one tile -->
+  <div class="modal-backdrop" *ngIf="modalTile" (click)="closeModal()">
+    <div class="modal-panel" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <span>{{ modalTile.prompt }}</span>
+        <div class="modal-header-actions">
+          <a [href]="modalTile.dashboardUrl" target="_blank" rel="noopener" class="edit-layout-link" [title]="'Opens the real ' + toolLabel(modalTile.biTool) + ' dashboard, where you can drag charts to rearrange/resize them'">
+            <i class="pi pi-arrows-alt"></i>
+            Rearrange in {{ toolLabel(modalTile.biTool) }}
+          </a>
+          <button type="button" class="icon-btn" title="Close" (click)="closeModal()">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+      </div>
+      <iframe
+        *ngIf="modalTile.embedSrc"
+        [src]="modalTile.embedSrc"
+        class="modal-iframe"
+        frameborder="0">
+      </iframe>
     </div>
-
-    <div class="result-meta">
-      <span>{{ result.row_count }} row{{ result.row_count === 1 ? '' : 's' }}</span>
-      <span class="dot">·</span>
-      <span>{{ result.duration_ms }} ms</span>
-    </div>
-
-    <!-- Number card -->
-    <div class="number-card" *ngIf="result.chart.type === 'number'">
-      <span class="number-value">{{ result.rows[0][0] }}</span>
-      <span class="number-label">{{ result.columns[0] }}</span>
-    </div>
-
-    <!-- Chart -->
-    <div class="chart-wrapper" *ngIf="result.chart.type === 'bar' || result.chart.type === 'line'">
-      <canvas #chartCanvas></canvas>
-    </div>
-
-    <!-- Fallback table -->
-    <p-table
-      *ngIf="result.chart.type === 'table'"
-      [value]="tableRows"
-      [scrollable]="true"
-      scrollHeight="360px"
-      styleClass="result-table">
-      <ng-template pTemplate="header">
-        <tr>
-          <th *ngFor="let col of result.columns">{{ col }}</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-row>
-        <tr>
-          <td *ngFor="let col of result.columns">{{ row[col] }}</td>
-        </tr>
-      </ng-template>
-    </p-table>
-
   </div>
 
 </div>

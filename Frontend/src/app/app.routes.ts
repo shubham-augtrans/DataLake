@@ -8,8 +8,13 @@ import { MainLayoutComponent } from './components/main-layout/main-layout.compon
 import { IngestionComponent } from './components/ingestion/ingestion.component';
 import { ModuleViewComponent } from './components/module-view/module-view.component';
 import { QueryComponent } from './components/query/query.component';
+import { TrinoQueryComponent } from './components/trino-query/trino-query.component';
 import { IcebergCatalogComponent } from './components/iceberg-catalog/iceberg-catalog.component';
 import { PlaygroundComponent } from './components/playground/playground.component';
+import { FlowChartComponent } from './components/flow-chart/flow-chart.component';
+import { ApiDocsComponent } from './components/api-docs/api-docs.component';
+import { ModelsComponent } from './components/models/models.component';
+import { SettingsComponent } from './components/settings/settings.component';
 
 export const routes: Routes = [
   {
@@ -78,6 +83,10 @@ export const routes: Routes = [
         component: QueryComponent
       },
       {
+        path: 'trino-editor',
+        component: TrinoQueryComponent
+      },
+      {
         path: 'queries',
         component: QueryComponent
       },
@@ -111,6 +120,19 @@ export const routes: Routes = [
         path: 'iceberg-catalog',
         component: IcebergCatalogComponent
       },
+      {
+        path: 'data-flow',
+        component: FlowChartComponent
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent
+      },
+      // Documentation Group
+      {
+        path: 'documentation/api',
+        component: ApiDocsComponent
+      },
       // AI / ML Group
       {
         path: 'playground',
@@ -138,8 +160,7 @@ export const routes: Routes = [
       },
       {
         path: 'models',
-        component: ModuleViewComponent,
-        data: { title: 'Model Registry', icon: 'bubble_chart', description: 'Versioned machine learning model registry with deployment governance.' }
+        component: ModelsComponent
       },
       {
         path: 'serving',

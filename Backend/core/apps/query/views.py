@@ -3,8 +3,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.data_sources.models import DataSource
-
 from .models import QueryHistory
 from .serializers import (
     ExecuteQuerySerializer,
@@ -12,7 +10,7 @@ from .serializers import (
     QueryHistorySerializer,
 )
 from .services import (
-    PostgresQueryRunner,
+    LAKEHOUSE_SCHEMA,
     QueryAuthorizationError,
     QueryExecutionError,
     TrinoQueryRunner,
@@ -20,29 +18,31 @@ from .services import (
 
 
 class ExecuteQueryView(APIView):
+    """
+    The SQL Editor's execute endpoint. Runs against the lakehouse (Iceberg
+    tables backed by MinIO) via Trino, the same governed path as the Trino
+    Editor - not a direct connection to a source database. Defaults the
+    session to the `ingested` schema so unqualified table names (e.g.
+    `SELECT * FROM orders`) resolve to the ingested copy without requiring
+    `iceberg.ingested.orders`.
+    """
+
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
 
         serializer = ExecuteQuerySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        data_source_id = serializer.validated_data["data_source"]
         sql_text = serializer.validated_data["sql"]
 
-        try:
-            datasource = DataSource.objects.get(pk=data_source_id)
-        except DataSource.DoesNotExist:
-            return Response(
-                {"error": "Data source not found."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        trino_user = request.user.email.split("@")[0]
 
         try:
-            runner = PostgresQueryRunner(datasource)
-            result = runner.run(sql_text)
+            result = TrinoQueryRunner(trino_user, schema=LAKEHOUSE_SCHEMA).run(sql_text)
 
             QueryHistory.objects.create(
-                data_source=datasource,
+                trino_user=trino_user,
                 sql_text=sql_text,
                 status="success",
                 row_count=result["row_count"],
@@ -51,10 +51,24 @@ class ExecuteQueryView(APIView):
 
             return Response(result, status=status.HTTP_200_OK)
 
+        except QueryAuthorizationError as ex:
+
+            QueryHistory.objects.create(
+                trino_user=trino_user,
+                sql_text=sql_text,
+                status="denied",
+                error_message=str(ex),
+            )
+
+            return Response(
+                {"error": str(ex)},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
         except QueryExecutionError as ex:
 
             QueryHistory.objects.create(
-                data_source=datasource,
+                trino_user=trino_user,
                 sql_text=sql_text,
                 status="error",
                 error_message=str(ex),
@@ -129,6 +143,53 @@ class ExecuteTrinoQueryView(APIView):
             )
 
 
+class TrinoSchemaExplorerView(APIView):
+    """
+    Backs the Trino editor's schema explorer tree (catalogs -> schemas ->
+    tables -> columns). Every listing runs through TrinoQueryRunner as the
+    authenticated user, so it only ever shows what Ranger allows them to see.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        trino_user = request.user.email.split("@")[0]
+        runner = TrinoQueryRunner(trino_user)
+
+        catalog = request.query_params.get("catalog")
+        schema = request.query_params.get("schema")
+        table = request.query_params.get("table")
+
+        try:
+            if table:
+                if not (catalog and schema):
+                    return Response(
+                        {"error": "catalog and schema are required with table."},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                return Response({"columns": runner.list_columns(catalog, schema, table)})
+
+            if schema:
+                if not catalog:
+                    return Response(
+                        {"error": "catalog is required with schema."},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                return Response({"tables": runner.list_tables(catalog, schema)})
+
+            if catalog:
+                return Response({"schemas": runner.list_schemas(catalog)})
+
+            return Response({"catalogs": runner.list_catalogs()})
+
+        except QueryAuthorizationError as ex:
+            return Response({"error": str(ex)}, status=status.HTTP_403_FORBIDDEN)
+
+        except QueryExecutionError as ex:
+            return Response({"error": str(ex)}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class QueryHistoryViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
@@ -136,3 +197,16 @@ class QueryHistoryViewSet(
 ):
     queryset = QueryHistory.objects.select_related("data_source").all()
     serializer_class = QueryHistorySerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        source = self.request.query_params.get("source")
+
+        if source == "trino":
+            queryset = queryset.filter(trino_user__isnull=False)
+        elif source == "postgres":
+            queryset = queryset.filter(data_source__isnull=False)
+
+        return queryset

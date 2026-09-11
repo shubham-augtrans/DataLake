@@ -10,7 +10,7 @@ fake = Faker()
 
 # MongoDB Connection
 client = MongoClient(
-    "mongodb://mongoadmin:mongoadmin@localhost:27017/?authSource=admin"
+    "mongodb://shubham:Shubham@123456@localhost:27017/?authSource=admin"
 )
 
 db = client["datalake"]

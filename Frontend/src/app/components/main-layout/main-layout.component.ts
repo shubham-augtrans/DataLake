@@ -49,7 +49,7 @@ export class MainLayoutComponent implements OnInit {
             label: 'Settings',
             icon: 'pi pi-cog',
             command: () => {
-              console.log('Open settings');
+              this.router.navigate(['/settings']);
             }
           }
         ]

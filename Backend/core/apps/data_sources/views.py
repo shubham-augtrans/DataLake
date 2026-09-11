@@ -2,6 +2,7 @@ import os
 import traceback
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import DataSource
@@ -13,6 +14,7 @@ from connectors.source.factory import SourceConnectorFactory
 class DataSourceViewSet(viewsets.ModelViewSet):
     queryset = DataSource.objects.all().order_by("-created_at")
     serializer_class = DataSourceSerializer
+    permission_classes = [IsAuthenticated]
 
     @action(detail=False, methods=["get"], url_path="count")
     def count(self, request):

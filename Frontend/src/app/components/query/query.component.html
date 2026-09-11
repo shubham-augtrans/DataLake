@@ -4,30 +4,10 @@
   <div class="page-header">
     <div>
       <h1>SQL Editor</h1>
-      <p>Write and run SQL directly against a PostgreSQL connection.</p>
+      <p>Write and run SQL against the lakehouse — queries are served from Iceberg tables in MinIO via Trino.</p>
     </div>
 
     <div class="header-actions">
-      <div class="connection-picker" *ngIf="postgresSources.length > 0">
-        <label>Connection</label>
-        <p-dropdown
-          [options]="postgresSources"
-          optionLabel="name"
-          optionValue="id"
-          placeholder="Select a connection"
-          appendTo="body"
-          [(ngModel)]="selectedSourceId"
-          styleClass="w-full">
-        </p-dropdown>
-      </div>
-
-      <p-button
-        label="Add Connection"
-        icon="pi pi-plus"
-        severity="secondary"
-        (onClick)="openConnectionDialog()">
-      </p-button>
-
       <p-button
         label="New Query"
         icon="pi pi-file"
@@ -35,13 +15,6 @@
         (onClick)="newQuery()">
       </p-button>
     </div>
-  </div>
-
-  <!-- No connection yet: still show the editor, just nudge them to add one -->
-  <div class="no-connection-banner" *ngIf="postgresSources.length === 0">
-    <i class="pi pi-info-circle"></i>
-    <span>No PostgreSQL connection yet — write your query below, then add a connection to run it.</span>
-    <p-button label="Add Connection" icon="pi pi-plus" styleClass="p-button-sm" (onClick)="openConnectionDialog()"></p-button>
   </div>
 
   <!-- Editor -->
@@ -61,7 +34,6 @@
         icon="pi pi-play"
         [loading]="running"
         [disabled]="!canRun"
-        [pTooltip]="postgresSources.length === 0 ? 'Add a connection first' : ''"
         (onClick)="runQuery()">
       </p-button>
     </div>
@@ -122,61 +94,3 @@
   </div>
 
 </div>
-
-<!-- ======================================================
-     Add Connection dialog
-======================================================= -->
-
-<p-dialog
-  header="Add PostgreSQL Connection"
-  [(visible)]="connectionDialogVisible"
-  [modal]="true"
-  [closable]="true"
-  [draggable]="false"
-  [resizable]="false"
-  [style]="{ width: '480px' }"
-  (onHide)="closeConnectionDialog()">
-
-  <div class="field">
-    <label>Connection name</label>
-    <input pInputText [(ngModel)]="connectionForm.name" placeholder="e.g. Lakehouse Postgres" />
-  </div>
-
-  <div class="field-row">
-    <div class="field">
-      <label>Host</label>
-      <input pInputText [(ngModel)]="connectionForm.host" placeholder="localhost" />
-    </div>
-    <div class="field">
-      <label>Port</label>
-      <input pInputText [(ngModel)]="connectionForm.port" placeholder="5432" />
-    </div>
-  </div>
-
-  <div class="field">
-    <label>Database</label>
-    <input pInputText [(ngModel)]="connectionForm.database" placeholder="mydb" />
-  </div>
-
-  <div class="field-row">
-    <div class="field">
-      <label>Username</label>
-      <input pInputText [(ngModel)]="connectionForm.username" placeholder="Username" />
-    </div>
-    <div class="field">
-      <label>Password</label>
-      <p-password [(ngModel)]="connectionForm.password" [feedback]="false" [toggleMask]="true" styleClass="w-full" inputStyleClass="w-full"></p-password>
-    </div>
-  </div>
-
-  <div class="query-error" *ngIf="connectionError">
-    <i class="pi pi-exclamation-triangle"></i>
-    <span>{{ connectionError }}</span>
-  </div>
-
-  <ng-template pTemplate="footer">
-    <p-button label="Cancel" severity="secondary" icon="pi pi-times" (onClick)="closeConnectionDialog()"></p-button>
-    <p-button label="Save" icon="pi pi-check" [loading]="savingConnection" [disabled]="!isConnectionFormValid" (onClick)="saveConnection()"></p-button>
-  </ng-template>
-
-</p-dialog>

@@ -1,0 +1,101 @@
+<div class="api-docs-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>API Documentation</h1>
+      <p>Every REST endpoint exposed by the Datalake backend, grouped by area — endpoint, request, payload, response shape, and a real sample result.</p>
+    </div>
+
+    <div class="search-box">
+      <i class="pi pi-search"></i>
+      <input
+        type="text"
+        [(ngModel)]="searchText"
+        placeholder="Search endpoints, methods, paths...">
+    </div>
+  </div>
+
+  <div class="api-docs-layout">
+
+    <!-- Left: category jump nav -->
+    <nav class="category-nav">
+      <div
+        class="category-nav-item"
+        *ngFor="let category of filteredCategories"
+        (click)="scrollTo(category.name)">
+        <span>{{ category.name }}</span>
+        <span class="category-count">{{ category.endpoints.length }}</span>
+      </div>
+    </nav>
+
+    <!-- Right: endpoint list -->
+    <div class="categories-panel">
+
+      <div class="no-results" *ngIf="filteredCategories.length === 0">
+        <i class="pi pi-info-circle"></i>
+        <span>No endpoints match "{{ searchText }}".</span>
+      </div>
+
+      <div class="category-section" *ngFor="let category of filteredCategories" [id]="anchorId(category.name)">
+
+        <div class="category-header">
+          <h2>{{ category.name }}</h2>
+          <code class="category-base-path">{{ category.basePath }}</code>
+        </div>
+
+        <div class="endpoint-list">
+          <div class="endpoint-card" *ngFor="let endpoint of category.endpoints">
+
+            <div class="endpoint-summary" (click)="toggle(category.name, endpoint)">
+              <span class="method-badge" [ngClass]="'method-' + endpoint.method.toLowerCase()">{{ endpoint.method }}</span>
+              <code class="endpoint-path">{{ endpoint.path }}</code>
+              <span class="endpoint-title">{{ endpoint.title }}</span>
+              <i class="pi" [ngClass]="isExpanded(category.name, endpoint) ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
+            </div>
+
+            <div class="endpoint-detail" *ngIf="isExpanded(category.name, endpoint)">
+
+              <p class="endpoint-description">{{ endpoint.description }}</p>
+
+              <div class="detail-grid">
+
+                <div class="detail-block">
+                  <div class="detail-label">Auth</div>
+                  <div class="detail-value">{{ endpoint.auth }}</div>
+                </div>
+
+                <div class="detail-block full-width">
+                  <div class="detail-label">Request</div>
+                  <div class="detail-value">{{ endpoint.request }}</div>
+                </div>
+
+                <div class="detail-block full-width">
+                  <div class="detail-label">Payload</div>
+                  <pre class="code-block"><code>{{ endpoint.payload }}</code></pre>
+                </div>
+
+                <div class="detail-block full-width">
+                  <div class="detail-label">Response</div>
+                  <div class="detail-value">{{ endpoint.response }}</div>
+                </div>
+
+                <div class="detail-block full-width">
+                  <div class="detail-label">Sample Result</div>
+                  <pre class="code-block"><code>{{ endpoint.sampleResult }}</code></pre>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

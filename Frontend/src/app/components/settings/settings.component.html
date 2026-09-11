@@ -1,0 +1,46 @@
+<div class="settings-page">
+
+  <div class="page-header">
+    <h1>Settings</h1>
+    <p>Choose which visualization tool the AI Playground builds dashboards in.</p>
+  </div>
+
+  <div class="settings-section">
+    <h3 class="section-heading">Visualization tool</h3>
+
+    <div class="loading-note" *ngIf="loading">Loading your preferences...</div>
+
+    <div class="tool-grid" *ngIf="!loading">
+      <button
+        type="button"
+        class="tool-card"
+        *ngFor="let tool of biTools"
+        [class.active]="activeBiTool === tool.value"
+        [disabled]="saving"
+        (click)="selectTool(tool.value)">
+        <span class="material-symbols-outlined tool-icon">{{ tool.icon }}</span>
+        <span class="tool-label">{{ tool.label }}</span>
+        <span class="tool-description">{{ tool.description }}</span>
+        <span class="active-badge" *ngIf="activeBiTool === tool.value">
+          <span class="material-symbols-outlined">check_circle</span>
+          Active
+        </span>
+      </button>
+    </div>
+
+    <div class="status-row">
+      <span class="saving-note" *ngIf="saving">Saving...</span>
+      <span class="saved-note" *ngIf="saved && !saving">Saved.</span>
+      <span class="error-note" *ngIf="error">{{ error }}</span>
+    </div>
+
+    <div class="legend-item">
+      <span class="material-symbols-outlined legend-icon">info</span>
+      <span>
+        Switching tools only affects new dashboards going forward - existing
+        dashboards stay in whichever tool built them.
+      </span>
+    </div>
+  </div>
+
+</div>

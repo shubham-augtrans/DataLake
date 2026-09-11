@@ -67,6 +67,7 @@ export class SidebarComponent {
 
   sqlItems: NavItem[] = [
     { label: 'SQL Editor', icon: 'terminal', route: '/sql-editor' },
+    { label: 'Trino Editor', icon: 'query_stats', route: '/trino-editor' },
     { label: 'Queries', icon: 'description', route: '/queries' },
     { label: 'Dashboards', icon: 'dashboard', route: '/dashboards', external: true, url: environment.metabaseUrl },
     { label: 'Orbitto', icon: 'smart_toy', route: '/orbitto' },
@@ -79,7 +80,8 @@ export class SidebarComponent {
     { label: 'Runs', icon: 'playlist_play', route: '/runs' },
     { label: 'Data Ingestion', icon: 'dataset', route: '/ingestion-pipelines' },
     { label: 'Visual Data Prep', icon: 'dataset_linked', route: '/data-sources' },
-    { label: 'Iceberg Catalog', icon: 'inventory_2', route: '/iceberg-catalog' }
+    { label: 'Iceberg Catalog', icon: 'inventory_2', route: '/iceberg-catalog' },
+    { label: 'Data Flow', icon: 'schema', route: '/data-flow' }
   ];
 
   toolsItems: NavItem[] = [
@@ -90,8 +92,14 @@ export class SidebarComponent {
     { label: 'MinIO Console', icon: 'inventory_2', route: '', external: true, url: environment.minioConsoleUrl },
     { label: 'Grafana', icon: 'monitoring', route: '', external: true, url: environment.grafanaUrl },
     { label: 'Metabase', icon: 'dashboard', route: '', external: true, url: environment.metabaseUrl },
+    { label: 'Superset', icon: 'insights', route: '', external: true, url: environment.supersetUrl },
     { label: 'Jupyter Notebook', icon: 'book', route: '', external: true, url: environment.jupyterUrl },
-    { label: 'Ranger', icon: 'shield', route: '', external: true, url: environment.rangerUrl }
+    { label: 'Ranger', icon: 'shield', route: '', external: true, url: environment.rangerUrl },
+    { label: 'Airflow', icon: 'schedule', route: '', external: true, url: environment.airflowUrl }
+  ];
+
+  documentationItems: NavItem[] = [
+    { label: 'API', icon: 'api', route: '/documentation/api' }
   ];
 
   aiMlItems: NavItem[] = [

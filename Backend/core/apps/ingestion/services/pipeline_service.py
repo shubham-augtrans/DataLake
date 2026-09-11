@@ -1,8 +1,20 @@
+import time
+
 from apps.ingestion.services.job_builder import (
     PostgresToMinioJobBuilder,
     MongoToMinioJobBuilder,
     KafkaToMinioJobBuilder
 )
+from apps.ingestion.services.nifi_client import NiFiClient
+from apps.ingestion.services.spark_runner import SparkIngestError, run_spark_ingest
+
+DRAIN_POLL_INTERVAL = 2
+DRAIN_TIMEOUT = 60
+
+# Kafka's consumer group join/rebalance alone can take several seconds -
+# long enough that an empty queue at t=2s means "hasn't started yet", not
+# "already drained". Postgres tolerates the same longer wait fine too.
+DRAIN_INITIAL_GRACE = 8
 
 
 class PipelineService:
@@ -43,7 +55,21 @@ class PipelineService:
             f"{source_type} -> {destination_type}"
         )
 
+    def _teardown_existing_flow(self):
+        """
+        Deletes the NiFi flow left over from this pipeline's previous run,
+        if any, before building a new one - otherwise every re-run of the
+        same pipeline leaves the old process group (and its processors and
+        controller services) orphaned in NiFi forever.
+        """
+        if self.pipeline.nifi_process_group_id:
+            NiFiClient().teardown_process_group(
+                self.pipeline.nifi_process_group_id
+            )
+
     def _postgres_to_minio(self):
+
+        self._teardown_existing_flow()
 
         builder = PostgresToMinioJobBuilder(
             self.pipeline
@@ -71,9 +97,65 @@ class PipelineService:
             ]
         )
 
+        try:
+            builder.start(result)
+            self._wait_for_drain(result["process_group_id"], result["source_processor_id"])
+            builder.stop(result)
+
+            spark_result = run_spark_ingest(self.pipeline, result["staging_path"])
+
+            self.pipeline.nifi_status = "success"
+            self.pipeline.nifi_last_error = None
+            result["table"] = spark_result["table"]
+
+        except SparkIngestError as ex:
+            builder.stop(result)
+            self.pipeline.nifi_status = "error"
+            self.pipeline.nifi_last_error = str(ex)
+            raise
+
+        finally:
+            self.pipeline.save(
+                update_fields=["nifi_status", "nifi_last_error"]
+            )
+
         return result
 
+    def _wait_for_drain(self, process_group_id, source_processor_id):
+        """
+        Waits for the batch NiFi just started to finish flowing through the
+        pipeline before stopping the processors and handing off to Spark -
+        bounded so a stuck/misconfigured flow can't hang the request forever.
+
+        An empty queue alone isn't enough to mean "drained" - at t=0 the
+        queue is *always* empty, before the source has produced anything.
+        For Kafka specifically, the consumer group join/rebalance handshake
+        alone can take longer than a short grace period (confirmed via NiFi's
+        own logs: still mid "(Re-)joining group" past 8s), so this also
+        requires the source processor to have actually emitted at least one
+        flowfile before treating an empty queue as genuine completion rather
+        than "hasn't started yet".
+        """
+
+        nifi = NiFiClient()
+        deadline = time.monotonic() + DRAIN_TIMEOUT
+
+        time.sleep(DRAIN_INITIAL_GRACE)
+
+        while time.monotonic() < deadline:
+            produced = nifi.get_processor(source_processor_id)["status"]["aggregateSnapshot"]["flowFilesOut"]
+
+            status = nifi.get_process_group_status(process_group_id)
+            queued = status["processGroupStatus"]["aggregateSnapshot"]["flowFilesQueued"]
+
+            if produced > 0 and queued == 0:
+                return
+
+            time.sleep(DRAIN_POLL_INTERVAL)
+
     def _mongo_to_minio(self):
+
+        self._teardown_existing_flow()
 
         builder = MongoToMinioJobBuilder(
             self.pipeline
@@ -105,6 +187,8 @@ class PipelineService:
 
     def _kafka_to_minio(self):
 
+        self._teardown_existing_flow()
+
         builder = KafkaToMinioJobBuilder(
             self.pipeline
         )
@@ -130,5 +214,27 @@ class PipelineService:
                 "nifi_destination_processor_id",
             ]
         )
+
+        try:
+            builder.start(result)
+            self._wait_for_drain(result["process_group_id"], result["source_processor_id"])
+            builder.stop(result)
+
+            spark_result = run_spark_ingest(self.pipeline, result["staging_path"])
+
+            self.pipeline.nifi_status = "success"
+            self.pipeline.nifi_last_error = None
+            result["table"] = spark_result["table"]
+
+        except SparkIngestError as ex:
+            builder.stop(result)
+            self.pipeline.nifi_status = "error"
+            self.pipeline.nifi_last_error = str(ex)
+            raise
+
+        finally:
+            self.pipeline.save(
+                update_fields=["nifi_status", "nifi_last_error"]
+            )
 
         return result

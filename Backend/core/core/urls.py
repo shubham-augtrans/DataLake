@@ -26,4 +26,5 @@ urlpatterns = [
      path("api/query/", include("apps.query.urls")),
      path("api/catalog/", include("apps.catalog.urls")),
      path("api/playground/", include("apps.playground.urls")),
+     path("api/llm-models/", include("apps.llm_models.urls")),
 ]

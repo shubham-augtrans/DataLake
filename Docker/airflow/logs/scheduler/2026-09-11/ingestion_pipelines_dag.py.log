@@ -1,0 +1,1130 @@
+[2026-09-11T04:51:53.779+0000] {processor.py:186} INFO - Started process (PID=202) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:51:53.781+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T04:51:53.787+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:51:53.786+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:51:54.079+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:51:55.309+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:51:55.308+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T04:51:55.578+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 1.807 seconds
+[2026-09-11T04:52:26.205+0000] {processor.py:186} INFO - Started process (PID=237) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:52:26.207+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T04:52:26.217+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:52:26.215+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:52:26.361+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:52:26.501+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:52:26.500+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T04:52:28.280+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 2.084 seconds
+[2026-09-11T04:52:58.500+0000] {processor.py:186} INFO - Started process (PID=250) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:52:58.502+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T04:52:58.509+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:52:58.507+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:52:58.534+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:52:58.591+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:52:58.591+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T04:52:58.656+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 0.165 seconds
+[2026-09-11T04:53:28.869+0000] {processor.py:186} INFO - Started process (PID=262) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:53:28.871+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T04:53:28.877+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:53:28.876+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:53:28.918+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:53:28.956+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:53:28.956+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T04:53:29.006+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 0.148 seconds
+[2026-09-11T04:53:59.433+0000] {processor.py:186} INFO - Started process (PID=268) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:53:59.436+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T04:53:59.443+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:53:59.442+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:53:59.495+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:53:59.551+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:53:59.551+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T04:53:59.603+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 0.180 seconds
+[2026-09-11T04:54:29.745+0000] {processor.py:186} INFO - Started process (PID=281) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:54:29.746+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T04:54:29.749+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:54:29.749+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:54:29.794+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:54:29.840+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:54:29.840+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T04:54:29.912+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 0.177 seconds
+[2026-09-11T04:55:00.256+0000] {processor.py:186} INFO - Started process (PID=294) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:55:00.257+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T04:55:00.260+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:55:00.260+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:55:00.294+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:55:00.324+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:55:00.324+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T04:55:00.365+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 0.118 seconds
+[2026-09-11T04:55:30.591+0000] {processor.py:186} INFO - Started process (PID=306) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:55:30.592+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T04:55:30.595+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:55:30.595+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:55:30.645+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:55:30.712+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:55:30.711+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T04:55:30.762+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 0.177 seconds
+[2026-09-11T04:56:00.939+0000] {processor.py:186} INFO - Started process (PID=319) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:56:00.940+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T04:56:00.941+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:56:00.941+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:56:00.958+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:56:00.985+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:56:00.985+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T04:56:01.036+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 0.102 seconds
+[2026-09-11T04:56:31.229+0000] {processor.py:186} INFO - Started process (PID=332) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:56:31.231+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T04:56:31.233+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:56:31.232+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:56:31.251+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:56:31.280+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:56:31.279+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T04:56:31.316+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 0.091 seconds
+[2026-09-11T04:57:01.664+0000] {processor.py:186} INFO - Started process (PID=345) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:57:01.665+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T04:57:01.667+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:57:01.667+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:57:01.694+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:57:01.721+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:57:01.721+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T04:57:01.762+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 0.104 seconds
+[2026-09-11T04:57:31.986+0000] {processor.py:186} INFO - Started process (PID=367) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:57:31.988+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T04:57:31.991+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:57:31.991+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:57:32.037+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:57:32.078+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:57:32.077+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T04:57:32.178+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 0.201 seconds
+[2026-09-11T04:58:06.193+0000] {processor.py:186} INFO - Started process (PID=380) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:58:06.200+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T04:58:06.236+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:58:06.220+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:58:06.384+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:58:06.470+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:58:06.469+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T04:58:06.556+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 0.764 seconds
+[2026-09-11T04:58:37.994+0000] {processor.py:186} INFO - Started process (PID=385) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:58:38.121+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T04:58:38.246+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:58:38.177+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:58:39.407+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:59:11.173+0000] {processor.py:211} ERROR - Got an exception! Propagating...
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3371, in _wrap_pool_connect
+    return fn()
+           ^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 327, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 894, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 493, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 145, in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 143, in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 273, in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 388, in __init__
+    self.__connect()
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 690, in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 686, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 574, in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/psycopg2/__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.OperationalError: could not translate host name "postgres" to address: Temporary failure in name resolution
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/dag_processing/processor.py", line 207, in _run_file_processor
+    _handle_dag_file_processing()
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/dag_processing/processor.py", line 188, in _handle_dag_file_processing
+    result: tuple[int, int, int] = dag_file_processor.process_file(
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 97, in wrapper
+    return func(*args, session=session, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/dag_processing/processor.py", line 942, in process_file
+    serialize_errors = DagFileProcessor.save_dag_to_db(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/api_internal/internal_api_call.py", line 166, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 97, in wrapper
+    return func(*args, session=session, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/dag_processing/processor.py", line 982, in save_dag_to_db
+    import_errors = DagBag._sync_to_db(dags=dags, processor_subdir=dag_directory, session=session)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 94, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 708, in _sync_to_db
+    for attempt in run_with_db_retries(logger=log):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 443, in __iter__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 376, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 418, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 185, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 721, in _sync_to_db
+    _serialize_dag_capturing_errors(dag, session, processor_subdir)
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 686, in _serialize_dag_capturing_errors
+    dag_was_updated = SerializedDagModel.write_dag(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 94, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/serialized_dag.py", line 160, in write_dag
+    if session.scalar(
+       ^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1747, in scalar
+    return self.execute(
+           ^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1716, in execute
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1555, in _connection_for_bind
+    return self._transaction._connection_for_bind(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 750, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/future/engine.py", line 412, in connect
+    return super(Engine, self).connect()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3325, in connect
+    return self._connection_cls(self, close_with_result=close_with_result)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 96, in __init__
+    else engine.raw_connection()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3404, in raw_connection
+    return self._wrap_pool_connect(self.pool.connect, _connection)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3374, in _wrap_pool_connect
+    Connection._handle_dbapi_exception_noconnection(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2208, in _handle_dbapi_exception_noconnection
+    util.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3371, in _wrap_pool_connect
+    return fn()
+           ^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 327, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 894, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 493, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 145, in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 143, in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 273, in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 388, in __init__
+    self.__connect()
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 690, in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 686, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 574, in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/psycopg2/__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) could not translate host name "postgres" to address: Temporary failure in name resolution
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+[2026-09-11T04:59:44.539+0000] {processor.py:186} INFO - Started process (PID=390) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T04:59:44.805+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T04:59:45.883+0000] {logging_mixin.py:190} INFO - [2026-09-11T04:59:45.380+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:02:12.556+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:04:05.128+0000] {processor.py:186} INFO - Started process (PID=393) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:04:05.131+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:04:05.168+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:04:05.151+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:04:06.168+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:04:08.011+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:04:08.008+0000] {taskinstance.py:3313} ERROR - {'DAG Id': 'datalake_ingestion_pipelines', 'Task Id': 'run_pipeline', 'Run Id': 'scheduled__2026-09-11T03:00:00+00:00', 'Map Index': 1, 'Hostname': '00365e89777a'}
+[2026-09-11T05:04:08.560+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:04:08.560+0000] {taskinstance.py:1225} INFO - Marking task as UP_FOR_RETRY. dag_id=datalake_ingestion_pipelines, task_id=run_pipeline, run_id=scheduled__2026-09-11T03:00:00+00:00, map_index=1, execution_date=20260911T030000, start_date=20260911T045711, end_date=20260911T050408
+[2026-09-11T05:04:08.632+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:04:08.631+0000] {processor.py:876} INFO - Executed callback for <TaskInstance: datalake_ingestion_pipelines.run_pipeline scheduled__2026-09-11T03:00:00+00:00 map_index=1 [up_for_retry]> in state up_for_retry
+[2026-09-11T05:04:14.814+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:04:14.806+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T05:04:14.985+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 9.983 seconds
+[2026-09-11T05:04:53.844+0000] {processor.py:186} INFO - Started process (PID=405) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:04:58.587+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:05:01.976+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:05:01.951+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:05:02.797+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:05:13.113+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:05:12.919+0000] {processor.py:763} ERROR - Error executing TaskCallbackRequest callback for file: /opt/airflow/dags/ingestion_pipelines_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3371, in _wrap_pool_connect
+    return fn()
+           ^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 327, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 894, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 493, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 145, in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 143, in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 273, in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 388, in __init__
+    self.__connect()
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 690, in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 686, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 574, in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/psycopg2/__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.OperationalError: could not translate host name "postgres" to address: Temporary failure in name resolution
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/dag_processing/processor.py", line 752, in execute_callbacks
+    cls._execute_task_callbacks(dagbag, request, unit_test_mode, session=session)
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/api_internal/internal_api_call.py", line 166, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 94, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/dag_processing/processor.py", line 838, in _execute_task_callbacks
+    ti = TaskInstance.get_task_instance(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/api_internal/internal_api_call.py", line 166, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 94, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 2345, in get_task_instance
+    return query.one_or_none()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2850, in one_or_none
+    return self._iter().one_or_none()
+           ^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2916, in _iter
+    result = self.session.execute(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1716, in execute
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1555, in _connection_for_bind
+    return self._transaction._connection_for_bind(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 750, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/future/engine.py", line 412, in connect
+    return super(Engine, self).connect()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3325, in connect
+    return self._connection_cls(self, close_with_result=close_with_result)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 96, in __init__
+    else engine.raw_connection()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3404, in raw_connection
+    return self._wrap_pool_connect(self.pool.connect, _connection)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3374, in _wrap_pool_connect
+    Connection._handle_dbapi_exception_noconnection(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2208, in _handle_dbapi_exception_noconnection
+    util.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3371, in _wrap_pool_connect
+    return fn()
+           ^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 327, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 894, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 493, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 145, in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 143, in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 273, in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 388, in __init__
+    self.__connect()
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 690, in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 686, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 574, in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/psycopg2/__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) could not translate host name "postgres" to address: Temporary failure in name resolution
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+[2026-09-11T05:06:29.429+0000] {processor.py:186} INFO - Started process (PID=408) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:06:30.099+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:06:32.088+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:06:31.298+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:07:19.485+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:07:10.999+0000] {timeout.py:68} ERROR - Process timed out, PID: 408
+[2026-09-11T05:08:23.058+0000] {processor.py:186} INFO - Started process (PID=411) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:08:29.413+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:23:03.184+0000] {processor.py:186} INFO - Started process (PID=211) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:23:03.228+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:23:03.261+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:23:03.260+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:23:03.578+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:23:05.648+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:23:05.647+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T05:23:05.903+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 2.733 seconds
+[2026-09-11T05:23:36.241+0000] {processor.py:186} INFO - Started process (PID=235) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:23:36.243+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:23:36.265+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:23:36.264+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:23:36.722+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:23:37.660+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:23:37.657+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T05:23:38.590+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 2.402 seconds
+[2026-09-11T05:24:08.765+0000] {processor.py:186} INFO - Started process (PID=248) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:24:08.768+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:24:08.783+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:24:08.779+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:24:08.890+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:24:09.029+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:24:09.028+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T05:24:09.143+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 0.395 seconds
+[2026-09-11T05:24:40.126+0000] {processor.py:186} INFO - Started process (PID=261) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:24:40.128+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:24:40.142+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:24:40.138+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:24:40.250+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:24:40.419+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:24:40.419+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T05:24:40.621+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 0.527 seconds
+[2026-09-11T05:25:10.941+0000] {processor.py:186} INFO - Started process (PID=273) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:25:10.983+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:25:11.883+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:25:11.070+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:25:18.205+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:25:58.942+0000] {processor.py:211} ERROR - Got an exception! Propagating...
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3371, in _wrap_pool_connect
+    return fn()
+           ^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 327, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 894, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 493, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 145, in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 143, in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 273, in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 388, in __init__
+    self.__connect()
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 690, in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 686, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 574, in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/psycopg2/__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.OperationalError: could not translate host name "postgres" to address: Temporary failure in name resolution
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/dag_processing/processor.py", line 207, in _run_file_processor
+    _handle_dag_file_processing()
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/dag_processing/processor.py", line 188, in _handle_dag_file_processing
+    result: tuple[int, int, int] = dag_file_processor.process_file(
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 97, in wrapper
+    return func(*args, session=session, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/dag_processing/processor.py", line 942, in process_file
+    serialize_errors = DagFileProcessor.save_dag_to_db(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/api_internal/internal_api_call.py", line 166, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 97, in wrapper
+    return func(*args, session=session, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/dag_processing/processor.py", line 982, in save_dag_to_db
+    import_errors = DagBag._sync_to_db(dags=dags, processor_subdir=dag_directory, session=session)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 94, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 708, in _sync_to_db
+    for attempt in run_with_db_retries(logger=log):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 443, in __iter__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 376, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 418, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 185, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 721, in _sync_to_db
+    _serialize_dag_capturing_errors(dag, session, processor_subdir)
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 686, in _serialize_dag_capturing_errors
+    dag_was_updated = SerializedDagModel.write_dag(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 94, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/serialized_dag.py", line 160, in write_dag
+    if session.scalar(
+       ^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1747, in scalar
+    return self.execute(
+           ^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1716, in execute
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1555, in _connection_for_bind
+    return self._transaction._connection_for_bind(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 750, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/future/engine.py", line 412, in connect
+    return super(Engine, self).connect()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3325, in connect
+    return self._connection_cls(self, close_with_result=close_with_result)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 96, in __init__
+    else engine.raw_connection()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3404, in raw_connection
+    return self._wrap_pool_connect(self.pool.connect, _connection)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3374, in _wrap_pool_connect
+    Connection._handle_dbapi_exception_noconnection(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2208, in _handle_dbapi_exception_noconnection
+    util.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3371, in _wrap_pool_connect
+    return fn()
+           ^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 327, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 894, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 493, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 145, in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 143, in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 273, in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 388, in __init__
+    self.__connect()
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 690, in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 686, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 574, in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/psycopg2/__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) could not translate host name "postgres" to address: Temporary failure in name resolution
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+[2026-09-11T05:26:34.241+0000] {processor.py:186} INFO - Started process (PID=279) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:26:34.244+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:26:34.252+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:26:34.248+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:26:34.377+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:26:34.987+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:26:34.985+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T05:26:35.079+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 0.868 seconds
+[2026-09-11T05:27:07.609+0000] {processor.py:186} INFO - Started process (PID=291) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:27:08.980+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:27:10.907+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:27:10.618+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:27:18.261+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:28:37.415+0000] {processor.py:186} INFO - Started process (PID=294) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:28:38.697+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:28:42.460+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:28:40.501+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:29:08.700+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:29:11.119+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:29:11.118+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T05:29:13.673+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 40.963 seconds
+[2026-09-11T05:29:44.268+0000] {processor.py:186} INFO - Started process (PID=316) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:29:44.279+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:29:44.295+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:29:44.289+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:29:47.658+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:30:19.027+0000] {processor.py:211} ERROR - Got an exception! Propagating...
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3371, in _wrap_pool_connect
+    return fn()
+           ^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 327, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 894, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 493, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 145, in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 143, in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 273, in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 388, in __init__
+    self.__connect()
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 690, in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 686, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 574, in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/psycopg2/__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.OperationalError: could not translate host name "postgres" to address: Temporary failure in name resolution
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/dag_processing/processor.py", line 207, in _run_file_processor
+    _handle_dag_file_processing()
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/dag_processing/processor.py", line 188, in _handle_dag_file_processing
+    result: tuple[int, int, int] = dag_file_processor.process_file(
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 97, in wrapper
+    return func(*args, session=session, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/dag_processing/processor.py", line 942, in process_file
+    serialize_errors = DagFileProcessor.save_dag_to_db(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/api_internal/internal_api_call.py", line 166, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 97, in wrapper
+    return func(*args, session=session, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/dag_processing/processor.py", line 982, in save_dag_to_db
+    import_errors = DagBag._sync_to_db(dags=dags, processor_subdir=dag_directory, session=session)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 94, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 708, in _sync_to_db
+    for attempt in run_with_db_retries(logger=log):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 443, in __iter__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 376, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 418, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 185, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 721, in _sync_to_db
+    _serialize_dag_capturing_errors(dag, session, processor_subdir)
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 686, in _serialize_dag_capturing_errors
+    dag_was_updated = SerializedDagModel.write_dag(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 94, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/serialized_dag.py", line 160, in write_dag
+    if session.scalar(
+       ^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1747, in scalar
+    return self.execute(
+           ^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1716, in execute
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1555, in _connection_for_bind
+    return self._transaction._connection_for_bind(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 750, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/future/engine.py", line 412, in connect
+    return super(Engine, self).connect()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3325, in connect
+    return self._connection_cls(self, close_with_result=close_with_result)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 96, in __init__
+    else engine.raw_connection()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3404, in raw_connection
+    return self._wrap_pool_connect(self.pool.connect, _connection)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3374, in _wrap_pool_connect
+    Connection._handle_dbapi_exception_noconnection(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2208, in _handle_dbapi_exception_noconnection
+    util.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3371, in _wrap_pool_connect
+    return fn()
+           ^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 327, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 894, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 493, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 145, in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 143, in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 273, in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 388, in __init__
+    self.__connect()
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 690, in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 686, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 574, in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/psycopg2/__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) could not translate host name "postgres" to address: Temporary failure in name resolution
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+[2026-09-11T05:30:53.092+0000] {processor.py:186} INFO - Started process (PID=322) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:30:53.169+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:30:53.713+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:30:53.546+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:31:00.942+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:31:36.037+0000] {processor.py:211} ERROR - Got an exception! Propagating...
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3371, in _wrap_pool_connect
+    return fn()
+           ^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 327, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 894, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 493, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 145, in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 143, in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 273, in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 388, in __init__
+    self.__connect()
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 690, in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 686, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 574, in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/psycopg2/__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.OperationalError: could not translate host name "postgres" to address: Temporary failure in name resolution
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/dag_processing/processor.py", line 207, in _run_file_processor
+    _handle_dag_file_processing()
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/dag_processing/processor.py", line 188, in _handle_dag_file_processing
+    result: tuple[int, int, int] = dag_file_processor.process_file(
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 97, in wrapper
+    return func(*args, session=session, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/dag_processing/processor.py", line 942, in process_file
+    serialize_errors = DagFileProcessor.save_dag_to_db(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/api_internal/internal_api_call.py", line 166, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 97, in wrapper
+    return func(*args, session=session, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/dag_processing/processor.py", line 982, in save_dag_to_db
+    import_errors = DagBag._sync_to_db(dags=dags, processor_subdir=dag_directory, session=session)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 94, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 708, in _sync_to_db
+    for attempt in run_with_db_retries(logger=log):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 443, in __iter__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 376, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 418, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/tenacity/__init__.py", line 185, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 721, in _sync_to_db
+    _serialize_dag_capturing_errors(dag, session, processor_subdir)
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 686, in _serialize_dag_capturing_errors
+    dag_was_updated = SerializedDagModel.write_dag(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/session.py", line 94, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/serialized_dag.py", line 160, in write_dag
+    if session.scalar(
+       ^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1747, in scalar
+    return self.execute(
+           ^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1716, in execute
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1555, in _connection_for_bind
+    return self._transaction._connection_for_bind(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 750, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/future/engine.py", line 412, in connect
+    return super(Engine, self).connect()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3325, in connect
+    return self._connection_cls(self, close_with_result=close_with_result)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 96, in __init__
+    else engine.raw_connection()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3404, in raw_connection
+    return self._wrap_pool_connect(self.pool.connect, _connection)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3374, in _wrap_pool_connect
+    Connection._handle_dbapi_exception_noconnection(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2208, in _handle_dbapi_exception_noconnection
+    util.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3371, in _wrap_pool_connect
+    return fn()
+           ^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 327, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 894, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 493, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 145, in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 143, in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 273, in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 388, in __init__
+    self.__connect()
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 690, in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 686, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 574, in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/psycopg2/__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) could not translate host name "postgres" to address: Temporary failure in name resolution
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+[2026-09-11T05:32:42.737+0000] {processor.py:186} INFO - Started process (PID=326) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:32:44.943+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:33:58.097+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:33:57.855+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:34:29.108+0000] {processor.py:186} INFO - Started process (PID=337) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:34:29.161+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:34:29.234+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:34:29.198+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:35:26.291+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:38:07.048+0000] {processor.py:186} INFO - Started process (PID=340) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:38:07.072+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:38:07.140+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:38:07.111+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:38:07.915+0000] {processor.py:925} INFO - DAG(s) 'datalake_ingestion_pipelines' retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:38:11.786+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:38:11.735+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2026-09-11T05:38:13.281+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ingestion_pipelines_dag.py took 6.675 seconds
+[2026-09-11T05:38:44.979+0000] {processor.py:186} INFO - Started process (PID=345) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:38:45.043+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:38:45.695+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:38:45.086+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:39:20.809+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:39:19.389+0000] {timeout.py:68} ERROR - Process timed out, PID: 345
+[2026-09-11T05:39:43.608+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:39:21.876+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ingestion_pipelines_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ingestion_pipelines_dag.py", line 106, in <module>
+    datalake_ingestion_pipelines()
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dag.py", line 4307, in factory
+    f(**f_kwargs)
+  File "/opt/airflow/dags/ingestion_pipelines_dag.py", line 103, in datalake_ingestion_pipelines
+    run_pipeline.expand(pipeline_id=list_pipeline_ids())
+                                    ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/decorators/base.py", line 373, in __call__
+    op = self.operator_class(
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/baseoperator.py", line 506, in apply_defaults
+    result = func(self, **kwargs, default_args=default_args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/decorators/python.py", line 52, in __init__
+    super().__init__(
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/baseoperator.py", line 506, in apply_defaults
+    result = func(self, **kwargs, default_args=default_args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/decorators/base.py", line 258, in __init__
+    super().__init__(task_id=task_id, **kwargs_to_upstream, **kwargs)
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/baseoperator.py", line 506, in apply_defaults
+    result = func(self, **kwargs, default_args=default_args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/operators/python.py", line 222, in __init__
+    super().__init__(**kwargs)
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/baseoperator.py", line 506, in apply_defaults
+    result = func(self, **kwargs, default_args=default_args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/baseoperator.py", line 1095, in __init__
+    self.dag = dag
+    ^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/baseoperator.py", line 1214, in __setattr__
+    super().__setattr__(key, value)
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/baseoperator.py", line 1279, in dag
+    if not isinstance(dag, DAG):
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/timeout.py", line 69, in handle_timeout
+    raise AirflowTaskTimeout(self.error_message)
+airflow.exceptions.AirflowTaskTimeout: DagBag import timeout for /opt/airflow/dags/ingestion_pipelines_dag.py after 30.0s.
+Please take a look at these docs to improve your DAG import time:
+* https://airflow.apache.org/docs/apache-airflow/2.10.4/best-practices.html#top-level-python-code
+* https://airflow.apache.org/docs/apache-airflow/2.10.4/best-practices.html#reducing-dag-complexity, PID: 345
+[2026-09-11T05:39:44.191+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:41:16.377+0000] {processor.py:186} INFO - Started process (PID=348) to work on /opt/airflow/dags/ingestion_pipelines_dag.py
+[2026-09-11T05:41:19.189+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ingestion_pipelines_dag.py for tasks to queue
+[2026-09-11T05:41:29.867+0000] {logging_mixin.py:190} INFO - [2026-09-11T05:41:25.680+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ingestion_pipelines_dag.py

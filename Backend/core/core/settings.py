@@ -11,11 +11,22 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 import os
-import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load BASE_DIR/.env (gitignored) into the environment so os.getenv() below can
+# pick up real secrets instead of always falling back to their hardcoded defaults.
+# No dotenv dependency needed - the file is a plain KEY=VALUE list.
+_env_path = BASE_DIR / ".env"
+if _env_path.exists():
+    for _line in _env_path.read_text(encoding="utf-8").splitlines():
+        _line = _line.strip()
+        if not _line or _line.startswith("#") or "=" not in _line:
+            continue
+        _key, _value = _line.split("=", 1)
+        os.environ.setdefault(_key.strip(), _value.strip())
 
 
 # Quick-start development settings - unsuitable for production
@@ -31,6 +42,10 @@ ALLOWED_HOSTS = [
     "datalake.augtrans.com",
     "localhost",
     "127.0.0.1",
+    # The Airflow containers (Docker/docker-compose.yml) reach this host's
+    # runserver via Docker Desktop's host.docker.internal, since Django
+    # itself isn't containerized in this project.
+    "host.docker.internal",
 ]
 
 
@@ -53,6 +68,7 @@ INSTALLED_APPS = [
     "apps.query",
     "apps.catalog",
     "apps.playground",
+    "apps.llm_models",
 ]
 
 MIDDLEWARE = [
@@ -172,7 +188,12 @@ CSRF_TRUSTED_ORIGINS = [
 
 NIFI_URL = os.getenv(
     "NIFI_URL",
-    "https://172.16.15.113:8443/nifi-api",
+    "https://localhost:8443/nifi-api",
+)
+
+NIFI_JDBC_DRIVER_PATH = os.getenv(
+    "NIFI_JDBC_DRIVER_PATH",
+    "/opt/nifi/nifi-current/drivers/postgresql.jar",
 )
 
 NIFI_USERNAME = os.getenv(
@@ -195,16 +216,57 @@ ICEBERG_REST_URL = os.getenv(
     "http://localhost:8181",
 )
 
-OLLAMA_URL = os.getenv(
-    "OLLAMA_URL",
-    "http://localhost:11434",
+# Used by the ingestion Spark job, which runs *inside* the spark-master
+# container via `docker exec` - needs Docker-internal hostnames, unlike
+# ICEBERG_REST_URL above which Django (on the host) talks to directly.
+SPARK_ICEBERG_REST_URL = os.getenv(
+    "SPARK_ICEBERG_REST_URL",
+    "http://iceberg-rest:8181",
 )
 
-OLLAMA_MODEL = os.getenv(
-    "OLLAMA_MODEL",
-    "qwen2.5:1.5b",
+SPARK_MINIO_ENDPOINT = os.getenv(
+    "SPARK_MINIO_ENDPOINT",
+    "http://minio:9000",
 )
+
+# Host paths bind-mounted into the throwaway spark-submit container - see
+# spark_runner.py. BASE_DIR is Backend/core, so its grandparent is the repo
+# root containing Docker/.
+_REPO_ROOT = BASE_DIR.parent.parent
+
+SPARK_APPS_HOST_PATH = os.getenv(
+    "SPARK_APPS_HOST_PATH",
+    str(_REPO_ROOT / "Docker" / "apps"),
+)
+
+SPARK_IVY_CACHE_HOST_PATH = os.getenv(
+    "SPARK_IVY_CACHE_HOST_PATH",
+    str(_REPO_ROOT / "Docker" / "ivy-cache"),
+)
+
+# AI Playground's SQL-generation LLM is configured under AI/ML -> Models
+# (apps.llm_models.LLMModel), not here - lets models be added/swapped from
+# the UI without editing .env and restarting the server.
+
+METABASE_URL = os.getenv(
+    "METABASE_URL",
+    "http://localhost:3000",
+)
+
+METABASE_API_KEY = os.getenv("METABASE_API_KEY", "")
+
+SUPERSET_URL = os.getenv("SUPERSET_URL", "http://localhost:8088")
+SUPERSET_USERNAME = os.getenv("SUPERSET_USERNAME", "shubham")
+SUPERSET_PASSWORD = os.getenv("SUPERSET_PASSWORD", "Shubham@123456")
 
 TRINO_HOST = os.getenv("TRINO_HOST", "localhost")
 TRINO_PORT = int(os.getenv("TRINO_PORT", "8082"))
 TRINO_CATALOG = os.getenv("TRINO_CATALOG", "iceberg")
+
+# Trino's address as reached from *inside* the Docker network (used when
+# Metabase - itself a container - needs to connect, as opposed to Django
+# which runs on the host and uses TRINO_HOST/TRINO_PORT above). Trino's
+# container-internal port is 8080, mapped to the host-exposed 8082.
+TRINO_INTERNAL_HOST = os.getenv("TRINO_INTERNAL_HOST", "trino")
+TRINO_INTERNAL_PORT = int(os.getenv("TRINO_INTERNAL_PORT", "8080"))
+TRINO_METABASE_USER = os.getenv("TRINO_METABASE_USER", "admin")
