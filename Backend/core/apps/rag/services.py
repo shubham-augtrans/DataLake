@@ -170,7 +170,13 @@ def retrieve_chunks(question, pipeline_ids=None, top_k=TOP_K):
     scores = cosine_similarity(question_vector, doc_vectors)[0]
 
     ranked = sorted(zip(chunks, scores), key=lambda pair: pair[1], reverse=True)
-    return [(chunk, float(score)) for chunk, score in ranked[:top_k] if score > 0]
+    # Keep the top-k regardless of score, even a weak one - TF-IDF cosine
+    # similarity can legitimately come out near-zero for a short, plainly
+    # worded question that still shares no strong terms with the chunk text
+    # it's actually answered by. The LLM prompt already instructs it to say
+    # so if the excerpts don't actually contain the answer, so handing over
+    # the best-available context beats returning nothing at all.
+    return [(chunk, float(score)) for chunk, score in ranked[:top_k]]
 
 
 def answer_question(question, pipeline_ids=None, history=None):
@@ -186,10 +192,21 @@ def answer_question(question, pipeline_ids=None, history=None):
         missing = set(pipeline_ids) - {p.id for p in pipelines}
         if missing:
             raise RagError(f"Unknown document id(s): {sorted(missing)}")
+    else:
+        # No document named - "search all" means every PDF that's actually
+        # available, not just whichever ones happen to be ingested already.
+        pipelines = list(IngestionPipeline.objects.filter(
+            ingest_mode="file", raw_content_type="application/pdf",
+        ))
 
-        for pipeline in pipelines:
-            if not RagChunk.objects.filter(pipeline=pipeline).exists():
+    for pipeline in pipelines:
+        if not RagChunk.objects.filter(pipeline=pipeline).exists():
+            try:
                 ingest_pipeline_document(pipeline)
+            except RagError:
+                # One bad/unreadable PDF (e.g. scanned, no selectable text)
+                # shouldn't block answering from every other document.
+                continue
 
     matches = retrieve_chunks(question, pipeline_ids=pipeline_ids)
 
