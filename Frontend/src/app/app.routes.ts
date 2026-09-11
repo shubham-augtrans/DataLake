@@ -18,6 +18,7 @@ import { VisualizationToolsComponent } from './components/settings/visualization
 import { UsersComponent } from './components/settings/users/users.component';
 import { AccessRolesComponent } from './components/settings/access-roles/access-roles.component';
 import { JobsComponent } from './components/jobs/jobs.component';
+import { RagChatComponent } from './components/rag-chat/rag-chat.component';
 
 export const routes: Routes = [
   {
@@ -152,6 +153,10 @@ export const routes: Routes = [
       {
         path: 'playground',
         component: PlaygroundComponent
+      },
+      {
+        path: 'rag-chat',
+        component: RagChatComponent
       },
       {
         path: 'agents',

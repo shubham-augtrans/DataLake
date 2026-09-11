@@ -1,0 +1,88 @@
+<div class="rag-page">
+
+  <aside class="doc-panel">
+    <div class="doc-panel-header">
+      <h2>PDF Documents</h2>
+      <p>Select which PDFs to search, or leave none selected to search all.</p>
+    </div>
+
+    <div *ngIf="documentsLoading" class="doc-panel-state">Loading documents…</div>
+    <div *ngIf="documentsError" class="doc-panel-state error">{{ documentsError }}</div>
+
+    <div *ngIf="!documentsLoading && !documentsError && documents.length === 0" class="doc-panel-state">
+      No PDFs ingested yet. Land one via a Google Drive ingestion pipeline first.
+    </div>
+
+    <ul class="doc-list" *ngIf="!documentsLoading && documents.length > 0">
+      <li *ngFor="let doc of documents" class="doc-item" (click)="toggleDocument(doc.pipeline_id)">
+        <p-checkbox
+          [binary]="true"
+          [ngModel]="isSelected(doc.pipeline_id)"
+          (click)="$event.stopPropagation()"
+          (onChange)="toggleDocument(doc.pipeline_id)">
+        </p-checkbox>
+        <div class="doc-item-meta">
+          <span class="doc-item-name">{{ doc.filename }}</span>
+          <span class="doc-item-sub">
+            {{ doc.source_name }}
+            <span *ngIf="doc.chunk_count === 0" class="doc-item-badge">not ingested yet</span>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </aside>
+
+  <section class="chat-panel">
+    <div class="chat-header">
+      <h1>RAG Chat</h1>
+      <p>Ask questions about your PDF documents - answers are grounded in the actual document text.</p>
+      <span class="scope-label">{{ scopeLabel }}</span>
+    </div>
+
+    <div class="chat-thread">
+      <div *ngIf="turns.length === 0" class="chat-empty">
+        <span class="material-symbols-outlined chat-empty-icon">forum</span>
+        <p>Ask a question about one of your PDFs to get started.</p>
+      </div>
+
+      <div *ngFor="let turn of turns" class="chat-turn">
+        <div class="chat-bubble chat-bubble-question">{{ turn.question }}</div>
+        <div class="chat-bubble chat-bubble-answer" [class.chat-bubble-error]="turn.error">
+          {{ turn.answer }}
+
+          <div class="sources" *ngIf="turn.sources.length > 0">
+            <div class="sources-label">Sources</div>
+            <div class="source-chip" *ngFor="let source of turn.sources">
+              {{ source.pipeline_name }}<span *ngIf="source.page_number"> · page {{ source.page_number }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="asking" class="chat-turn">
+        <div class="chat-bubble chat-bubble-answer chat-bubble-loading">
+          <span class="material-symbols-outlined spin">progress_activity</span>
+          Thinking…
+        </div>
+      </div>
+
+      <div #threadEnd></div>
+    </div>
+
+    <div class="chat-input-row">
+      <input
+        type="text"
+        class="chat-input"
+        placeholder="Ask a question about your PDFs..."
+        [(ngModel)]="question"
+        (keydown.enter)="onEnter($event)"
+        [disabled]="asking" />
+      <p-button
+        icon="pi pi-send"
+        [disabled]="!question.trim() || asking"
+        (onClick)="askQuestion()">
+      </p-button>
+    </div>
+  </section>
+
+</div>

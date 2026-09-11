@@ -94,6 +94,7 @@ export class SidebarComponent {
 
   aiMlItems: NavItem[] = [
     { label: 'Playground', icon: 'auto_awesome', route: '/playground' },
+    { label: 'Chat', icon: 'forum', route: '/rag-chat' },
     { label: 'Models', icon: 'bubble_chart', route: '/models' },
     { label: 'Agents', icon: 'support_agent', route: '/agents', comingSoon: true },
     { label: 'AI Gateway', icon: 'hub', route: '/ai-gateway', comingSoon: true },

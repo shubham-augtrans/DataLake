@@ -1,16 +1,12 @@
 import json
-import os
 import re
-import tempfile
 from decimal import Decimal
 
-import requests
 from django.conf import settings
 
-from apps.llm_models.models import LLMModel
+from apps.llm_models.client import LLMClientError, call_llm as _shared_call_llm
 from apps.query.services import LAKEHOUSE_SCHEMA, QueryExecutionError, TrinoQueryRunner
 
-LLM_TIMEOUT = 60
 BLOCKED_KEYWORDS = (
     "insert", "update", "delete", "drop", "alter",
     "truncate", "grant", "revoke", "create", "replace",
@@ -468,68 +464,16 @@ def _extract_sql(raw_text):
     return sql
 
 
-def _get_default_llm_model():
-    model = LLMModel.objects.filter(is_default=True).first()
-
-    if not model:
-        raise PromptToSqlError(
-            "No default LLM model is configured. Add one under AI/ML -> "
-            "Models and mark it as default."
-        )
-
-    return model
-
-
 def _call_llm(prompt_text):
     """
-    Sends `prompt_text` as a single user message to whichever LLMModel is
-    marked as the default (configured under AI/ML -> Models, not .env) and
-    returns the raw text of its reply.
+    Thin wrapper over the shared LLM client (apps.llm_models.client) that
+    translates its generic LLMClientError into this module's own
+    PromptToSqlError, so existing callers here don't need to change.
     """
-    model = _get_default_llm_model()
-
-    headers = {}
-    if model.api_key:
-        headers["Authorization"] = f"Bearer {model.api_key}"
-
-    # `verify` needs a filesystem path, not the PEM text itself - write it
-    # to a throwaway file for the duration of this one request.
-    cert_file = None
-    verify = True
-
     try:
-        if model.ca_cert:
-            cert_file = tempfile.NamedTemporaryFile(
-                mode="w", suffix=".crt", delete=False
-            )
-            cert_file.write(model.ca_cert)
-            cert_file.close()
-            verify = cert_file.name
-
-        response = requests.post(
-            f"{model.api_base.rstrip('/')}/chat/completions",
-            headers=headers,
-            json={
-                "model": model.model_name,
-                "messages": [{"role": "user", "content": prompt_text}],
-                "temperature": 0,
-            },
-            verify=verify,
-            timeout=LLM_TIMEOUT,
-        )
-        response.raise_for_status()
-
-    except requests.RequestException as ex:
-        raise PromptToSqlError(f"Failed to reach the LLM: {str(ex)}")
-
-    finally:
-        if cert_file:
-            os.unlink(cert_file.name)
-
-    try:
-        return response.json()["choices"][0]["message"]["content"] or ""
-    except (KeyError, IndexError, TypeError):
-        raise PromptToSqlError("The LLM returned an unexpected response shape.")
+        return _shared_call_llm(prompt_text)
+    except LLMClientError as ex:
+        raise PromptToSqlError(str(ex))
 
 
 def generate_sql(prompt, schema_summary, history=None):

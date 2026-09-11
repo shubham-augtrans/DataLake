@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     "apps.catalog",
     "apps.playground",
     "apps.llm_models",
+    "apps.rag",
 ]
 
 MIDDLEWARE = [
