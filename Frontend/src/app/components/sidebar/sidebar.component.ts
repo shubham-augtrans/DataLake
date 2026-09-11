@@ -44,10 +44,10 @@ export class SidebarComponent {
 
   mainItems: NavItem[] = [
     { label: 'Home', icon: 'home', route: '/dashboard' },
+    { label: 'Jobs & Pipelines', icon: 'alt_route', route: '/jobs' },
     // { label: 'Learn', icon: 'school', route: '/learn' },
     { label: 'Workspace', icon: 'book', route: '/workspace', comingSoon: true },
     { label: 'Recents', icon: 'schedule', route: '/recents', comingSoon: true },
-    { label: 'Jobs & Pipelines', icon: 'alt_route', route: '/jobs' },
     { label: 'Compute', icon: 'cloud', route: '/compute', comingSoon: true },
     { label: 'Discover', icon: 'explore', route: '/discover', comingSoon: true },
     { label: 'Marketplace', icon: 'storefront', route: '/marketplace', comingSoon: true }
@@ -62,19 +62,16 @@ export class SidebarComponent {
     { label: 'Query History', icon: 'history', route: '/query-history', comingSoon: true }
   ];
 
-  dataSourcesItems: NavItem[] = [
-    { label: 'Data Sources', icon: 'change_history', route: '/data-sources' }
-  ];
-
-  dataDestinationItems: NavItem[] = [
-    { label: 'Warehouse', icon: 'cloud_queue', route: '/data-destinations' }
-  ];
-
+  // Data Sources / Warehouse folded in here rather than their own
+  // single-item groups - kept the sidebar looking sparser than it needed
+  // to for two items that both belong to the same ingestion story.
   dataEngineeringItems: NavItem[] = [
-    { label: 'Runs', icon: 'playlist_play', route: '/runs', comingSoon: true },
+    { label: 'Data Sources', icon: 'change_history', route: '/data-sources' },
     { label: 'Data Ingestion', icon: 'dataset', route: '/ingestion-pipelines' },
     { label: 'Iceberg Catalog', icon: 'inventory_2', route: '/iceberg-catalog' },
-    { label: 'Data Flow', icon: 'schema', route: '/data-flow' }
+    { label: 'Data Flow', icon: 'schema', route: '/data-flow' },
+    { label: 'Warehouse', icon: 'cloud_queue', route: '/data-destinations' },
+    { label: 'Runs', icon: 'playlist_play', route: '/runs', comingSoon: true }
   ];
 
   toolsItems: NavItem[] = [
@@ -97,11 +94,11 @@ export class SidebarComponent {
 
   aiMlItems: NavItem[] = [
     { label: 'Playground', icon: 'auto_awesome', route: '/playground' },
+    { label: 'Models', icon: 'bubble_chart', route: '/models' },
     { label: 'Agents', icon: 'support_agent', route: '/agents', comingSoon: true },
     { label: 'AI Gateway', icon: 'hub', route: '/ai-gateway', comingSoon: true },
     { label: 'Experiments', icon: 'science', route: '/experiments', comingSoon: true },
     { label: 'Features', icon: 'dynamic_feed', route: '/features', comingSoon: true },
-    { label: 'Models', icon: 'bubble_chart', route: '/models' },
     { label: 'Serving', icon: 'cloud_sync', route: '/serving', comingSoon: true }
   ];
 

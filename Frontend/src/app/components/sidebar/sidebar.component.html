@@ -31,19 +31,6 @@
       </a>
     </div>
 
-    <!-- Data Sources Group -->
-    <div class="nav-group">
-      <div class="group-heading">Data Sources</div>
-      <a
-        *ngFor="let item of dataSourcesItems"
-        [routerLink]="item.route"
-        routerLinkActive="active"
-        class="nav-link">
-        <span class="material-symbols-outlined nav-icon">{{ item.icon }}</span>
-        <span class="nav-label">{{ item.label }}</span>
-      </a>
-    </div>
-
     <!-- SQL Group -->
     <div class="nav-group">
       <div class="group-heading">SQL</div>
@@ -69,19 +56,6 @@
           <span class="nav-label">{{ item.label }}</span>
         </a>
       </ng-container>
-    </div>
-
-    <!-- Data Destination Group -->
-    <div class="nav-group">
-      <div class="group-heading">Data Destination</div>
-      <a
-        *ngFor="let item of dataDestinationItems"
-        [routerLink]="item.route"
-        routerLinkActive="active"
-        class="nav-link">
-        <span class="material-symbols-outlined nav-icon">{{ item.icon }}</span>
-        <span class="nav-label">{{ item.label }}</span>
-      </a>
     </div>
 
     <!-- Data Engineering Group -->
