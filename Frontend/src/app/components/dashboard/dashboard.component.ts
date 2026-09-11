@@ -129,11 +129,25 @@ export class DashboardComponent implements OnInit {
       next: (response: IngestionPipelineSummary[]) => {
         const pipelines = Array.isArray(response) ? response : [];
         this.pipelinesCount = pipelines.length;
-        this.runningPipelinesCount = pipelines.filter(p => !!p.nifi_process_group_id).length;
       },
       error: (error) => {
         console.error('Failed to load ingestion pipelines:', error);
         this.pipelinesCount = 0;
+      }
+    });
+
+    // "Currently running" is run-history state (PipelineRun rows with
+    // status RUNNING), not a pipeline config field - nifi_process_group_id
+    // is a static NiFi flow reference that's set once and stays set after
+    // the run finishes (and is never set at all for Google-Drive-sourced
+    // pipelines, which use no NiFi flow). Same endpoint Jobs & Pipelines
+    // uses, so the two pages agree.
+    this.configService.get('/ingestion-pipelines/running/').subscribe({
+      next: (runs: unknown[]) => {
+        this.runningPipelinesCount = Array.isArray(runs) ? runs.length : 0;
+      },
+      error: (error) => {
+        console.error('Failed to load running pipelines:', error);
         this.runningPipelinesCount = 0;
       }
     });
