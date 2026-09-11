@@ -1,16 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TagModule } from 'primeng/tag';
 
+import { AuthenticationService } from '../../services/authentication.service';
 import { ConfigService } from '../../services/config.service';
 
 export interface TableColumn {
   name: string;
   type: string;
   required: boolean;
+  description?: string;
 }
 
 export interface TableDetail {
@@ -23,18 +27,32 @@ export interface TableDetail {
   total_records: string | null;
   total_data_files: string | null;
   last_updated_ms: number | null;
+  description?: string;
 }
 
 @Component({
   selector: 'app-iceberg-catalog',
   standalone: true,
-  imports: [CommonModule, ButtonModule, ProgressSpinnerModule, TagModule],
+  imports: [CommonModule, FormsModule, ButtonModule, InputTextModule, ProgressSpinnerModule, TagModule],
   templateUrl: './iceberg-catalog.component.html',
   styleUrl: './iceberg-catalog.component.css'
 })
 export class IcebergCatalogComponent implements OnInit {
 
-  constructor(private configService: ConfigService) {}
+  constructor(
+    private configService: ConfigService,
+    private authService: AuthenticationService
+  ) {}
+
+  editingTableDescription = false;
+  editingColumn: string | null = null;
+  draftDescription = '';
+  savingDescription = false;
+
+  get canEditDictionary(): boolean {
+    const role = this.authService.getUser()?.role;
+    return role === 'ADMIN' || role === 'DATA_ENGINEER';
+  }
 
   loadingNamespaces = false;
   loadingTables = false;
@@ -107,6 +125,8 @@ export class IcebergCatalogComponent implements OnInit {
     this.tableDetail = null;
     this.loadingDetail = true;
     this.errorMessage = '';
+    this.editingTableDescription = false;
+    this.editingColumn = null;
 
     this.configService
       .get(`/catalog/tables/detail/?namespace=${encodeURIComponent(this.selectedNamespace)}&table=${encodeURIComponent(table)}`)
@@ -124,5 +144,62 @@ export class IcebergCatalogComponent implements OnInit {
 
   refresh(): void {
     this.loadNamespaces();
+  }
+
+  startEditTableDescription(): void {
+    if (!this.tableDetail) {
+      return;
+    }
+    this.editingColumn = null;
+    this.draftDescription = this.tableDetail.description || '';
+    this.editingTableDescription = true;
+  }
+
+  startEditColumn(col: TableColumn): void {
+    this.editingTableDescription = false;
+    this.draftDescription = col.description || '';
+    this.editingColumn = col.name;
+  }
+
+  cancelEdit(): void {
+    this.editingTableDescription = false;
+    this.editingColumn = null;
+    this.draftDescription = '';
+  }
+
+  saveDescription(): void {
+    if (!this.selectedNamespace || !this.selectedTable) {
+      return;
+    }
+
+    const column = this.editingColumn;
+    const namespace = this.selectedNamespace;
+    const table = this.selectedTable;
+    const description = this.draftDescription;
+
+    this.savingDescription = true;
+
+    this.configService
+      .put('/catalog/dictionary/', { namespace, table, column, description })
+      .subscribe({
+        next: () => {
+          this.savingDescription = false;
+          if (this.tableDetail) {
+            if (column) {
+              const col = this.tableDetail.columns.find(c => c.name === column);
+              if (col) {
+                col.description = description;
+              }
+            } else {
+              this.tableDetail.description = description;
+            }
+          }
+          this.cancelEdit();
+        },
+        error: (error) => {
+          this.savingDescription = false;
+          this.errorMessage = error?.error?.error || 'Failed to save the description.';
+        }
+      });
   }
 }

@@ -1,6 +1,8 @@
+import boto3
 from django.conf import settings
 
 from apps.ingestion.services.nifi_client import NiFiClient
+from connectors.source.google_drive.connector import GoogleDriveConnector
 
 
 class PostgresToMinioJobBuilder:
@@ -461,6 +463,106 @@ class KafkaToMinioJobBuilder:
             revision_version=current["revision"]["version"],
             state="STOPPED",
         )
+
+
+class GoogleDriveToMinioJobBuilder:
+    """
+    Pulls one file out of a public Google Drive folder and lands it in
+    MinIO. A Drive folder can hold anything, so this branches on the file:
+
+    - Tabular (CSV/XLSX/XLS, or a Google Sheet) -> parsed and staged as
+      raw JSON in the MinIO staging bucket, same staged shape as the
+      NiFi-based builders, so pipeline_ingest.py's spark.read.json()
+      picks it up unmodified and merges it into an Iceberg table.
+    - Anything else (images, video, PDFs, archives, ...) -> copied
+      through unmodified as a raw object in the destination bucket, under
+      a "google-drive/<pipeline id>/<filename>" key. There's no sensible
+      row-based table for a PDF or a photo, so these skip Spark/Iceberg
+      entirely - PipelineService reads `ingest_mode` on the result to
+      know which of the two happened.
+
+    Unlike Postgres/Mongo/Kafka, there's no NiFi processor for the Google
+    Drive REST API in this project, and building one declaratively (list
+    -> fetch -> parse) would need an InvokeHTTP+ExecuteScript chain far
+    more fragile than just doing the HTTP call directly in Python. So
+    build() does the actual pull-and-land work itself (a Drive file fetch
+    is a single bounded HTTP call, not a long-running flow worth a NiFi
+    process group) - start()/stop() are no-ops kept only so
+    PipelineService can call every builder through the same interface.
+    """
+
+    STAGING_BUCKET = "staging"
+    RAW_FILES_PREFIX = "google-drive"
+
+    def __init__(self, pipeline):
+        self.pipeline = pipeline
+
+    def build(self):
+
+        filename = self.pipeline.source_object
+        connector = GoogleDriveConnector(self.pipeline.source)
+        client = self._minio_client()
+
+        if connector.is_tabular(filename):
+            return self._stage_tabular(connector, filename, client)
+
+        return self._land_raw(connector, filename, client)
+
+    def _minio_client(self):
+        config = self.pipeline.destination.configuration
+
+        return boto3.client(
+            "s3",
+            endpoint_url=config["endpoint"],
+            aws_access_key_id=config["access_key"],
+            aws_secret_access_key=config["secret_key"],
+        )
+
+    def _stage_tabular(self, connector, filename, client):
+
+        df = connector.read_asset(filename)
+
+        object_key = f"{self.pipeline.id}/data.json"
+        body = df.to_json(orient="records", lines=True).encode("utf-8")
+
+        client.put_object(Bucket=self.STAGING_BUCKET, Key=object_key, Body=body)
+
+        return {
+            "process_group_id": None,
+            "source_processor_id": None,
+            "destination_processor_id": None,
+            "ingest_mode": "table",
+            "staging_path": f"s3a://{self.STAGING_BUCKET}/{object_key}",
+        }
+
+    def _land_raw(self, connector, filename, client):
+
+        content, content_type = connector.download_raw(filename)
+
+        config = self.pipeline.destination.configuration
+        bucket = config.get("bucket") or self.STAGING_BUCKET
+        object_key = f"{self.RAW_FILES_PREFIX}/{self.pipeline.id}/{filename}"
+
+        client.put_object(
+            Bucket=bucket,
+            Key=object_key,
+            Body=content,
+            ContentType=content_type,
+        )
+
+        return {
+            "process_group_id": None,
+            "source_processor_id": None,
+            "destination_processor_id": None,
+            "ingest_mode": "file",
+            "object_path": f"s3a://{bucket}/{object_key}",
+        }
+
+    def start(self, result):
+        pass
+
+    def stop(self, result):
+        pass
 
 
 class MongoToMinioJobBuilder:

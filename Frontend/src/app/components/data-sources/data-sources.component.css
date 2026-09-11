@@ -190,11 +190,25 @@
   margin-top: auto;
 }
 
+::ng-deep .card-actions > * {
+  min-width: 0;
+}
+
 ::ng-deep .action-btn.p-button {
   border-radius: 8px;
   font-size: 9px;
-  padding: 6px 10px;
+  padding: 6px 8px;
   font-weight: 500;
+  width: 100%;
+  min-width: 0;
+  justify-content: center;
+}
+
+::ng-deep .action-btn.p-button .p-button-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 0 1 auto;
 }
 
 /* ===========================
@@ -245,6 +259,12 @@
   color: var(--app-on-surface);
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
+}
+
+.field small {
+  margin-top: 6px;
+  font-size: 10px;
+  color: var(--app-outline);
 }
 
 .w-full {

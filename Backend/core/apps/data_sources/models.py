@@ -7,6 +7,7 @@ class DataSource(models.Model):
         ("mongo", "MongoDB"),
         ("postgres", "PostgreSQL"),
         ("kafka", "Kafka"),
+        ("google_drive", "Google Drive"),
         # ("postgresql", "PostgreSQL"),
         # ("minio", "MinIO"),
         # ("aws_s3", "AWS S3"),

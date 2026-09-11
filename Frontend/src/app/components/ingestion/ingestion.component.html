@@ -189,37 +189,47 @@
             <input pInputText [(ngModel)]="sourceForm.name" placeholder="e.g. Orders Postgres" />
           </div>
 
-          <div class="field-row">
+          <ng-container *ngIf="selectedConnector.key === 'google_drive'; else nonDriveConnectionFields">
             <div class="field">
-              <label>Host</label>
-              <input pInputText [(ngModel)]="sourceForm.host" placeholder="localhost" />
+              <label>Google Drive Folder URL</label>
+              <input pInputText [(ngModel)]="sourceForm.folder_url" placeholder="https://drive.google.com/drive/folders/..." />
+              <small>The folder must be shared as "Anyone with the link" (public).</small>
             </div>
-            <div class="field">
-              <label>Port</label>
-              <input pInputText [(ngModel)]="sourceForm.port" placeholder="Port" />
-            </div>
-          </div>
+          </ng-container>
 
-          <div class="field" *ngIf="selectedConnector.key === 'postgres'">
-            <label>Database</label>
-            <input pInputText [(ngModel)]="sourceForm.database" placeholder="mydb" />
-          </div>
-
-          <div class="field-row">
-            <div class="field">
-              <label>Username</label>
-              <input pInputText [(ngModel)]="sourceForm.username" placeholder="Username" />
+          <ng-template #nonDriveConnectionFields>
+            <div class="field-row">
+              <div class="field">
+                <label>Host</label>
+                <input pInputText [(ngModel)]="sourceForm.host" placeholder="localhost" />
+              </div>
+              <div class="field">
+                <label>Port</label>
+                <input pInputText [(ngModel)]="sourceForm.port" placeholder="Port" />
+              </div>
             </div>
-            <div class="field">
-              <label>Password</label>
-              <p-password [(ngModel)]="sourceForm.password" [feedback]="false" [toggleMask]="true" styleClass="w-full" inputStyleClass="w-full"></p-password>
-            </div>
-          </div>
 
-          <div class="field" *ngIf="selectedConnector.key === 'mongo'">
-            <label>Auth Source</label>
-            <input pInputText [(ngModel)]="sourceForm.authSource" placeholder="admin" />
-          </div>
+            <div class="field" *ngIf="selectedConnector.key === 'postgres'">
+              <label>Database</label>
+              <input pInputText [(ngModel)]="sourceForm.database" placeholder="mydb" />
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label>Username</label>
+                <input pInputText [(ngModel)]="sourceForm.username" placeholder="Username" />
+              </div>
+              <div class="field">
+                <label>Password</label>
+                <p-password [(ngModel)]="sourceForm.password" [feedback]="false" [toggleMask]="true" styleClass="w-full" inputStyleClass="w-full"></p-password>
+              </div>
+            </div>
+
+            <div class="field" *ngIf="selectedConnector.key === 'mongo'">
+              <label>Auth Source</label>
+              <input pInputText [(ngModel)]="sourceForm.authSource" placeholder="admin" />
+            </div>
+          </ng-template>
         </ng-container>
 
         <div class="step-actions">
@@ -279,6 +289,19 @@
           <div class="field">
             <label>Topic name</label>
             <input pInputText [(ngModel)]="sourceDetails.topic" placeholder="orders-events" />
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="selectedConnector.key === 'google_drive'">
+          <p class="step-description">Which file in the folder do you want to ingest?</p>
+          <div class="field">
+            <label>File name</label>
+            <input pInputText [(ngModel)]="sourceDetails.filename" placeholder="orders.csv" />
+            <small>
+              Must match the exact file name in the folder. CSV, Excel (.xlsx/.xls) and Google Sheets
+              are parsed into a table; anything else (images, video, PDFs, etc.) is copied as-is into
+              your destination bucket.
+            </small>
           </div>
         </ng-container>
 

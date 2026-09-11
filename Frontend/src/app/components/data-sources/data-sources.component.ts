@@ -20,6 +20,7 @@ export interface DataSourceConfiguration {
   bucket?: string;
   folder?: string;
   region?: string;
+  folder_url?: string;
 }
 
 export interface DataSource {
@@ -93,7 +94,8 @@ export class DataSourcesComponent implements OnInit {
       password: '',
       bucket: '',
       folder: '',
-      region: ''
+      region: '',
+      folder_url: ''
     }
   };
 
@@ -102,11 +104,13 @@ export class DataSourcesComponent implements OnInit {
     bucket: string;
     folder: string;
     region: string;
+    folder_url: string;
   } = {
     source_type: '',
     bucket: '',
     folder: '',
-    region: ''
+    region: '',
+    folder_url: ''
   };
 
   connectionStatus = '';
@@ -210,6 +214,16 @@ export class DataSourcesComponent implements OnInit {
     return source?.configuration?.[key] || '';
   }
 
+  isGoogleDrive(sourceType: string | null | undefined): boolean {
+    return sourceType === 'google_drive';
+  }
+
+  getCardSubtitle(source: DataSource): string {
+    return this.isGoogleDrive(source.source_type)
+      ? (this.getConfigValue(source, 'folder_url') || '-')
+      : (this.getConfigValue(source, 'endpoint') || '-');
+  }
+
   resetNewSource(): void {
     this.newSource = {
       name: '',
@@ -222,7 +236,8 @@ export class DataSourcesComponent implements OnInit {
         password: '',
         bucket: '',
         folder: '',
-        region: ''
+        region: '',
+        folder_url: ''
       }
     };
   }
@@ -238,7 +253,8 @@ export class DataSourcesComponent implements OnInit {
       source_type: this.selectedSource?.source_type || '',
       bucket: this.selectedSource?.configuration?.bucket || '',
       folder: this.selectedSource?.configuration?.folder || '',
-      region: this.selectedSource?.configuration?.region || ''
+      region: this.selectedSource?.configuration?.region || '',
+      folder_url: this.selectedSource?.configuration?.folder_url || ''
     };
 
     this.selectedBucket = this.selectedSource?.configuration?.bucket || '';
@@ -266,7 +282,8 @@ export class DataSourcesComponent implements OnInit {
         password: source.configuration?.password || '',
         bucket: source.configuration?.bucket || '',
         folder: source.configuration?.folder || '',
-        region: source.configuration?.region || ''
+        region: source.configuration?.region || '',
+        folder_url: source.configuration?.folder_url || ''
       }
     };
 
@@ -274,12 +291,25 @@ export class DataSourcesComponent implements OnInit {
   }
 
   saveSource(): void {
+    const isGoogleDrive = this.isGoogleDrive(this.newSource.source_type);
+
+    if (!this.newSource.name.trim() || !this.newSource.source_type.trim()) {
+      alert('Please fill all required fields.');
+      return;
+    }
+
+    if (isGoogleDrive && !this.newSource.configuration.folder_url?.trim()) {
+      alert('Please provide the Google Drive folder link.');
+      return;
+    }
+
     if (
-      !this.newSource.name.trim() ||
-      !this.newSource.source_type.trim() ||
-      !this.newSource.configuration.endpoint?.trim() ||
-      !this.newSource.configuration.username?.trim() ||
-      !this.newSource.configuration.password?.trim()
+      !isGoogleDrive &&
+      (
+        !this.newSource.configuration.endpoint?.trim() ||
+        !this.newSource.configuration.username?.trim() ||
+        !this.newSource.configuration.password?.trim()
+      )
     ) {
       alert('Please fill all required fields.');
       return;
@@ -296,7 +326,8 @@ export class DataSourcesComponent implements OnInit {
         password: this.newSource.configuration.password || '',
         bucket: this.newSource.configuration.bucket?.trim() || '',
         folder: this.newSource.configuration.folder?.trim() || '',
-        region: this.newSource.configuration.region?.trim() || ''
+        region: this.newSource.configuration.region?.trim() || '',
+        folder_url: this.newSource.configuration.folder_url?.trim() || ''
       }
     };
 
@@ -396,6 +427,19 @@ export class DataSourcesComponent implements OnInit {
         this.loadingConnection = false;
         this.connectionStatus = response?.connected ? 'Connected' : 'Disconnected';
         this.connectionError = response?.error || '';
+
+        if (this.isGoogleDrive(target.source_type)) {
+          this.availableBuckets = [];
+          this.selectedBucket = '';
+
+          if (this.connectionStatus === 'Connected') {
+            this.loadAssets(target);
+          } else {
+            this.assets = [];
+          }
+          return;
+        }
+
         this.availableBuckets = Array.isArray(response?.buckets) ? response.buckets : [];
 
         if (this.configModel.bucket && this.availableBuckets.includes(this.configModel.bucket)) {
@@ -451,16 +495,18 @@ export class DataSourcesComponent implements OnInit {
 
   loadAssets(source?: DataSource): void {
     const target = source || this.selectedSource;
+    const isGoogleDrive = this.isGoogleDrive(target?.source_type);
 
-    if (!target || !this.selectedBucket) {
+    if (!target || (!isGoogleDrive && !this.selectedBucket)) {
       this.assets = [];
       return;
     }
 
     this.loadingAssets = true;
+    const bucketParam = isGoogleDrive ? '' : this.selectedBucket;
 
     this.configService
-      .get(`/data-sources/${target.id}/list-assets/?bucket=${encodeURIComponent(this.selectedBucket)}`)
+      .get(`/data-sources/${target.id}/list-assets/?bucket=${encodeURIComponent(bucketParam)}`)
       .subscribe({
         next: (response: AssetItem[]) => {
           this.loadingAssets = false;
@@ -488,7 +534,8 @@ export class DataSourcesComponent implements OnInit {
         ...(this.selectedSource.configuration || {}),
         bucket: this.selectedBucket || '',
         folder: this.configModel.folder?.trim() || '',
-        region: this.configModel.region?.trim() || ''
+        region: this.configModel.region?.trim() || '',
+        folder_url: this.configModel.folder_url?.trim() || ''
       }
     };
 

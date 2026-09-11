@@ -74,6 +74,22 @@
         <div class="detail-header">
           <h2>{{ detail.namespace }}.{{ detail.table }}</h2>
           <p class="detail-location">{{ detail.location }}</p>
+
+          <div class="table-description" *ngIf="!editingTableDescription">
+            <p class="description-text" [class.description-empty]="!detail.description">
+              {{ detail.description || 'No description yet.' }}
+            </p>
+            <button *ngIf="canEditDictionary" class="edit-link" type="button" (click)="startEditTableDescription()">
+              <i class="pi pi-pencil"></i>
+              <span>{{ detail.description ? 'Edit' : 'Add description' }}</span>
+            </button>
+          </div>
+
+          <div class="description-editor" *ngIf="editingTableDescription">
+            <input type="text" pInputText [(ngModel)]="draftDescription" placeholder="Describe what this table holds..." class="description-input" />
+            <p-button label="Save" size="small" [loading]="savingDescription" (onClick)="saveDescription()"></p-button>
+            <p-button label="Cancel" size="small" severity="secondary" [text]="true" (onClick)="cancelEdit()"></p-button>
+          </div>
         </div>
 
         <div class="detail-stats">
@@ -97,12 +113,24 @@
             <span>Column</span>
             <span>Type</span>
             <span>Required</span>
+            <span>Description</span>
           </div>
           <div class="schema-row" *ngFor="let col of detail.columns">
             <span class="col-name">{{ col.name }}</span>
             <span class="col-type">{{ col.type }}</span>
             <span>
               <p-tag [value]="col.required ? 'Required' : 'Nullable'" [severity]="col.required ? 'warning' : 'secondary'"></p-tag>
+            </span>
+            <span class="col-description" *ngIf="editingColumn !== col.name">
+              <span [class.description-empty]="!col.description">{{ col.description || '—' }}</span>
+              <button *ngIf="canEditDictionary" class="edit-link" type="button" (click)="startEditColumn(col)">
+                <i class="pi pi-pencil"></i>
+              </button>
+            </span>
+            <span class="col-description description-editor" *ngIf="editingColumn === col.name">
+              <input type="text" pInputText [(ngModel)]="draftDescription" placeholder="Describe this column..." class="description-input" />
+              <p-button icon="pi pi-check" size="small" [loading]="savingDescription" (onClick)="saveDescription()"></p-button>
+              <p-button icon="pi pi-times" size="small" severity="secondary" [text]="true" (onClick)="cancelEdit()"></p-button>
             </span>
           </div>
         </div>

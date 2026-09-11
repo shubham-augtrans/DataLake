@@ -85,7 +85,7 @@ class DataSourceViewSet(viewsets.ModelViewSet):
 
         bucket = request.query_params.get("bucket")
 
-        if not bucket:
+        if not bucket and datasource.source_type != "google_drive":
             return Response(
                 {
                     "error": "bucket query parameter is required."

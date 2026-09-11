@@ -26,7 +26,7 @@
 
             <div>
               <h3>{{ source.name }}</h3>
-              <p>{{ getConfigValue(source, 'endpoint') || '-' }}</p>
+              <p>{{ getCardSubtitle(source) }}</p>
             </div>
           </div>
         </div>
@@ -39,39 +39,48 @@
         </div>
 
         <div class="info-row">
-          <span>Endpoint</span>
-          <span>{{ getConfigValue(source, 'endpoint') || '-' }}</span>
-        </div>
-
-        <div class="info-row">
-          <span>Username</span>
-          <span>{{ getConfigValue(source, 'username') || '-' }}</span>
-        </div>
-
-        <div class="info-row">
           <span>Source Type</span>
           <span>{{ source.source_type || '-' }}</span>
         </div>
 
-        <div class="info-row">
-          <span>Bucket</span>
-          <span>{{ getConfigValue(source, 'bucket') || '-' }}</span>
-        </div>
+        <ng-container *ngIf="isGoogleDrive(source.source_type); else nonDriveRows">
+          <div class="info-row">
+            <span>Folder URL</span>
+            <span>{{ getConfigValue(source, 'folder_url') || '-' }}</span>
+          </div>
+        </ng-container>
 
-        <div class="info-row">
-          <span>Folder</span>
-          <span>{{ getConfigValue(source, 'folder') || '-' }}</span>
-        </div>
+        <ng-template #nonDriveRows>
+          <div class="info-row">
+            <span>Endpoint</span>
+            <span>{{ getConfigValue(source, 'endpoint') || '-' }}</span>
+          </div>
 
-        <div class="info-row">
-          <span>Region</span>
-          <span>{{ getConfigValue(source, 'region') || '-' }}</span>
-        </div>
+          <div class="info-row">
+            <span>Username</span>
+            <span>{{ getConfigValue(source, 'username') || '-' }}</span>
+          </div>
 
-        <div class="info-row">
-          <span>Password</span>
-          <span>••••••••</span>
-        </div>
+          <div class="info-row">
+            <span>Bucket</span>
+            <span>{{ getConfigValue(source, 'bucket') || '-' }}</span>
+          </div>
+
+          <div class="info-row">
+            <span>Folder</span>
+            <span>{{ getConfigValue(source, 'folder') || '-' }}</span>
+          </div>
+
+          <div class="info-row">
+            <span>Region</span>
+            <span>{{ getConfigValue(source, 'region') || '-' }}</span>
+          </div>
+
+          <div class="info-row">
+            <span>Password</span>
+            <span>••••••••</span>
+          </div>
+        </ng-template>
 
         <div class="info-row">
           <span>Created</span>
@@ -155,32 +164,6 @@
     </div>
 
     <div class="field">
-      <label for="endpoint">Endpoint</label>
-      <input
-        id="endpoint"
-        pInputText
-        placeholder="http://localhost:9000"
-        [(ngModel)]="newSource.configuration.endpoint" />
-    </div>
-
-    <div class="field">
-      <label for="username">Username</label>
-      <input
-        id="username"
-        pInputText
-        [(ngModel)]="newSource.configuration.username" />
-    </div>
-
-    <div class="field">
-      <label for="password">Password</label>
-      <input
-        id="password"
-        type="password"
-        pInputText
-        [(ngModel)]="newSource.configuration.password" />
-    </div>
-
-    <div class="field">
       <label for="source_type">Source Type</label>
       <p-dropdown
         inputId="source_type"
@@ -196,32 +179,72 @@
       </p-dropdown>
     </div>
 
-    <div class="field">
-      <label for="bucket">Default Bucket</label>
-      <input
-        id="bucket"
-        pInputText
-        [(ngModel)]="newSource.configuration.bucket"
-        placeholder="Optional" />
-    </div>
+    <ng-container *ngIf="isGoogleDrive(newSource.source_type); else nonDriveFields">
+      <div class="field">
+        <label for="folder_url">Google Drive Folder URL</label>
+        <input
+          id="folder_url"
+          pInputText
+          placeholder="https://drive.google.com/drive/folders/..."
+          [(ngModel)]="newSource.configuration.folder_url" />
+        <small>The folder must be shared as "Anyone with the link" (public).</small>
+      </div>
+    </ng-container>
 
-    <div class="field">
-      <label for="folder">Root Folder</label>
-      <input
-        id="folder"
-        pInputText
-        [(ngModel)]="newSource.configuration.folder"
-        placeholder="Optional" />
-    </div>
+    <ng-template #nonDriveFields>
+      <div class="field">
+        <label for="endpoint">Endpoint</label>
+        <input
+          id="endpoint"
+          pInputText
+          placeholder="http://localhost:9000"
+          [(ngModel)]="newSource.configuration.endpoint" />
+      </div>
 
-    <div class="field">
-      <label for="region">Region</label>
-      <input
-        id="region"
-        pInputText
-        [(ngModel)]="newSource.configuration.region"
-        placeholder="Optional" />
-    </div>
+      <div class="field">
+        <label for="username">Username</label>
+        <input
+          id="username"
+          pInputText
+          [(ngModel)]="newSource.configuration.username" />
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          pInputText
+          [(ngModel)]="newSource.configuration.password" />
+      </div>
+
+      <div class="field">
+        <label for="bucket">Default Bucket</label>
+        <input
+          id="bucket"
+          pInputText
+          [(ngModel)]="newSource.configuration.bucket"
+          placeholder="Optional" />
+      </div>
+
+      <div class="field">
+        <label for="folder">Root Folder</label>
+        <input
+          id="folder"
+          pInputText
+          [(ngModel)]="newSource.configuration.folder"
+          placeholder="Optional" />
+      </div>
+
+      <div class="field">
+        <label for="region">Region</label>
+        <input
+          id="region"
+          pInputText
+          [(ngModel)]="newSource.configuration.region"
+          placeholder="Optional" />
+      </div>
+    </ng-template>
   </div>
 
   <ng-template pTemplate="footer">
@@ -257,9 +280,14 @@
       <p>{{ selectedSource.name }}</p>
     </div>
 
-    <div class="field">
+    <div class="field" *ngIf="!isGoogleDrive(selectedSource.source_type)">
       <label>Endpoint</label>
       <p>{{ getConfigValue(selectedSource, 'endpoint') || '-' }}</p>
+    </div>
+
+    <div class="field" *ngIf="isGoogleDrive(selectedSource.source_type)">
+      <label>Folder URL</label>
+      <p>{{ getConfigValue(selectedSource, 'folder_url') || '-' }}</p>
     </div>
 
     <div class="field">
@@ -296,6 +324,7 @@
         </p-button>
 
         <p-button
+          *ngIf="!isGoogleDrive(selectedSource.source_type)"
           label="Load Buckets"
           icon="pi pi-refresh"
           severity="secondary"
@@ -311,40 +340,54 @@
       </small>
     </div>
 
-    <div class="field">
-      <label for="config_bucket">Bucket</label>
-      <p-dropdown
-        inputId="config_bucket"
-        [options]="availableBuckets"
-        [(ngModel)]="selectedBucket"
-        placeholder="Select Bucket"
-        [showClear]="true"
-        [filter]="true"
-        (onChange)="onBucketChange()"
-        styleClass="w-full">
-      </p-dropdown>
-    </div>
+    <ng-container *ngIf="isGoogleDrive(selectedSource.source_type); else nonDriveConfigFields">
+      <div class="field">
+        <label for="config_folder_url">Google Drive Folder URL</label>
+        <input
+          id="config_folder_url"
+          pInputText
+          placeholder="https://drive.google.com/drive/folders/..."
+          [(ngModel)]="configModel.folder_url" />
+        <small>The folder must be shared as "Anyone with the link" (public).</small>
+      </div>
+    </ng-container>
+
+    <ng-template #nonDriveConfigFields>
+      <div class="field">
+        <label for="config_bucket">Bucket</label>
+        <p-dropdown
+          inputId="config_bucket"
+          [options]="availableBuckets"
+          [(ngModel)]="selectedBucket"
+          placeholder="Select Bucket"
+          [showClear]="true"
+          [filter]="true"
+          (onChange)="onBucketChange()"
+          styleClass="w-full">
+        </p-dropdown>
+      </div>
+
+      <div class="field">
+        <label for="config_folder">Root Folder</label>
+        <input
+          id="config_folder"
+          pInputText
+          [(ngModel)]="configModel.folder"
+          placeholder="Optional folder path" />
+      </div>
+
+      <div class="field">
+        <label for="config_region">Region</label>
+        <input
+          id="config_region"
+          pInputText
+          [(ngModel)]="configModel.region"
+          placeholder="Optional region" />
+      </div>
+    </ng-template>
 
     <div class="field">
-      <label for="config_folder">Root Folder</label>
-      <input
-        id="config_folder"
-        pInputText
-        [(ngModel)]="configModel.folder"
-        placeholder="Optional folder path" />
-    </div>
-
-    <div class="field">
-      <label for="config_region">Region</label>
-      <input
-        id="config_region"
-        pInputText
-        [(ngModel)]="configModel.region"
-        placeholder="Optional region" />
-    </div>
-
-    <div class="field">
-      <label>Assets</label>
+      <label>{{ isGoogleDrive(selectedSource.source_type) ? 'Files in Folder' : 'Assets' }}</label>
 
       <div
         *ngIf="loadingAssets"
@@ -383,7 +426,9 @@
         <ng-template pTemplate="emptymessage">
           <tr>
             <td colspan="4">
-              {{ selectedBucket ? 'No assets found in this bucket.' : 'Select a bucket to view assets.' }}
+              {{ isGoogleDrive(selectedSource.source_type)
+                  ? 'No files found in this folder.'
+                  : (selectedBucket ? 'No assets found in this bucket.' : 'Select a bucket to view assets.') }}
             </td>
           </tr>
         </ng-template>

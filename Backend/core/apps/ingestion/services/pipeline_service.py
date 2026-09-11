@@ -6,7 +6,8 @@ from apps.ingestion.models import PipelineRun
 from apps.ingestion.services.job_builder import (
     PostgresToMinioJobBuilder,
     MongoToMinioJobBuilder,
-    KafkaToMinioJobBuilder
+    KafkaToMinioJobBuilder,
+    GoogleDriveToMinioJobBuilder,
 )
 from apps.ingestion.services.nifi_client import NiFiClient
 from apps.ingestion.services.spark_runner import SparkIngestError, run_spark_ingest
@@ -80,6 +81,12 @@ class PipelineService:
         ):
             return self._kafka_to_minio()
 
+        elif (
+            source_type == "google_drive"
+            and destination_type == "minio"
+        ):
+            return self._google_drive_to_minio()
+
         raise Exception(
             f"Unsupported pipeline: "
             f"{source_type} -> {destination_type}"
@@ -140,6 +147,41 @@ class PipelineService:
 
         except SparkIngestError as ex:
             builder.stop(result)
+            self.pipeline.nifi_status = "error"
+            self.pipeline.nifi_last_error = str(ex)
+            raise
+
+        finally:
+            self.pipeline.save(
+                update_fields=["nifi_status", "nifi_last_error"]
+            )
+
+        return result
+
+    def _google_drive_to_minio(self):
+        """
+        No NiFi flow to tear down or drain here (see GoogleDriveToMinioJobBuilder's
+        docstring) - build() itself synchronously pulls the file and lands
+        it. Tabular files then go through the Spark ingest step same as
+        every other source; anything else (images, video, PDFs, ...) was
+        already landed as a raw object by build(), so there's nothing left
+        to do - see GoogleDriveToMinioJobBuilder's docstring for why those
+        skip Spark/Iceberg entirely.
+        """
+
+        builder = GoogleDriveToMinioJobBuilder(self.pipeline)
+
+        try:
+            result = builder.build()
+
+            if result["ingest_mode"] == "table":
+                spark_result = run_spark_ingest(self.pipeline, result["staging_path"])
+                result["table"] = spark_result["table"]
+
+            self.pipeline.nifi_status = "success"
+            self.pipeline.nifi_last_error = None
+
+        except Exception as ex:
             self.pipeline.nifi_status = "error"
             self.pipeline.nifi_last_error = str(ex)
             raise

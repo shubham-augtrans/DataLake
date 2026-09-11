@@ -28,6 +28,7 @@ export interface DataSourceConfig {
   table?: string;
   collection?: string;
   topic?: string;
+  folder_url?: string;
 }
 
 export interface DataSource {
@@ -123,6 +124,7 @@ export class IngestionComponent implements OnInit {
     { key: 'postgres', label: 'PostgreSQL', icon: 'database', description: 'Ingest tables from a PostgreSQL database.', enabled: true },
     { key: 'mongo', label: 'MongoDB', icon: 'data_object', description: 'Ingest collections from a MongoDB database.', enabled: true },
     { key: 'kafka', label: 'Kafka', icon: 'sync_alt', description: 'Stream events from Kafka topics.', enabled: true },
+    { key: 'google_drive', label: 'Google Drive', icon: 'drive_folder_upload', description: 'Ingest a CSV file or Google Sheet from a public Drive folder.', enabled: true },
     { key: 'mysql', label: 'MySQL', icon: 'storage', description: 'Ingest tables from a MySQL database.', enabled: false },
     { key: 'sqlserver', label: 'SQL Server', icon: 'dns', description: 'Ingest tables from a SQL Server database.', enabled: false }
   ];
@@ -146,7 +148,8 @@ export class IngestionComponent implements OnInit {
     database: '',
     username: '',
     password: '',
-    authSource: 'admin'
+    authSource: 'admin',
+    folder_url: ''
   };
 
   pipelineName = '';
@@ -155,7 +158,8 @@ export class IngestionComponent implements OnInit {
     table: '',
     database: '',
     collection: '',
-    topic: ''
+    topic: '',
+    filename: ''
   };
 
   destinationMode: 'new' | 'existing' = 'existing';
@@ -276,11 +280,12 @@ export class IngestionComponent implements OnInit {
       database: '',
       username: '',
       password: '',
-      authSource: 'admin'
+      authSource: 'admin',
+      folder_url: ''
     };
 
     this.pipelineName = '';
-    this.sourceDetails = { table: '', database: '', collection: '', topic: '' };
+    this.sourceDetails = { table: '', database: '', collection: '', topic: '', filename: '' };
 
     const hasMinioDestination = this.minioDestinations.length > 0;
     this.destinationMode = hasMinioDestination ? 'existing' : 'new';
@@ -321,6 +326,10 @@ export class IngestionComponent implements OnInit {
       return !!(f.name.trim() && f.host.trim() && f.port.trim() && f.username.trim() && f.password);
     }
 
+    if (this.selectedConnector.key === 'google_drive') {
+      return !!(f.name.trim() && f.folder_url.trim());
+    }
+
     return false;
   }
 
@@ -343,6 +352,10 @@ export class IngestionComponent implements OnInit {
 
     if (this.selectedConnector.key === 'kafka') {
       return !!this.sourceDetails.topic.trim();
+    }
+
+    if (this.selectedConnector.key === 'google_drive') {
+      return !!this.sourceDetails.filename.trim();
     }
 
     return false;
@@ -405,6 +418,10 @@ export class IngestionComponent implements OnInit {
         password: this.sourceForm.password,
         topic: this.sourceDetails.topic.trim()
       };
+    } else if (this.selectedConnector?.key === 'google_drive') {
+      configuration = {
+        folder_url: this.sourceForm.folder_url.trim()
+      };
     } else {
       configuration = {
         host: this.sourceForm.host.trim(),
@@ -461,7 +478,9 @@ export class IngestionComponent implements OnInit {
               ? this.sourceDetails.table.trim()
               : this.selectedConnector?.key === 'kafka'
                 ? this.sourceDetails.topic.trim()
-                : this.sourceDetails.collection.trim();
+                : this.selectedConnector?.key === 'google_drive'
+                  ? this.sourceDetails.filename.trim()
+                  : this.sourceDetails.collection.trim();
 
             const payload = {
               name: this.pipelineName.trim(),

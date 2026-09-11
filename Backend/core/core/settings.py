@@ -255,6 +255,12 @@ METABASE_URL = os.getenv(
 
 METABASE_API_KEY = os.getenv("METABASE_API_KEY", "")
 
+# API key for Google Drive's public REST API (https://console.cloud.google.com/
+# -> APIs & Services -> Credentials -> API key, with the Drive API enabled).
+# Only public/"Anyone with the link" folders are supported - no OAuth flow,
+# so no key is needed per-user, just one project-level key for read access.
+GOOGLE_DRIVE_API_KEY = os.getenv("GOOGLE_DRIVE_API_KEY", "")
+
 SUPERSET_URL = os.getenv("SUPERSET_URL", "http://localhost:8088")
 SUPERSET_USERNAME = os.getenv("SUPERSET_USERNAME", "shubham")
 SUPERSET_PASSWORD = os.getenv("SUPERSET_PASSWORD", "Shubham@123456")

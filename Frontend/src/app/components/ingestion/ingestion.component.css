@@ -258,6 +258,12 @@
   color: var(--app-on-surface-variant);
 }
 
+.field small {
+  margin-top: 6px;
+  font-size: 10px;
+  color: var(--app-outline);
+}
+
 .w-full {
   width: 100%;
 }

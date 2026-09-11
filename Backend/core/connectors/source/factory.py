@@ -1,6 +1,7 @@
 from connectors.source.minio.connector import MinioConnector
 from connectors.source.mongo.connector import MongoConnector
 from connectors.source.kafka.connector import KafkaConnector
+from connectors.source.google_drive.connector import GoogleDriveConnector
 
 class SourceConnectorFactory:
 
@@ -8,6 +9,7 @@ class SourceConnectorFactory:
         "minio": MinioConnector,
         "mongo":MongoConnector,
         "kafka": KafkaConnector,
+        "google_drive": GoogleDriveConnector,
     }
 
     @classmethod

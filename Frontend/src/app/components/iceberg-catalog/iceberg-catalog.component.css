@@ -245,7 +245,7 @@
 
 .schema-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 1.4fr 0.8fr 0.8fr 2fr;
   gap: 12px;
   padding: 10px 14px;
   align-items: center;
@@ -276,8 +276,75 @@
   color: var(--app-on-surface-variant);
 }
 
+.col-description {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--app-on-surface-variant);
+}
+
+.description-empty {
+  color: var(--app-outline);
+  font-style: italic;
+}
+
+.edit-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  background: none;
+  padding: 2px 4px;
+  color: var(--app-primary);
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.edit-link:hover {
+  background-color: color-mix(in srgb, var(--app-primary) 12%, transparent);
+}
+
+.table-description {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.description-text {
+  margin: 0;
+  font-size: 12px;
+  color: var(--app-on-surface-variant);
+}
+
+.description-editor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.description-input {
+  flex: 1;
+  min-width: 0;
+}
+
+:host ::ng-deep .description-input.p-inputtext {
+  width: 100%;
+  font-size: 12px;
+  padding: 6px 10px;
+}
+
 @media (max-width: 900px) {
   .catalog-layout {
     grid-template-columns: 1fr;
+  }
+
+  .schema-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
   }
 }
