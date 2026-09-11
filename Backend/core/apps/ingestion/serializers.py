@@ -25,6 +25,8 @@ class IngestionPipelineSerializer(serializers.ModelSerializer):
             "sync_interval",
             "nifi_status",
             "nifi_last_error",
+            "ingest_mode",
+            "raw_content_type",
             "created_at",
             "updated_at",
         ]

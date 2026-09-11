@@ -92,6 +92,24 @@
         <ng-template pTemplate="footer">
           <div class="card-actions">
             <p-button
+              *ngIf="pipeline.ingest_mode === 'file' && isPreviewable(pipeline)"
+              label="Preview"
+              icon="pi pi-eye"
+              severity="secondary"
+              styleClass="action-btn action-secondary"
+              (onClick)="previewFile(pipeline)">
+            </p-button>
+
+            <p-button
+              *ngIf="pipeline.ingest_mode === 'file'"
+              label="Download"
+              icon="pi pi-download"
+              severity="secondary"
+              styleClass="action-btn action-secondary"
+              (onClick)="downloadFile(pipeline)">
+            </p-button>
+
+            <p-button
               label="Edit"
               icon="pi pi-pencil"
               styleClass="action-btn action-primary"
@@ -538,6 +556,48 @@
   <ng-template pTemplate="footer">
     <p-button label="Cancel" severity="secondary" icon="pi pi-times" (onClick)="closeDeleteDialog()"></p-button>
     <p-button label="Delete" severity="danger" icon="pi pi-trash" (onClick)="deletePipeline()"></p-button>
+  </ng-template>
+
+</p-dialog>
+
+<!-- ======================================================
+     Raw File Preview Dialog
+======================================================= -->
+
+<p-dialog
+  [header]="previewPipeline?.source_object || 'File Preview'"
+  [(visible)]="previewDialogVisible"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '80vw', height: '85vh' }"
+  (onHide)="closePreview()">
+
+  <div *ngIf="previewLoading" class="empty-state">
+    <i class="pi pi-spin pi-spinner" style="font-size:2rem"></i>
+    <p>Loading preview…</p>
+  </div>
+
+  <div *ngIf="previewError" class="empty-state">
+    <i class="pi pi-exclamation-triangle" style="font-size:2rem;color:#f59e0b;"></i>
+    <p>{{ previewError }}</p>
+  </div>
+
+  <iframe
+    *ngIf="previewUrl && !previewLoading"
+    [src]="previewUrl"
+    style="width:100%; height:70vh; border:none;">
+  </iframe>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      *ngIf="previewPipeline"
+      label="Download"
+      icon="pi pi-download"
+      severity="secondary"
+      (onClick)="downloadFile(previewPipeline)">
+    </p-button>
+    <p-button label="Close" severity="secondary" icon="pi pi-times" (onClick)="closePreview()"></p-button>
   </ng-template>
 
 </p-dialog>

@@ -43,6 +43,9 @@ export class ConfigService {
     });
     return this.http.post(`${environment.apiBaseUrl}${apiPath}`, data,{ headers, responseType: 'blob' });
   }
+  getBlob(apiPath: string): Observable<Blob> {
+    return this.http.get(`${environment.apiBaseUrl}${apiPath}`, { responseType: 'blob' });
+  }
   put(apiPath: string, data: any): Observable<any> {
     return this.http.put<any>(`${environment.apiBaseUrl}${apiPath}`, data);
   }

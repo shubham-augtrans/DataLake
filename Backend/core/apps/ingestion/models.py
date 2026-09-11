@@ -65,6 +65,30 @@ class IngestionPipeline(models.Model):
         blank=True,
     )
 
+    # Set only for sources that can land a non-tabular file as-is (currently
+    # Google Drive's raw-file path - see GoogleDriveToMinioJobBuilder._land_raw)
+    # rather than parsing rows into an Iceberg table. Lets the frontend show
+    # a Preview/Download action instead of a table link for this pipeline.
+    ingest_mode = models.CharField(
+        max_length=20,
+        blank=True,
+    )
+
+    raw_object_bucket = models.CharField(
+        max_length=255,
+        blank=True,
+    )
+
+    raw_object_key = models.CharField(
+        max_length=1024,
+        blank=True,
+    )
+
+    raw_content_type = models.CharField(
+        max_length=100,
+        blank=True,
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

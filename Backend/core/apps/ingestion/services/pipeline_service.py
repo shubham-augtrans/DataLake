@@ -174,9 +174,15 @@ class PipelineService:
         try:
             result = builder.build()
 
+            self.pipeline.ingest_mode = result["ingest_mode"]
+
             if result["ingest_mode"] == "table":
                 spark_result = run_spark_ingest(self.pipeline, result["staging_path"])
                 result["table"] = spark_result["table"]
+            else:
+                self.pipeline.raw_object_bucket = result["raw_object_bucket"]
+                self.pipeline.raw_object_key = result["raw_object_key"]
+                self.pipeline.raw_content_type = result["raw_content_type"]
 
             self.pipeline.nifi_status = "success"
             self.pipeline.nifi_last_error = None
@@ -188,7 +194,10 @@ class PipelineService:
 
         finally:
             self.pipeline.save(
-                update_fields=["nifi_status", "nifi_last_error"]
+                update_fields=[
+                    "nifi_status", "nifi_last_error", "ingest_mode",
+                    "raw_object_bucket", "raw_object_key", "raw_content_type",
+                ]
             )
 
         return result

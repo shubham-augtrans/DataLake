@@ -1,3 +1,5 @@
+import boto3
+from django.http import StreamingHttpResponse
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -57,6 +59,53 @@ class IngestionPipelineViewSet(viewsets.ModelViewSet):
         currently running."""
         runs = PipelineRun.objects.select_related("pipeline").order_by("-started_at")[:50]
         return Response(PipelineRunSerializer(runs, many=True).data)
+
+    @action(
+        detail=True,
+        methods=["get"],
+        url_path="raw-file",
+    )
+    def raw_file(self, request, pk=None):
+        """
+        Streams the raw file a Google-Drive-source pipeline landed in MinIO
+        (see GoogleDriveToMinioJobBuilder._land_raw) straight through to the
+        browser - inline (Content-Disposition: inline) by default for
+        previewing, or ?download=1 to force a save-as download instead.
+        Only pipelines with ingest_mode == "file" have anything to stream.
+        """
+        pipeline = self.get_object()
+
+        if pipeline.ingest_mode != "file" or not pipeline.raw_object_key:
+            return Response(
+                {"detail": "This pipeline has no raw file to preview or download."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        config = pipeline.destination.configuration
+        client = boto3.client(
+            "s3",
+            endpoint_url=config["endpoint"],
+            aws_access_key_id=config["access_key"],
+            aws_secret_access_key=config["secret_key"],
+        )
+
+        try:
+            obj = client.get_object(Bucket=pipeline.raw_object_bucket, Key=pipeline.raw_object_key)
+        except client.exceptions.NoSuchKey:
+            return Response(
+                {"detail": "The raw file is no longer in MinIO."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        disposition = "attachment" if request.query_params.get("download") else "inline"
+        filename = pipeline.source_object or pipeline.raw_object_key.rsplit("/", 1)[-1]
+
+        response = StreamingHttpResponse(
+            obj["Body"].iter_chunks(),
+            content_type=pipeline.raw_content_type or "application/octet-stream",
+        )
+        response["Content-Disposition"] = f'{disposition}; filename="{filename}"'
+        return response
 
     @action(
         detail=True,

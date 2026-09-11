@@ -556,6 +556,9 @@ class GoogleDriveToMinioJobBuilder:
             "destination_processor_id": None,
             "ingest_mode": "file",
             "object_path": f"s3a://{bucket}/{object_key}",
+            "raw_object_bucket": bucket,
+            "raw_object_key": object_key,
+            "raw_content_type": content_type,
         }
 
     def start(self, result):

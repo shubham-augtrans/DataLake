@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -63,7 +64,10 @@ export interface IngestionPipeline {
   source_name: string;
   destination: number;
   destination_name: string;
+  source_object: string;
   sync_interval: number;
+  ingest_mode: string;
+  raw_content_type: string;
   created_at: string;
   updated_at: string;
 }
@@ -98,7 +102,7 @@ export interface ConnectorOption {
 })
 export class IngestionComponent implements OnInit {
 
-  constructor(private configService: ConfigService) {}
+  constructor(private configService: ConfigService, private sanitizer: DomSanitizer) {}
 
   ingestionPipelines: IngestionPipeline[] = [];
   dataSources: DataSource[] = [];
@@ -605,6 +609,76 @@ export class IngestionComponent implements OnInit {
       },
       error: (error) => {
         console.error('Failed to sync pipeline', error);
+      }
+    });
+  }
+
+  /* ===========================
+     Raw file preview / download
+     (pipelines with ingest_mode === 'file', e.g. a PDF landed by the
+     Google Drive connector instead of being parsed into a table)
+  =========================== */
+
+  previewDialogVisible = false;
+  previewUrl: SafeResourceUrl | null = null;
+  previewPipeline: IngestionPipeline | null = null;
+  previewLoading = false;
+  previewError = '';
+
+  private previewObjectUrl: string | null = null;
+
+  isPreviewable(pipeline: IngestionPipeline): boolean {
+    const type = pipeline.raw_content_type || '';
+    return type.startsWith('application/pdf') || type.startsWith('image/');
+  }
+
+  previewFile(pipeline: IngestionPipeline): void {
+    this.previewPipeline = pipeline;
+    this.previewDialogVisible = true;
+    this.previewLoading = true;
+    this.previewError = '';
+    this.previewUrl = null;
+
+    this.configService.getBlob(`/ingestion-pipelines/${pipeline.id}/raw-file/`).subscribe({
+      next: (blob) => {
+        this.revokePreviewUrl();
+        this.previewObjectUrl = URL.createObjectURL(blob);
+        this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.previewObjectUrl);
+        this.previewLoading = false;
+      },
+      error: () => {
+        this.previewLoading = false;
+        this.previewError = 'Could not load this file for preview.';
+      }
+    });
+  }
+
+  closePreview(): void {
+    this.previewDialogVisible = false;
+    this.previewPipeline = null;
+    this.previewUrl = null;
+    this.revokePreviewUrl();
+  }
+
+  private revokePreviewUrl(): void {
+    if (this.previewObjectUrl) {
+      URL.revokeObjectURL(this.previewObjectUrl);
+      this.previewObjectUrl = null;
+    }
+  }
+
+  downloadFile(pipeline: IngestionPipeline): void {
+    this.configService.getBlob(`/ingestion-pipelines/${pipeline.id}/raw-file/?download=1`).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = pipeline.source_object || pipeline.name;
+        link.click();
+        URL.revokeObjectURL(url);
+      },
+      error: (error) => {
+        console.error('Failed to download file', error);
       }
     });
   }
